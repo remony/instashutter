@@ -8,5 +8,11 @@
 </head>
 <body>
 
+<form method="POST" enctype="multipart/form-data" action="Image">
+	<input type="file" name="upfile"><br/>
+	<input type="submit" value="Press">
+</form>
+
+
 </body>
 </html>

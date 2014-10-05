@@ -15,7 +15,7 @@
 		String userName = currentSession.getUsername();
 		if (currentSession.getUserSession()) {
 			%>
-	<jsp:include page="login.jsp" />
+	<jsp:forward page="/dashboard" />
 	<%}
 	} else {
 			%>

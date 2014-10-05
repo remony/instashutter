@@ -13,8 +13,8 @@
 	</header>
 	<nav>
 	<ul>
-		<li><a href="#">Home</a></li>
-		<li><a href="upload.jsp">Upload</a></li>
+		<li><a href="/instashutter/">Home</a></li>
+		<li><a href="/instashutter/upload">Upload</a></li>
 		<%
 	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
 	if (currentSession != null) {
@@ -22,14 +22,14 @@
 		if (currentSession.getUserSession()) {
 			%>
 		<li><a
-			href="/Instashutter/Images/<%=currentSession.getUsername()%>">Your
+			href="/instashutter/Images/<%=currentSession.getUsername()%>">Your
 				Images</a></li>
 		<%}
 	} else {
 			%>
 
-		<li><a href="register.jsp">Register</a></li>
-		<li><a href="login.jsp">Login</a></li>
+		<li><a href="/instashutter/register">Register</a></li>
+		<li><a href="/instashutter/login">Login</a></li>
 		<%
 		}
 			%>

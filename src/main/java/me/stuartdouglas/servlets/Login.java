@@ -11,9 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import com.datastax.driver.core.Cluster;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.models.User;
 import me.stuartdouglas.stores.UserSession;
@@ -37,7 +34,7 @@ public class Login extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		RequestDispatcher rd=request.getRequestDispatcher("views/login.jsp");
+		RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
 	    rd.forward(request,response);
 	}
 
@@ -62,11 +59,12 @@ public class Login extends HttpServlet {
             
             session.setAttribute("LoggedIn", lg);
             System.out.println("Session in servlet "+session);
-            RequestDispatcher rd=request.getRequestDispatcher("index.jsp");
-	    rd.forward(request,response);
+            RequestDispatcher rd=request.getRequestDispatcher("/Dashboard");
+            rd.forward(request,response);
             
         }else{
-            response.sendRedirect("/Instagrim/login.jsp");
+        	RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
+    	    rd.forward(request,response);
         }
         
     }

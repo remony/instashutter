@@ -1,7 +1,10 @@
 package me.stuartdouglas.stores;
 
 import com.datastax.driver.core.utils.Bytes;
+
 import java.nio.ByteBuffer;
+
+import me.stuartdouglas.models.User;
 
 /**
  *
@@ -13,13 +16,22 @@ public class Pic {
     private int length;
     private String type;
     private java.util.UUID UUID=null;
+    private String user;
     
-    public void Pic() {
+    public Pic() {
 
     }
     public void setUUID(java.util.UUID UUID){
         this.UUID =UUID;
     }
+    
+    public String getPostedUsername(){
+    	return user.toString();
+    }
+    public void setPostedUsername(String User) {
+    	this.user=User;
+    }
+    
     public String getSUUID(){
         return UUID.toString();
     }

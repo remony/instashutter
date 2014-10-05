@@ -29,7 +29,7 @@ public class Index extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		RequestDispatcher rd=request.getRequestDispatcher("views/index.jsp");
+		RequestDispatcher rd=request.getRequestDispatcher("/index.jsp");
 	    rd.forward(request,response);
 	}
 
