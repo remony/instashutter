@@ -18,19 +18,16 @@
         <jsp:include page="header.jsp" />
  
         <article>
-            <h1>Your Pics</h1>
-            
-
-
 
 <%
 	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
-	if (currentSession != null) {
+	
+if (currentSession != null) {
 		String userName = currentSession.getUsername();
 		if (currentSession.getUserSession()) {
-			%>
+			%> <h1><%=currentSession.getUsername()%> 's Posts</h1>
 		
-			<%=currentSession.getUsername()%>
+			
 		<%}
 	} else {
 			%>

@@ -80,4 +80,15 @@
     <url-pattern>/Dashboard</url-pattern>
     <url-pattern>/dashboard</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Logout</display-name>
+    <servlet-name>Logout</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.Logout</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Logout</servlet-name>
+    <url-pattern>/Logout</url-pattern>
+    <url-pattern>/logout</url-pattern>
+  </servlet-mapping>
 </web-app>

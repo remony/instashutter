@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="instashutter:war exploded">
+    <output-path>$PROJECT_DIR$/target/instashutter-0.0.1-SNAPSHOT</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="instashutter/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="instashutter" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: com.datastax.cassandra:cassandra-driver-core:2.1.0" />
+          <element id="library" level="project" name="Maven: io.netty:netty:3.9.0.Final" />
+          <element id="library" level="project" name="Maven: com.google.guava:guava:16.0.1" />
+          <element id="library" level="project" name="Maven: com.codahale.metrics:metrics-core:3.0.2" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.5" />
+          <element id="library" level="project" name="Maven: com.eaio.uuid:uuid:3.2" />
+          <element id="library" level="project" name="Maven: org.imgscalr:imgscalr-lib:4.2" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

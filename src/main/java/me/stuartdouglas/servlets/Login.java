@@ -53,17 +53,17 @@ public class Login extends HttpServlet {
         System.out.println("Session in servlet "+session);
         if (isValid){
             UserSession lg= new UserSession();
-            lg.setUserSession();
+            lg.setUserSessionOnline();
             lg.setUsername(username);
             //request.setAttribute("LoggedIn", lg);
             
             session.setAttribute("LoggedIn", lg);
             System.out.println("Session in servlet "+session);
-            RequestDispatcher rd=request.getRequestDispatcher("/Dashboard");
+            RequestDispatcher rd=request.getRequestDispatcher("dashboard.jsp");
             rd.forward(request,response);
             
         }else{
-        	RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
+        	RequestDispatcher rd=request.getRequestDispatcher("/Dashboard");
     	    rd.forward(request,response);
         }
         
