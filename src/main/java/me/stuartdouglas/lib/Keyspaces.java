@@ -94,6 +94,13 @@ public final class Keyspaces {
             } catch (Exception et) {
                 System.out.println("Can't create Address Profile " + et);
             }
+            String indexPicList = "CREATE INDEX ON instashutter.Pics (pic_added);";
+            try {
+            	SimpleStatement cqlQuery = new SimpleStatement(indexPicList);
+                session.execute(cqlQuery);
+            } catch (Exception et) {
+            	System.out.println("Couldn't make indexes " + et);
+            }
             session.close();
 
         } catch (Exception et) {
