@@ -32,6 +32,7 @@ public final class Keyspaces {
                     + ")";
             String Createuserpiclist = "CREATE TABLE if not exists instashutter.userpiclist (\n"
                     + "picid uuid,\n"
+                    + "title varchar,\n"
                     + "user varchar,\n"
                     + "pic_added timestamp,\n"
                     + "PRIMARY KEY (user,pic_added)\n"
@@ -93,13 +94,6 @@ public final class Keyspaces {
                 session.execute(cqlQuery);
             } catch (Exception et) {
                 System.out.println("Can't create Address Profile " + et);
-            }
-            String indexPicList = "CREATE INDEX ON instashutter.Pics (pic_added);";
-            try {
-            	SimpleStatement cqlQuery = new SimpleStatement(indexPicList);
-                session.execute(cqlQuery);
-            } catch (Exception et) {
-            	System.out.println("Couldn't make indexes " + et);
             }
             session.close();
 

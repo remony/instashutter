@@ -22,6 +22,7 @@
                 Pic p = (Pic) iterator.next();
 
         %>
+        <h4><%= p.getTitle() %></h4>
         <a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><br/><%
 
             }

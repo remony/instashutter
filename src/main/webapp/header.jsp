@@ -44,7 +44,7 @@ body {
 			%>
 		<li><a href="/instashutter/images/<%=currentSession.getUsername()%>">Your
 				Images</a></li>
-		<li><a href="/instashutter/profile/<%=currentSession.getUsername()%>">Your
+		<li><a href="/instashutter/profile/<%= userName %><%=currentSession.getUsername()%>">Your
 				Profile</a></li>
 			<li>Welcome, <%= userName %> <a href="/instashutter/logout">Logout?</a></li>	
 		<%}

@@ -136,6 +136,7 @@ public class Image extends HttpServlet {
 
             String type = part.getContentType();
             String filename = part.getSubmittedFileName();
+            String title = request.getParameter("title");
             
             InputStream is = request.getPart(part.getName()).getInputStream();
             int i = is.available();
@@ -149,15 +150,18 @@ public class Image extends HttpServlet {
                 byte[] b = new byte[i + 1];
                 is.read(b);
                 System.out.println("Length : " + b.length);
+                System.out.println("Title: " + title);
                 PicModel tm = new PicModel();
                 tm.setCluster(cluster);
+                System.out.println("uploading");
+                //Does not upload title
                 tm.insertPic(b, type, filename, username);
-
+                System.out.println("Uploaded");
                 is.close();
             }
-            RequestDispatcher rd = request.getRequestDispatcher("/Dashboard");
-             rd.forward(request, response);
+             System.out.println("ended");
         }
+		response.sendRedirect("/instashutter/upload");
 	}
 	
 	private void error(String mess, HttpServletResponse response) throws ServletException, IOException {

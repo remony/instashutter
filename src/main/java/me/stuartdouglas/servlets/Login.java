@@ -50,7 +50,7 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String username = request.getParameter("username");
-		String password =request.getParameter("password");
+		String password = request.getParameter("password");
 		if (username != null || password != null) {
 			User user = new User();
 			user.setCluster(cluster);
@@ -65,8 +65,6 @@ public class Login extends HttpServlet {
 				UserSession usrSession = new UserSession();
 				usrSession.setUserSession();
 				usrSession.setUsername(username);
-				String message = "Success";
-				session.setAttribute("message", message); 
 				session.setAttribute("LoggedIn", usrSession);
 				response.sendRedirect("/instashutter/dashboard");
 			} else {

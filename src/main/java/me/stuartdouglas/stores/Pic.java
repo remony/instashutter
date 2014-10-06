@@ -4,7 +4,7 @@ import com.datastax.driver.core.utils.Bytes;
 
 import java.nio.ByteBuffer;
 
-import me.stuartdouglas.models.User;
+//import me.stuartdouglas.models.User;
 
 /**
  *
@@ -17,6 +17,7 @@ public class Pic {
     private String type;
     private java.util.UUID UUID=null;
     private String user;
+    private String title = "";
     
     public Pic() {
 
@@ -57,6 +58,18 @@ public class Pic {
          
         byte image[] = Bytes.getArray(bImage);
         return image;
+    }
+    
+    public void setTitle(String title) {
+    	if (title == null)	{
+    		this.title = "opps";
+    	} else {
+    	this.title = title;
+    	}
+	}
+    
+    public String getTitle() {
+    	return title;
     }
 
 }

@@ -35,19 +35,20 @@ public final class UserSession {
     	return loggedin;
     }
     
-    public String setfname() {
-    	return fname;
-    }
-    
-    public void getfname(String name) {
+    public void setfname(String name) {
     	this.fname = name;
     }
     
-    public String setlname() {
-    	return lname;
+    public String getfname() {
+    	return fname;
     }
     
-    public void getlname(String name) {
+    public void setlname(String name) {
     	this.lname = name;
+    }
+    
+    public String getlname() {
+    	
+    	return lname;
     }
 }

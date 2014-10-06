@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
@@ -100,7 +101,7 @@ public class PicModel {
     public java.util.LinkedList<Pic> getPicsForAll() {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instashutter");
-        PreparedStatement ps = session.prepare("select picid from userpiclist limit 5");
+        PreparedStatement ps = session.prepare("select * from userpiclist limit 5");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute( // this is where the query is executed
@@ -113,11 +114,20 @@ public class PicModel {
             for (Row row : rs) {
                 Pic pic = new Pic();
                 java.util.UUID UUID = row.getUUID("picid");
+                String user = row.getString("user");
+                String title = row.getString("title");
                 System.out.println("UUID" + UUID.toString());
                 pic.setUUID(UUID);
+                //Added these incase of error with dashboard or upload
+                pic.setPostedUsername(user);
+                pic.setTitle(title);
+                //pic.setTitle(title);
                 Pics.add(pic);
-
+                
+                
+                
             }
+            
         }
         return Pics;
     }
@@ -125,6 +135,9 @@ public class PicModel {
     public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
+    
+    
+    
     
     public void insertPic(byte[] b, String type, String name, String user) {
         try {
@@ -157,6 +170,7 @@ public class PicModel {
             session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name));
             session.execute(bsInsertPicToUser.bind(picid, user, DateAdded));
             session.close();
+            output.close();
 
         } catch (IOException ex) {
             System.out.println("Error --> " + ex);

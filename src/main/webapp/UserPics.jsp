@@ -11,14 +11,12 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="/Instagrim/Styles.css" />
     </head>
     <body>
         <jsp:include page="header.jsp" />
  
         <article>
 
-<%= request.getAttribute("currentuser") %>
 
 
 
@@ -38,7 +36,8 @@
                 Pic p = (Pic) iterator.next();
 
         %>
-        <p>Username</p>
+       	<%= p.getTitle() %>
+       	<a href="/instashutter/profile/<%= p.getPostedUsername() %>">@<%= p.getPostedUsername() %></a>
         <a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><br/>
         
         
