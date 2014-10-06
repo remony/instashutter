@@ -15,15 +15,17 @@ package me.stuartdouglas.models;
  */
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Host;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.utils.Bytes;
+import com.datastax.driver.core.Metadata;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,8 +33,11 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.LinkedList;
+
 import javax.imageio.ImageIO;
+
 import static org.imgscalr.Scalr.*;
+
 import org.imgscalr.Scalr.Method;
 
 import me.stuartdouglas.lib.*;
@@ -40,16 +45,87 @@ import me.stuartdouglas.stores.Pic;
 //import uk.ac.dundee.computing.aec.stores.TweetStore;
 
 public class PicModel {
-	Cluster cluster;
+	private Cluster cluster;
+	private Session session;
 
     public void PicModel() {
-
+    	
     }
+    
+    public void connect(String node) {
+    	cluster = Cluster.builder()
+    			.addContactPoint(node).build();
+    	Metadata metadata = cluster.getMetadata();
+    	System.out.printf("Connected to cluster: %s\n" , metadata.getClusterName());
+    	for (Host host : metadata.getAllHosts()) {
+    		System.out.printf("Datacenter: %s; Host %s; Rack: %s\n" , host.getDatacenter() , host.getAddress() , host.getRack());
+    	}
+    }
+    
+    public void close() {
+	   cluster.close();
+	}
+    
+    public static void main(String[] args) {
+    	PicModel client = new PicModel();
+    	client.connect("127.0.0.1");
+    	client.close();
+    }
+    
+    public java.util.LinkedList<Pic> getPicsForUser(String User) {
+        java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
+        Session session = cluster.connect("instashutter");
+        PreparedStatement ps = session.prepare("select picid from userpiclist where user =?");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        User));
+        if (rs.isExhausted()) {
+            System.out.println("No Images returned");
+            return null;
+        } else {
+            for (Row row : rs) {
+                Pic pic = new Pic();
+                java.util.UUID UUID = row.getUUID("picid");
+                System.out.println("UUID" + UUID.toString());
+                pic.setUUID(UUID);
+                Pics.add(pic);
 
+            }
+        }
+        return Pics;
+    }
+    
+    public java.util.LinkedList<Pic> getPicsForAll() {
+        java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
+        Session session = cluster.connect("instashutter");
+        PreparedStatement ps = session.prepare("select picid from userpiclist order by interaction_time limit 5");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        ));
+        if (rs.isExhausted()) {
+            System.out.println("No Images returned");
+            return null;
+        } else {
+            for (Row row : rs) {
+                Pic pic = new Pic();
+                java.util.UUID UUID = row.getUUID("picid");
+                System.out.println("UUID" + UUID.toString());
+                pic.setUUID(UUID);
+                Pics.add(pic);
+
+            }
+        }
+        return Pics;
+    }
+    
     public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
-
+    
     public void insertPic(byte[] b, String type, String name, String user) {
         try {
             Convertors convertor = new Convertors();
@@ -132,84 +208,59 @@ public class PicModel {
         return pad(img, 4);
     }
    
-    public java.util.LinkedList<Pic> getPicsForUser(String User) {
-        java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
-        Session session = cluster.connect("instashutter");
-        PreparedStatement ps = session.prepare("select picid from userpiclist where user =?");
-        ResultSet rs = null;
-        BoundStatement boundStatement = new BoundStatement(ps);
-        rs = session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                        User));
-        if (rs.isExhausted()) {
-            System.out.println("No Images returned");
-            return null;
-        } else {
-            for (Row row : rs) {
-                Pic pic = new Pic();
-                java.util.UUID UUID = row.getUUID("picid");
-                System.out.println("UUID" + UUID.toString());
-                pic.setUUID(UUID);
-                Pics.add(pic);
+   public Pic getPic(int image_type, java.util.UUID picid) {
+       Session session = cluster.connect("instashutter");
+       ByteBuffer bImage = null;
+       String type = null;
+       int length = 0;
+       try {
+           Convertors convertor = new Convertors();
+           ResultSet rs = null;
+           PreparedStatement ps = null;
+        
+           if (image_type == Convertors.DISPLAY_IMAGE) {
+               
+               ps = session.prepare("select image,imagelength,type from pics where picid =?");
+           } else if (image_type == Convertors.DISPLAY_THUMB) {
+               ps = session.prepare("select thumb,imagelength,thumblength,type from pics where picid =?");
+           } else if (image_type == Convertors.DISPLAY_PROCESSED) {
+               ps = session.prepare("select processed,processedlength,type from pics where picid =?");
+           }
+           BoundStatement boundStatement = new BoundStatement(ps);
+           rs = session.execute( // this is where the query is executed
+                   boundStatement.bind( // here you are binding the 'boundStatement'
+                           picid));
 
-            }
-        }
-        return Pics;
-    }
+           if (rs.isExhausted()) {
+               System.out.println("No Images returned");
+               return null;
+           } else {
+               for (Row row : rs) {
+                   if (image_type == Convertors.DISPLAY_IMAGE) {
+                       bImage = row.getBytes("image");
+                       length = row.getInt("imagelength");
+                   } else if (image_type == Convertors.DISPLAY_THUMB) {
+                       bImage = row.getBytes("thumb");
+                       length = row.getInt("thumblength");
+               
+                   } else if (image_type == Convertors.DISPLAY_PROCESSED) {
+                       bImage = row.getBytes("processed");
+                       length = row.getInt("processedlength");
+                   }
+                   
+                   type = row.getString("type");
 
-    public Pic getPic(int image_type, java.util.UUID picid) {
-        Session session = cluster.connect("instashutter");
-        ByteBuffer bImage = null;
-        String type = null;
-        int length = 0;
-        try {
-            Convertors convertor = new Convertors();
-            ResultSet rs = null;
-            PreparedStatement ps = null;
-         
-            if (image_type == Convertors.DISPLAY_IMAGE) {
-                
-                ps = session.prepare("select image,imagelength,type from pics where picid =?");
-            } else if (image_type == Convertors.DISPLAY_THUMB) {
-                ps = session.prepare("select thumb,imagelength,thumblength,type from pics where picid =?");
-            } else if (image_type == Convertors.DISPLAY_PROCESSED) {
-                ps = session.prepare("select processed,processedlength,type from pics where picid =?");
-            }
-            BoundStatement boundStatement = new BoundStatement(ps);
-            rs = session.execute( // this is where the query is executed
-                    boundStatement.bind( // here you are binding the 'boundStatement'
-                            picid));
+               }
+           }
+       } catch (Exception et) {
+           System.out.println("Can't get Pic" + et);
+           return null;
+       }
+       session.close();
+       Pic p = new Pic();
+       p.setPic(bImage, length, type);
 
-            if (rs.isExhausted()) {
-                System.out.println("No Images returned");
-                return null;
-            } else {
-                for (Row row : rs) {
-                    if (image_type == Convertors.DISPLAY_IMAGE) {
-                        bImage = row.getBytes("image");
-                        length = row.getInt("imagelength");
-                    } else if (image_type == Convertors.DISPLAY_THUMB) {
-                        bImage = row.getBytes("thumb");
-                        length = row.getInt("thumblength");
-                
-                    } else if (image_type == Convertors.DISPLAY_PROCESSED) {
-                        bImage = row.getBytes("processed");
-                        length = row.getInt("processedlength");
-                    }
-                    
-                    type = row.getString("type");
+       return p;
 
-                }
-            }
-        } catch (Exception et) {
-            System.out.println("Can't get Pic" + et);
-            return null;
-        }
-        session.close();
-        Pic p = new Pic();
-        p.setPic(bImage, length, type);
-
-        return p;
-
-    }
+   }
 }

@@ -141,7 +141,7 @@ public class Image extends HttpServlet {
             int i = is.available();
             HttpSession session=request.getSession();
             UserSession lg= (UserSession)session.getAttribute("LoggedIn");
-            String username="majed";
+            String username="null";
             if (lg.getUserSession()){
                 username=lg.getUsername();
             }
@@ -155,7 +155,7 @@ public class Image extends HttpServlet {
 
                 is.close();
             }
-            RequestDispatcher rd = request.getRequestDispatcher("/dashboard");
+            RequestDispatcher rd = request.getRequestDispatcher("/Dashboard");
              rd.forward(request, response);
         }
 	}

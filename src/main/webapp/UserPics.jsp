@@ -25,14 +25,14 @@
 if (currentSession != null) {
 		String userName = currentSession.getUsername();
 		if (currentSession.getUserSession()) {
-			%> <h1><%=currentSession.getUsername()%> 's Posts</h1>
+			%>
 		
 			
 		<%}
 	} else {
 			%>
 
-		oh<%
+		<%
 		}
 			%>
 
@@ -54,6 +54,7 @@ if (currentSession != null) {
                 Pic p = (Pic) iterator.next();
 
         %>
+        <p>Username</p>
         <a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><br/><%
 
             }
