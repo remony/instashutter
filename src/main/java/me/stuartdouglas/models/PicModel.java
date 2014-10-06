@@ -92,7 +92,6 @@ public class PicModel {
                 System.out.println("UUID" + UUID.toString());
                 pic.setUUID(UUID);
                 Pics.add(pic);
-
             }
         }
         return Pics;
@@ -115,12 +114,12 @@ public class PicModel {
                 Pic pic = new Pic();
                 java.util.UUID UUID = row.getUUID("picid");
                 String user = row.getString("user");
-                String title = row.getString("title");
+                //String title = row.getString("title");
                 System.out.println("UUID" + UUID.toString());
                 pic.setUUID(UUID);
                 //Added these incase of error with dashboard or upload
                 pic.setPostedUsername(user);
-                pic.setTitle(title);
+                //pic.setTitle(title);
                 //pic.setTitle(title);
                 Pics.add(pic);
                 

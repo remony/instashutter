@@ -9,6 +9,36 @@
 <title>Insert title here</title>
 </head>
 <body>	
+<header>
+	<h1>InstaShutter</h1>
+	</header>
+	<nav>
+	<ul>
+		<li><a href="/instashutter/">Home</a></li>
+		<li><a href="/instashutter/upload">Upload</a></li>
+		<%
+	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
+	if (currentSession != null) {
+		String userName = currentSession.getUsername();
+		if (currentSession.getUserSession()) {
+			%>
+		<li><a href="/instashutter/Images/<%=currentSession.getUsername()%>">Your
+				Images</a></li>
+		<li><a href="/instashutter/profile/<%= userName %><%=currentSession.getUsername()%>">Your
+				Profile</a></li>
+			<li>Welcome, <%= userName %> <a href="/instashutter/logout">Logout?</a></li>	
+		<%}
+	} else {
+			%>
+
+		<li><a href="/instashutter/register">Register</a></li>
+		<li><a href="/instashutter/login">Login</a></li>
+		<%
+		}
+			%>
+	</ul>
+	</nav>
+
 	<%
             LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
             if (lsPics == null) {
