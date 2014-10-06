@@ -100,7 +100,7 @@ public class PicModel {
     public java.util.LinkedList<Pic> getPicsForAll() {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instashutter");
-        PreparedStatement ps = session.prepare("select picid from userpiclist order by interaction_time limit 5");
+        PreparedStatement ps = session.prepare("select picid from userpiclist limit 5");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute( // this is where the query is executed
