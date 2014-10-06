@@ -8,7 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<jsp:include page="header.jsp" /> 
 	<%
 	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
 	if (currentSession != null) {

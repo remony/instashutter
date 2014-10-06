@@ -59,12 +59,16 @@ public class Login extends HttpServlet {
             
             session.setAttribute("LoggedIn", lg);
             System.out.println("Session in servlet "+session);
-            RequestDispatcher rd=request.getRequestDispatcher("dashboard.jsp");
-            rd.forward(request,response);
+            
+            response.sendRedirect("Dashboard");
+            
+            
             
         }else{
         	RequestDispatcher rd=request.getRequestDispatcher("/Dashboard");
-    	    rd.forward(request,response);
+        	response.sendRedirect("instashutter/Dashboard");
+        	rd.forward(request,response);
+    	    
         }
         
     }

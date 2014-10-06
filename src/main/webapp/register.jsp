@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<jsp:include page="header.jsp" /> 
 <form method="POST"  action="Register">
     <ul>
         <li>User Name <input type="text" name="username"></li>

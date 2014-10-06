@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-
+<jsp:include page="header.jsp" /> 
 <form method="POST" enctype="multipart/form-data" action="Image">
 	<input type="file" name="upfile"><br/>
 	<input type="submit" value="Press">

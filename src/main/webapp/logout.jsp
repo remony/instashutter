@@ -9,6 +9,6 @@
 <body>
 	<jsp:include page="header.jsp" />
 	<h1>You have logged out.</h1>
-	<a href="/Login">Come back!</a>
+	<a href="Login">Come back!</a>
 </body>
 </html>

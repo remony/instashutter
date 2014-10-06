@@ -57,7 +57,7 @@ public class Register extends HttpServlet {
 		user.setCluster(cluster);
 		user.RegisterUser(username, password);
 		
-		response.sendRedirect("/dashboard");
+		response.sendRedirect("Login");
 	}
 
 }
