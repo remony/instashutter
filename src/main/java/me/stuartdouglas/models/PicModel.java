@@ -263,4 +263,59 @@ public class PicModel {
        return p;
 
    }
+   public Pic delPic(int image_type, java.util.UUID picid) {
+       Session session = cluster.connect("instashutter");
+       ByteBuffer bImage = null;
+       String type = null;
+       int length = 0;
+       try {
+           Convertors convertor = new Convertors();
+           ResultSet rs = null;
+           PreparedStatement ps = null;
+        
+           if (image_type == Convertors.DISPLAY_IMAGE) {
+               
+               ps = session.prepare("DELETE image,imagelength,type from pics where picid =?");
+           } else if (image_type == Convertors.DISPLAY_THUMB) {
+               ps = session.prepare("DELETE thumb,imagelength,thumblength,type from pics where picid =?");
+           } else if (image_type == Convertors.DISPLAY_PROCESSED) {
+               ps = session.prepare("DELETE processed,processedlength,type from pics where picid =?");
+           }
+           BoundStatement boundStatement = new BoundStatement(ps);
+           rs = session.execute( // this is where the query is executed
+                   boundStatement.bind( // here you are binding the 'boundStatement'
+                           picid));
+
+           if (rs.isExhausted()) {
+               System.out.println("No Images returned");
+               return null;
+           } else {
+               for (Row row : rs) {
+                   if (image_type == Convertors.DISPLAY_IMAGE) {
+                       bImage = row.getBytes("image");
+                       length = row.getInt("imagelength");
+                   } else if (image_type == Convertors.DISPLAY_THUMB) {
+                       bImage = row.getBytes("thumb");
+                       length = row.getInt("thumblength");
+               
+                   } else if (image_type == Convertors.DISPLAY_PROCESSED) {
+                       bImage = row.getBytes("processed");
+                       length = row.getInt("processedlength");
+                   }
+                   
+                   type = row.getString("type");
+
+               }
+           }
+       } catch (Exception et) {
+           System.out.println("Can't get Pic" + et);
+           return null;
+       }
+       session.close();
+       Pic p = new Pic();
+       p.setPic(bImage, length, type);
+
+       return p;
+
+   }
 }

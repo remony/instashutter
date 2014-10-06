@@ -10,6 +10,8 @@
 <jsp:include page="header.jsp" /> 
 <form method="POST"  action="Register">
     <ul>
+		<li>First Name <input type="text" name="fname"></li>
+		<li>Last Name <input type="text" name="lname"></li>
         <li>User Name <input type="text" name="username"></li>
         <li>Password <input type="password" name="password"></li>
     </ul>

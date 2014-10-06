@@ -169,5 +169,13 @@ public class Image extends HttpServlet {
         out.close();
         return;
     }
+	
+	/**
+	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
+	 */
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		System.out.println("Attempted Delete");
+	}
 
 }

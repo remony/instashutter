@@ -20,7 +20,7 @@ import me.stuartdouglas.stores.UserSession;
  */
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	Cluster cluster=null;
+	Cluster cluster = null;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -34,8 +34,14 @@ public class Login extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		UserSession usrSession = new UserSession();
+		String message = null;
+		if (! usrSession.getUserSession()){
 		RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
 	    rd.forward(request,response);
+		} else {
+			response.sendRedirect("/instashutter/dashboard");
+		}
 	}
 
 	/**
@@ -43,34 +49,36 @@ public class Login extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String username=request.getParameter("username");
-        String password=request.getParameter("password");
-        
-        User us=new User();
-        us.setCluster(cluster);
-        boolean isValid=us.IsValidUser(username, password);
-        HttpSession session=request.getSession();
-        System.out.println("Session in servlet "+session);
-        if (isValid){
-            UserSession lg= new UserSession();
-            lg.setUserSessionOnline();
-            lg.setUsername(username);
-            //request.setAttribute("LoggedIn", lg);
-            
-            session.setAttribute("LoggedIn", lg);
-            System.out.println("Session in servlet "+session);
-            
-            response.sendRedirect("Dashboard");
-            
-            
-            
-        }else{
-        	RequestDispatcher rd=request.getRequestDispatcher("/Dashboard");
-        	response.sendRedirect("instashutter/Dashboard");
-        	rd.forward(request,response);
-    	    
-        }
-        
+		String username = request.getParameter("username");
+		String password =request.getParameter("password");
+		if (username != null || password != null) {
+			User user = new User();
+			user.setCluster(cluster);
+			//Calls to User.java to confirm if the user details are correct
+			boolean isValid= user.IsValidUser(username, password);
+	
+			HttpSession session = request.getSession();
+	
+			System.out.println("Session in servlet " + session);
+			if (isValid){
+				//Login was successful
+				UserSession usrSession = new UserSession();
+				usrSession.setUserSession();
+				usrSession.setUsername(username);
+				String message = "Success";
+				session.setAttribute("message", message); 
+				session.setAttribute("LoggedIn", usrSession);
+				response.sendRedirect("/instashutter/dashboard");
+			} else {
+				//Login was not successful
+				String message = "Incorrect Username or Password.";
+				session.setAttribute("message", message); 
+				response.sendRedirect("/instashutter/login");
+			}
+		} else {
+			response.sendRedirect("/instashutter/login");
+		}
+
     }
 
     /**
@@ -82,6 +90,6 @@ public class Login extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-	
+
 
 }

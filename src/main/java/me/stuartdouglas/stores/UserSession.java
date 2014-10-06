@@ -11,6 +11,8 @@ package me.stuartdouglas.stores;
 public final class UserSession {
 	boolean loggedin = false;
     String Username = null;
+    String fname = null;
+    String lname = null;
     
     public UserSession() {
     	
@@ -24,15 +26,28 @@ public final class UserSession {
     	return Username;
     }
     
-    public void setUserSessionOnline() {
+    public void setUserSession() {
     	loggedin = true;
     }
-    
-    public void setUserSessionOffline() {
-    	loggedin = false;
-    }
+
     
     public boolean getUserSession() {
     	return loggedin;
+    }
+    
+    public String setfname() {
+    	return fname;
+    }
+    
+    public void getfname(String name) {
+    	this.fname = name;
+    }
+    
+    public String setlname() {
+    	return lname;
+    }
+    
+    public void getlname(String name) {
+    	this.lname = name;
     }
 }

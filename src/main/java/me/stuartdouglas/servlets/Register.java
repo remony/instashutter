@@ -50,12 +50,14 @@ public class Register extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String fname = request.getParameter("fname");
+		String lname = request.getParameter("lname");
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		
 		User user = new User();
 		user.setCluster(cluster);
-		user.RegisterUser(username, password);
+		user.RegisterUser(fname, lname, username, password);
 		
 		response.sendRedirect("Login");
 	}

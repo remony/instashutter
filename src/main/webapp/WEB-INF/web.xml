@@ -91,4 +91,27 @@
     <url-pattern>/Logout</url-pattern>
     <url-pattern>/logout</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Profile</display-name>
+    <servlet-name>Profile</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.Profile</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Profile</servlet-name>
+    <url-pattern>/Profile</url-pattern>
+    <url-pattern>/profile</url-pattern>
+    <url-pattern>/Profile/*</url-pattern>
+    <url-pattern>/profile/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Example</display-name>
+    <servlet-name>Example</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.Example</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Example</servlet-name>
+    <url-pattern>/Example</url-pattern>
+  </servlet-mapping>
 </web-app>

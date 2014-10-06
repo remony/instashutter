@@ -20,7 +20,7 @@
 	if (currentSession != null) {
 		String userName = currentSession.getUsername();
 		if (currentSession.getUserSession()) {
-			%> <jsp:forward page="/Dashboard" /> <%}
+			%> <jsp:forward page="/dashboard" /> <%}
 	} else {
 			%>
 

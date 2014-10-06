@@ -8,7 +8,10 @@
 </head>
 <body>
 	<jsp:include page="header.jsp" />
-	<h1>You have logged out.</h1>
-	<a href="Login">Come back!</a>
+	<div class="alert alert-info" role="alert">
+	  <h3>You have logged out.</h3>
+	</div>
+	
+	<a href="login">Come back!</a>
 </body>
 </html>

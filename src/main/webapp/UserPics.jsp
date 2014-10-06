@@ -19,22 +19,7 @@
  
         <article>
 
-<%
-	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
-	
-if (currentSession != null) {
-		String userName = currentSession.getUsername();
-		if (currentSession.getUserSession()) {
-			%>
-		
-			
-		<%}
-	} else {
-			%>
-
-		<%
-		}
-			%>
+<%= request.getAttribute("currentuser") %>
 
 
 
@@ -55,7 +40,17 @@ if (currentSession != null) {
 
         %>
         <p>Username</p>
-        <a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><br/><%
+        <a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><br/>
+        
+        
+		<form name="input" action="/instashutter/Images/" method="get">
+		
+		<input type="text" name="user" value="<%=p.getSUUID()%>">
+		<input type="submit" value="Submit">
+		</form>
+		
+		
+<%
 
             }
             }

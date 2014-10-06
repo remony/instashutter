@@ -35,7 +35,7 @@ public class Dashboard extends HttpServlet {
     public Dashboard() {
         super();        
         CommandsMap.put("Image", 1);
-        CommandsMap.put("Dashboard", 2);
+        CommandsMap.put("dashboard", 2);
         CommandsMap.put("Thumb", 3);
         // TODO Auto-generated constructor stub
     }

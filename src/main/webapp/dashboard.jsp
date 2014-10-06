@@ -8,10 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 </head>
-<body>
-<jsp:include page="header.jsp" /> 
-	<h1>This is the dashboard!</h1>
-	
+<body>	
 	<%
             LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
             if (lsPics == null) {
