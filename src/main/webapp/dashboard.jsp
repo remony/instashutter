@@ -8,36 +8,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 </head>
+<style>
+        	post table {
+        		width:500px;
+        		margin:0 auto;
+        	}
+        	post table img {
+        		width:100%;
+        	}
+        	td {
+        		padding-bottom:30px;
+        	}
+        </style>
 <body>	
-<header>
-	<h1>InstaShutter</h1>
-	</header>
-	<nav>
-	<ul>
-		<li><a href="/instashutter/">Home</a></li>
-		<li><a href="/instashutter/upload">Upload</a></li>
-		<%
-	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
-	if (currentSession != null) {
-		String userName = currentSession.getUsername();
-		if (currentSession.getUserSession()) {
-			%>
-		<li><a href="/instashutter/Images/<%=currentSession.getUsername()%>">Your
-				Images</a></li>
-		<li><a href="/instashutter/profile/<%= userName %><%=currentSession.getUsername()%>">Your
-				Profile</a></li>
-			<li>Welcome, <%= userName %> <a href="/instashutter/logout">Logout?</a></li>	
-		<%}
-	} else {
-			%>
-
-		<li><a href="/instashutter/register">Register</a></li>
-		<li><a href="/instashutter/login">Login</a></li>
-		<%
-		}
-			%>
-	</ul>
-	</nav>
+<jsp:include page="header.jsp" />
 
 	<%
             LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
@@ -52,8 +36,17 @@
                 Pic p = (Pic) iterator.next();
 
         %>
-        <h4><%= p.getTitle() %></h4>
-        <a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><br/><%
+        
+        
+        <post> 
+        <table>
+        <tr>
+        	<td><a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><td><%= p.getPostedUsername() %></td></td>
+        <tr>
+        <tr><td><%= p.getTitle() %></td></tr>
+        </table>
+        </post>
+        <%
 
             }
             }

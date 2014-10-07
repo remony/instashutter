@@ -114,12 +114,12 @@ public class PicModel {
                 Pic pic = new Pic();
                 java.util.UUID UUID = row.getUUID("picid");
                 String user = row.getString("user");
-                //String title = row.getString("title");
+                String title = row.getString("title");
                 System.out.println("UUID" + UUID.toString());
                 pic.setUUID(UUID);
                 //Added these incase of error with dashboard or upload
                 pic.setPostedUsername(user);
-                //pic.setTitle(title);
+                pic.setTitle(title);
                 //pic.setTitle(title);
                 Pics.add(pic);
                 
@@ -138,7 +138,7 @@ public class PicModel {
     
     
     
-    public void insertPic(byte[] b, String type, String name, String user) {
+    public void insertPic(byte[] b, String type, String name, String user, String title) {
         try {
             Convertors convertor = new Convertors();
 
@@ -146,6 +146,7 @@ public class PicModel {
             ByteBuffer buffer = ByteBuffer.wrap(b);
             int length = b.length;
             java.util.UUID picid = convertor.getTimeUUID();
+            String message = title;
             
             //The following is a quick and dirty way of doing this, will fill the disk quickly !
             Boolean success = (new File("/var/tmp/instashutter/")).mkdirs();
@@ -160,14 +161,14 @@ public class PicModel {
             int processedlength=processedb.length;
             Session session = cluster.connect("instashutter");
 
-            PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name) values(?,?,?,?,?,?,?,?,?,?,?)");
-            PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added) values(?,?,?)");
+            PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name, title) values(?,?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added, title) values(?,?,?,?)");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
             BoundStatement bsInsertPicToUser = new BoundStatement(psInsertPicToUser);
 
             Date DateAdded = new Date();
-            session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name));
-            session.execute(bsInsertPicToUser.bind(picid, user, DateAdded));
+            session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, title));
+            session.execute(bsInsertPicToUser.bind(picid, user, DateAdded, title));
             session.close();
             output.close();
 

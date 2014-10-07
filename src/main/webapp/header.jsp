@@ -1,11 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+
 <%@page import="me.stuartdouglas.stores.*"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Instashutter</title>
+
 <link rel="stylesheet" type="text/css" href="/instashutter/assets/css/styles.css">
 
 <!-- Latest compiled and minified CSS -->
@@ -28,7 +23,7 @@ body {
 </style>
 
 
-<body>
+
 	<header>
 	<h1>InstaShutter</h1>
 	</header>
@@ -44,7 +39,7 @@ body {
 			%>
 		<li><a href="/instashutter/images/<%=currentSession.getUsername()%>">Your
 				Images</a></li>
-		<li><a href="/instashutter/profile/<%= userName %><%=currentSession.getUsername()%>">Your
+		<li><a href="/instashutter/profile/<%=currentSession.getUsername()%>">Your
 				Profile</a></li>
 			<li>Welcome, <%= userName %> <a href="/instashutter/logout">Logout?</a></li>	
 		<%}
@@ -58,5 +53,3 @@ body {
 			%>
 	</ul>
 	</nav>
-</body>
-</html>

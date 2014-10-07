@@ -155,7 +155,7 @@ public class Image extends HttpServlet {
                 tm.setCluster(cluster);
                 System.out.println("uploading");
                 //Does not upload title
-                tm.insertPic(b, type, filename, username);
+                tm.insertPic(b, type, filename, username, title);
                 System.out.println("Uploaded");
                 is.close();
             }
