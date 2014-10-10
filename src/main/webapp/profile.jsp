@@ -18,6 +18,8 @@
 		String userName = currentSession.getUsername();
 		if (currentSession.getUserSession()) {%>
 			<h3><%= userName %></h3>
+			First name <%= currentSession.getfname() %>
+			Last name <%= currentSession.getlname() %>
 			
 			
 			

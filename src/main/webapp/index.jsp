@@ -15,7 +15,9 @@
 
 <body>
 
-	<wrapper> <jsp:include page="header.jsp" /> <%
+	<wrapper> <jsp:include page="header.jsp" />
+
+	<%
 	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
 	if (currentSession != null) {
 		String userName = currentSession.getUsername();
@@ -27,7 +29,8 @@
 	<h3>Welcome to InstaShutter, where you can share images</h3>
 	<%
 		}
-			%> </wrapper>
+			%>
+ </wrapper>
 </body>
 </html>
 

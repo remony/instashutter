@@ -8,18 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
 </head>
-<style>
-        	post table {
-        		width:500px;
-        		margin:0 auto;
-        	}
-        	post table img {
-        		width:100%;
-        	}
-        	td {
-        		padding-bottom:30px;
-        	}
-        </style>
+
 <body>	
 <jsp:include page="header.jsp" />
 
@@ -38,14 +27,30 @@
         %>
         
         
-        <post> 
-        <table>
-        <tr>
-        	<td><a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><td><%= p.getPostedUsername() %></td></td>
-        <tr>
-        <tr><td><%= p.getTitle() %></td></tr>
-        </table>
-        </post>
+        <div class = "post">
+	        <table>
+		        <tr>
+		        	<td>
+			        	<div class="post_image">
+			        		<a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
+			        	</div>
+		        	</td>
+		        </tr>
+		        <tr>
+	        		<td>
+		        		<div class="post_header">
+		        			@<%= p.getPostedUsername() %>
+		        		</div>
+	        		</td>
+	        	</tr>
+		        <tr>
+		        	<td>	
+		        		<div class="post_desc"><%= p.getTitle() %></div>
+		        		<%= p.getTimeAdded() %>
+	        		</td>
+	       		</tr>
+	        </table>
+        </div> 
         <%
 
             }

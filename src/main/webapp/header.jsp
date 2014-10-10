@@ -1,32 +1,31 @@
 
 <%@page import="me.stuartdouglas.stores.*"%>
-
-<link rel="stylesheet" type="text/css" href="/instashutter/assets/css/styles.css">
+ 
 
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 </head>
 
 
-<style>
-body {
-	width:600px;
-	margin:0 auto;
-	text-align:center;
-}
-</style>
+<style>  
+     <%@ include file="assets/css/styles.css"%>  
+</style>  
 
 
 
 	<header>
-	<h1>InstaShutter</h1>
-	</header>
+		<div class="site_title">
+			<h1>InstaShutter</h1>
+		</div>
+	
+	
 	<nav>
 	<ul>
 		<li><a href="/instashutter/">Home</a></li>
@@ -53,3 +52,4 @@ body {
 			%>
 	</ul>
 	</nav>
+	</header>

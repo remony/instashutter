@@ -36,46 +36,69 @@ public class Login extends HttpServlet {
 		// TODO Auto-generated method stub
 		UserSession usrSession = new UserSession();
 		String message = null;
+		/*
 		if (! usrSession.getUserSession()){
 		RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
 	    rd.forward(request,response);
 		} else {
 			response.sendRedirect("/instashutter/dashboard");
 		}
+		*/
+		
+		HttpSession session = request.getSession();
+		
+		Object isLogged  = session.getAttribute("login.isDone");
+		
+		if (isLogged == null) {
+			session.setAttribute("Login.target", usrSession.getUsername());
+			RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
+		    rd.forward(request,response);
+		} else {
+			response.sendRedirect("/instashutter/dashboard");
+			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+			//response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/dashboard"));
+		}
+		
+		
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		if (username != null || password != null) {
+		HttpSession session = request.getSession();
+		UserSession userSession = new UserSession();
+
+		try {
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			
+			
 			User user = new User();
 			user.setCluster(cluster);
-			//Calls to User.java to confirm if the user details are correct
-			boolean isValid= user.IsValidUser(username, password);
-	
-			HttpSession session = request.getSession();
-	
-			System.out.println("Session in servlet " + session);
-			if (isValid){
-				//Login was successful
-				UserSession usrSession = new UserSession();
-				usrSession.setUserSession();
-				usrSession.setUsername(username);
-				session.setAttribute("LoggedIn", usrSession);
-				response.sendRedirect("/instashutter/dashboard");
+			
+			boolean isValidUser = user.IsValidUser(username, password);
+			
+			System.out.println("Session established: " + session);
+			
+			if (isValidUser){
+				System.out.println("Valid user has connected");
+				 session = request.getSession(true);
+				 
+				 userSession.setUserSession();
+				 userSession.setUsername(username);
+				 session.setAttribute("LoggedIn", userSession);
+				 response.sendRedirect("/instashutter/");
 			} else {
-				//Login was not successful
-				String message = "Incorrect Username or Password.";
-				session.setAttribute("message", message); 
+				System.out.println("Invalid user attempted to connected");
 				response.sendRedirect("/instashutter/login");
 			}
-		} else {
+			
+		} catch (Throwable e) {
+			System.out.println("ERROR: " + e);
 			response.sendRedirect("/instashutter/login");
 		}
+		
 
     }
 

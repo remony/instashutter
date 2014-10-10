@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.security.Timestamp;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -100,12 +101,13 @@ public class PicModel {
     public java.util.LinkedList<Pic> getPicsForAll() {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instashutter");
-        PreparedStatement ps = session.prepare("select * from userpiclist limit 5");
+        java.util.Date currentDate= new java.util.Date();
+        PreparedStatement ps = session.prepare("select * from userpiclist");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute( // this is where the query is executed
                 boundStatement.bind( // here you are binding the 'boundStatement'
-                        ));
+                		));
         if (rs.isExhausted()) {
             System.out.println("No Images returned");
             return null;
@@ -115,16 +117,16 @@ public class PicModel {
                 java.util.UUID UUID = row.getUUID("picid");
                 String user = row.getString("user");
                 String title = row.getString("title");
+                java.util.Date date= new java.util.Date();
+                date = row.getDate("pic_added");
                 System.out.println("UUID" + UUID.toString());
+                System.out.println("User: " + user);
                 pic.setUUID(UUID);
                 //Added these incase of error with dashboard or upload
                 pic.setPostedUsername(user);
                 pic.setTitle(title);
-                //pic.setTitle(title);
+                pic.setTimeAdded(date);
                 Pics.add(pic);
-                
-                
-                
             }
             
         }
@@ -213,7 +215,7 @@ public class PicModel {
     public static BufferedImage createThumbnail(BufferedImage img) {
         img = resize(img, Method.SPEED, 250, OP_ANTIALIAS);//, OP_GRAYSCALE);
         // Let's add a little border before we return result.
-        return pad(img, 2);
+        return pad(img, 1);
     }
     
    public static BufferedImage createProcessed(BufferedImage img) {
@@ -233,7 +235,6 @@ public class PicModel {
            PreparedStatement ps = null;
         
            if (image_type == Convertors.DISPLAY_IMAGE) {
-               
                ps = session.prepare("select image,imagelength,type from pics where picid =?");
            } else if (image_type == Convertors.DISPLAY_THUMB) {
                ps = session.prepare("select thumb,imagelength,thumblength,type from pics where picid =?");

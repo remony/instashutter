@@ -3,6 +3,7 @@ package me.stuartdouglas.stores;
 import com.datastax.driver.core.utils.Bytes;
 
 import java.nio.ByteBuffer;
+import java.util.Date;
 
 //import me.stuartdouglas.models.User;
 
@@ -18,6 +19,7 @@ public class Pic {
     private java.util.UUID UUID=null;
     private String user;
     private String title = "";
+    java.util.Date timeAdded = new java.util.Date();
     
     public Pic() {
 
@@ -70,6 +72,15 @@ public class Pic {
     
     public String getTitle() {
     	return title;
+    }
+    
+    
+    public Date getTimeAdded() {
+    	return timeAdded;
+    }
+    
+    public void setTimeAdded(Date time) {
+    	this.timeAdded = time;
     }
 
 }

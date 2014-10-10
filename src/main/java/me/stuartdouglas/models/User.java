@@ -10,7 +10,12 @@ import com.datastax.driver.core.Session;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
+
+
+import java.util.LinkedList;
+
 import me.stuartdouglas.lib.AeSimpleSHA1;
+import me.stuartdouglas.stores.Pic;
 import me.stuartdouglas.stores.UserSession;
 
 /**
@@ -43,6 +48,9 @@ public class User {
         
         return true;
     }
+
+    
+    
     
     public boolean IsValidUser(String username, String Password){
         String EncodedPassword=null;

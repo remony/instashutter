@@ -18,7 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
+import me.stuartdouglas.models.User;
 import me.stuartdouglas.stores.Pic;
+import me.stuartdouglas.stores.UserSession;
 
 import com.datastax.driver.core.Cluster;
 
@@ -73,11 +75,14 @@ public class Profile extends HttpServlet {
         }
 	}
 	
-	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void DisplayImageList(String Username, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
+        User getUser = new User();
         tm.setCluster(cluster);
-        java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(User);
+        //java.util.LinkedList<UserSession> lsProfile = getUser.getUserInfo(Username);
+        java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(Username);
         RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
+        //request.setAttribute("ProfileInfo", lsProfile);
         request.setAttribute("Pics", lsPics);
         rd.forward(request, response);
 
