@@ -26,8 +26,8 @@ public final class UserSession {
     	return Username;
     }
     
-    public void setUserSession() {
-    	loggedin = true;
+    public void setUserSession(Boolean flag) {
+    	loggedin = flag;
     }
 
     

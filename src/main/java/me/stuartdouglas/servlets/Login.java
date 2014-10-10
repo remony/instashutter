@@ -85,7 +85,7 @@ public class Login extends HttpServlet {
 				System.out.println("Valid user has connected");
 				 session = request.getSession(true);
 				 
-				 userSession.setUserSession();
+				 userSession.setUserSession(true);
 				 userSession.setUsername(username);
 				 session.setAttribute("LoggedIn", userSession);
 				 response.sendRedirect("/instashutter/");

@@ -27,6 +27,13 @@
 			%>
 
 	<h3>Welcome to InstaShutter, where you can share images</h3>
+	<form method="POST" action="login">
+		<ul>
+			<li>User Name <input type="text" name="username"></li>
+			<li>Password <input type="password" name="password"></li>
+		</ul>
+		<br /> <input type="submit" value="Login">
+	</form>
 	<%
 		}
 			%>
