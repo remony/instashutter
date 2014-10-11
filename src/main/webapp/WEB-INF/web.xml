@@ -114,4 +114,15 @@
     <servlet-name>Example</servlet-name>
     <url-pattern>/Example</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Account</display-name>
+    <servlet-name>Account</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.Account</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Account</servlet-name>
+    <url-pattern>/account</url-pattern>
+    <url-pattern>/Account</url-pattern>
+  </servlet-mapping>
 </web-app>

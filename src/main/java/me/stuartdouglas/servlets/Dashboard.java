@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -21,6 +22,7 @@ import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
 import me.stuartdouglas.stores.Pic;
+import me.stuartdouglas.stores.PostStore;
 
 /**
  * Servlet implementation class Dashboard
@@ -76,7 +78,7 @@ public class Dashboard extends HttpServlet {
 	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
-        java.util.LinkedList<Pic> lsPics = tm.getPicsForAll();
+        LinkedList<PostStore> lsPics = tm.getPosts();
         RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
         request.setAttribute("Pics", lsPics);
         rd.forward(request, response);

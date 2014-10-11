@@ -45,6 +45,7 @@ import org.imgscalr.Scalr.Method;
 
 import me.stuartdouglas.lib.*;
 import me.stuartdouglas.stores.Pic;
+import me.stuartdouglas.stores.PostStore;
 //import uk.ac.dundee.computing.aec.stores.TweetStore;
 
 public class PicModel {
@@ -75,6 +76,32 @@ public class PicModel {
     	client.close();
     }
     
+    
+    public LinkedList<PostStore> getPosts() {
+    	LinkedList<PostStore> instaList = new LinkedList<PostStore>();
+    	Session session = cluster.connect("instashutter");
+    	
+    	PreparedStatement statement = session.prepare("SELECT * from userpiclist");
+    	
+    	BoundStatement boundStatement = new BoundStatement(statement);
+    	
+    	ResultSet rs = session.execute(boundStatement);
+    	if (rs.isExhausted()){
+    		System.out.println("No posts returned");
+    	} else {
+    		for (Row row : rs) {
+    			PostStore ps = new PostStore();
+    			ps.setUUID(row.getUUID("picid"));
+    			ps.setTitle(row.getString("user"));
+    			ps.setPostedUsername(row.getString("title"));
+    			
+    			instaList.add(ps);
+    		}
+    	}
+    	session.close();
+		return instaList;
+    }
+    
     public java.util.LinkedList<Pic> getPicsForUser(String User) {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instashutter");
@@ -99,40 +126,7 @@ public class PicModel {
         return Pics;
     }
     
-    public java.util.LinkedList<Pic> getPicsForAll() {
-        java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
-        Session session = cluster.connect("instashutter");
-        java.util.Date currentDate= new java.util.Date();
-        PreparedStatement ps = session.prepare("select * from userpiclist");
-        ResultSet rs = null;
-        BoundStatement boundStatement = new BoundStatement(ps);
-        rs = session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                		));
-        if (rs.isExhausted()) {
-            System.out.println("No Images returned");
-            return null;
-        } else {
-            for (Row row : rs) {
-                Pic pic = new Pic();
-                java.util.UUID UUID = row.getUUID("picid");
-                String user = row.getString("user");
-                String title = row.getString("title");
-                java.util.Date date= new java.util.Date();
-                date = row.getDate("pic_added");
-                System.out.println("UUID" + UUID.toString());
-                System.out.println("User: " + user);
-                pic.setUUID(UUID);
-                //Added these incase of error with dashboard or upload
-                pic.setPostedUsername(user);
-                pic.setTitle(title);
-                pic.setTimeAdded(date);
-                Pics.add(pic);
-            }
-            
-        }
-        return Pics;
-    }
+    
     
     public void setCluster(Cluster cluster) {
         this.cluster = cluster;
