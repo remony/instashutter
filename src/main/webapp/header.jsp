@@ -29,20 +29,19 @@
 	<nav>
 	<ul>
 		<li><a href="/instashutter/">Home</a></li>
-		<li><a href="/instashutter/upload">Upload</a></li>
+		<li><a href="/instashutter/upload">New post</a></li>
 		<%
 	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
 	if (currentSession != null) {
 		String userName = currentSession.getUsername();
 		if (currentSession.getUserSession()) {
 			%>
-		<li><a href="/instashutter/Images/<%=currentSession.getUsername()%>">Your
-				Images</a></li>
-		<li><a href="/instashutter/account/<%=currentSession.getUsername()%>">Your
-				Account</a></li>
+		
 		<li><a href="/instashutter/profile/<%=currentSession.getUsername()%>">Your
 				Profile</a></li>
-			<li>Welcome, <%= userName %> <a href="/instashutter/logout">Logout?</a></li>	
+		<li><a href="/instashutter/account/<%=currentSession.getUsername()%>">Your
+				Account</a></li>
+		<li>Welcome, <%= userName %> <a href="/instashutter/logout">Logout?</a></li>	
 		<%}
 	} else {
 			%>
