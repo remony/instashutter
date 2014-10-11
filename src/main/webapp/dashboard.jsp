@@ -39,7 +39,7 @@
 		        <tr>
 	        		<td>
 		        		<div class="post_header">
-		        			@<%= p.getPostedUsername() %>
+		        			<a href="/instashutter/profile/<%= p.getPostedUsername() %>">@<%= p.getPostedUsername() %></a>
 		        		</div>
 	        		</td>
 	        	</tr>

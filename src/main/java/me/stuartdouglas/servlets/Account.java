@@ -58,10 +58,10 @@ public class Account extends HttpServlet {
         }
         switch (command) {
             case 1:
-            	displayAccountDetails(args[2], request, response);
+            	displayAccountDetails(request, response);
                 break;
             case 2:
-                //DisplayImageList(args[1], request, response);
+                editAccountDetails(args[1], request, response);
                 break;
             case 3:
                 //DisplayImage(Convertors.DISPLAY_THUMB,args[1],  response);
@@ -73,15 +73,39 @@ public class Account extends HttpServlet {
 	}
 	
 	
-	private void displayAccountDetails(String user, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void editAccountDetails(String string, HttpServletRequest request,
+			HttpServletResponse response) {
 		String args[] = Convertors.SplitRequestPath(request);
 		User tm = new User();
-        tm.setCluster(cluster);        
-        LinkedList<UserSession> lsUser = tm.getUserInfo(user);
-System.out.println("done");
+        tm.setCluster(cluster); 
+        String Username = request.getSession().getAttribute("user").toString();
+
+        LinkedList<UserSession> lsUser = tm.getUserInfo(Username);
+        RequestDispatcher rd = request.getRequestDispatcher("/account.jsp");
+        request.setAttribute("UserInfo", lsUser);
+        try {
+			rd.forward(request, response);
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	private void displayAccountDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String args[] = Convertors.SplitRequestPath(request);
+		User tm = new User();
+        tm.setCluster(cluster); 
+        String Username = request.getSession().getAttribute("user").toString();
+
+        LinkedList<UserSession> lsUser = tm.getUserInfo(Username);
         RequestDispatcher rd = request.getRequestDispatcher("/account.jsp");
         request.setAttribute("UserInfo", lsUser);
         rd.forward(request, response);
+        
 	}
 	
 	private void error(String mess, HttpServletResponse response) throws ServletException, IOException {

@@ -42,7 +42,7 @@ public class Login extends HttpServlet {
 		Object isLogged  = session.getAttribute("login.isDone");
 		
 		if (isLogged == null) {
-			session.setAttribute("Login.target", usrSession.getUsername());
+			session.setAttribute("username", usrSession.getUsername());
 			RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
 		    rd.forward(request,response);
 		} else {
@@ -75,7 +75,7 @@ public class Login extends HttpServlet {
 			if (isValidUser){
 				System.out.println("Valid user has connected");
 				 session = request.getSession(true);
-				 
+				 request.getSession().setAttribute("user", username);
 				 userSession.setUserSession(true);
 				 userSession.setUsername(username);
 				 session.setAttribute("LoggedIn", userSession);
