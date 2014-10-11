@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@page import="me.stuartdouglas.stores.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -8,7 +9,21 @@
 </head>
 <body>
 <jsp:include page="header.jsp" /> 
-<form method="POST"  action="Register">
+
+
+
+<%
+	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
+	if (currentSession != null) {
+		String userName = currentSession.getUsername();
+		if (currentSession.getUserSession()) {
+			
+			response.sendRedirect("/instashutter/"); 
+		}
+	} else {
+			%>
+	<h3>Register</h3>
+	<form method="POST"  action="Register">
     <ul>
 		<li>First Name <input type="text" name="fname"></li>
 		<li>Last Name <input type="text" name="lname"></li>
@@ -18,6 +33,12 @@
     <br/>
     <input type="submit" value="register"> 
 </form>
+	<%
+		}
+			%>
+			
+			
+
 
 </body>
 </html>

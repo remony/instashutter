@@ -36,14 +36,6 @@ public class Login extends HttpServlet {
 		// TODO Auto-generated method stub
 		UserSession usrSession = new UserSession();
 		String message = null;
-		/*
-		if (! usrSession.getUserSession()){
-		RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
-	    rd.forward(request,response);
-		} else {
-			response.sendRedirect("/instashutter/dashboard");
-		}
-		*/
 		
 		HttpSession session = request.getSession();
 		
@@ -56,7 +48,6 @@ public class Login extends HttpServlet {
 		} else {
 			response.sendRedirect("/instashutter/dashboard");
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-			//response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/dashboard"));
 		}
 		
 		
