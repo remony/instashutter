@@ -22,7 +22,7 @@
 	if (currentSession != null) {
 		String userName = currentSession.getUsername();
 		if (currentSession.getUserSession()) {
-			%> <jsp:forward page="/dashboard" /> <%}
+			response.sendRedirect("/instashutter/dashboard");}
 	} else {
 			%>
 

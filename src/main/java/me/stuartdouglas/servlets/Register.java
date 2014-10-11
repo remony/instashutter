@@ -11,20 +11,10 @@ import javax.servlet.http.HttpSession;
 
 import com.datastax.driver.core.Cluster;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.models.User;
-import me.stuartdouglas.stores.UserSession;
+
 
 /**
  * Servlet implementation class Register
@@ -45,8 +35,23 @@ public class Register extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher rd=request.getRequestDispatcher("/register.jsp");
-	    rd.forward(request,response);
+		try {
+			HttpSession session = request.getSession();
+			if (session.getAttribute("LoggedIn") == null) {
+				RequestDispatcher rd=request.getRequestDispatcher("/register.jsp");
+			    rd.forward(request,response);
+				
+			} else {
+				response.sendRedirect("/instashutter/");
+			}
+			
+			
+		} catch (Exception e) {
+			System.out.println("Error: " + e);
+		}
+		
+		
+		
 	}
 
 	/**

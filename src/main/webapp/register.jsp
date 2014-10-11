@@ -12,16 +12,7 @@
 
 
 
-<%
-	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
-	if (currentSession != null) {
-		String userName = currentSession.getUsername();
-		if (currentSession.getUserSession()) {
-			
-			response.sendRedirect("/instashutter/"); 
-		}
-	} else {
-			%>
+
 	<h3>Register</h3>
 	<form method="POST"  action="Register">
     <ul>
@@ -33,9 +24,7 @@
     <br/>
     <input type="submit" value="register"> 
 </form>
-	<%
-		}
-			%>
+
 			
 			
 
