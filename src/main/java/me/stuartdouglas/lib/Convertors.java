@@ -80,6 +80,8 @@ public class Convertors {
         }
         long accum = 0;
         i = 0;
+        
+        
         for (int shiftBy = 0; shiftBy < 32; shiftBy += 8) {
             accum |= ((long) (tmp[i] & 0xff)) << shiftBy;
             i++;
@@ -117,6 +119,7 @@ public class Convertors {
 		//Lets assume the number is the last argument
 
         int argv = 0;
+        try {
         while (st.hasMoreTokens()) {;
             args[argv] = new String();
 
@@ -129,6 +132,10 @@ public class Convertors {
                 System.out.println("Bad URL Encoding" + args[argv]);
             }
             argv++;
+        }
+        } catch (Exception e) {
+        	System.out.println("ERROR: " + e);
+        	
         }
 
 	//so now they'll be in the args array.  

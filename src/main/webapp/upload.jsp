@@ -9,8 +9,8 @@
 <body>
 <jsp:include page="header.jsp" /> 
 <form method="POST" enctype="multipart/form-data" action="Image">
-	<input type="file" name="upfile"><br/>
-	<h5>Title:</h5><input type="text" name="title"><br/>
+	<input type="file" name="file" value="/tmp"><br/>
+	<h5>Title:</h5><input type="text" name="description"><br/>
 	<input type="submit" value="Press">
 </form>
 

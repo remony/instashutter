@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.Part;
 
 import static org.imgscalr.Scalr.*;
 
@@ -141,14 +142,16 @@ public class PicModel {
     
     
     public void insertPic(byte[] b, String type, String name, String user, String title) {
-        try {
+    	
+    	try {
+        	
+        	
             Convertors convertor = new Convertors();
 
             String types[]=Convertors.SplitFiletype(type);
             ByteBuffer buffer = ByteBuffer.wrap(b);
             int length = b.length;
-            java.util.UUID picid = convertor.getTimeUUID();
-            String message = title;
+            java.util.UUID picid = Convertors.getTimeUUID();
             
             //The following is a quick and dirty way of doing this, will fill the disk quickly !
             Boolean success = (new File("/var/tmp/instashutter/")).mkdirs();
@@ -171,8 +174,17 @@ public class PicModel {
             Date DateAdded = new Date();
             session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, title));
             session.execute(bsInsertPicToUser.bind(picid, user, DateAdded, title));
-            session.close();
-            output.close();
+            try {
+            	session.close();
+            } catch (Exception e) {
+            	System.out.println("Session.close error " + e);
+            }
+            try {
+            	output.close();
+            } catch (Exception e) {
+            	System.out.println("output.close error " + e);
+            }
+            
 
         } catch (IOException ex) {
             System.out.println("Error --> " + ex);

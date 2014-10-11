@@ -131,7 +131,9 @@ public class Image extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		for (Part part : request.getParts()) {
+		/*
+		for (Part part : request.getParts()) {	
+			
             System.out.println("Part Name " + part.getName());
 
             String type = part.getContentType();
@@ -154,13 +156,50 @@ public class Image extends HttpServlet {
                 PicModel tm = new PicModel();
                 tm.setCluster(cluster);
                 System.out.println("uploading");
-                //Does not upload title
                 tm.insertPic(b, type, filename, username, title);
                 System.out.println("Uploaded");
                 is.close();
             }
              System.out.println("ended");
+        }*/
+		
+		
+		try {
+		Part file = request.getPart("file");
+		
+		String description = request.getParameter("description");
+		String type = file.getContentType();
+        String filename = file.getSubmittedFileName();
+		
+		InputStream is = request.getPart(file.getName()).getInputStream();
+        int i = is.available();
+        HttpSession session=request.getSession();
+        UserSession lg= (UserSession)session.getAttribute("LoggedIn");
+        String username="null";
+        if (lg.getUserSession()){
+            username=lg.getUsername();
         }
+        if (i > 0) {
+            byte[] b = new byte[i + 1];
+            is.read(b);
+            System.out.println("Length: " + b.length);
+            System.out.println("Title: " + description);
+            PicModel tm = new PicModel();
+            tm.setCluster(cluster);
+            System.out.println("File is uploading");
+            try {
+            	tm.insertPic(b, type, filename, username, description);
+            } catch (Exception e) {
+    			System.out.println("Error with uploading file: " + e);
+    		}
+            
+            System.out.println("File has been uploaded");
+            is.close();
+        }
+         System.out.println("ended");
+		} catch (Exception e) {
+			System.out.println("Error processing upload request: " + e);
+		}
 		response.sendRedirect("/instashutter/upload");
 	}
 	
