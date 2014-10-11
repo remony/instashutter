@@ -11,11 +11,17 @@ package me.stuartdouglas.stores;
 public final class UserSession {
 	boolean loggedin = false;
     String Username = null;
-    String fname = null;
-    String lname = null;
+    String fname = "null";
+    String lname = "null";
     
     public UserSession() {
     	
+    }
+    
+    public void setAll(String username, String fname, String lname){
+    	this.Username = username;
+    	this.fname = fname;
+    	this.lname = lname;
     }
     
     public void setUsername(String name) {

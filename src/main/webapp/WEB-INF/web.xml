@@ -124,5 +124,6 @@
     <servlet-name>Account</servlet-name>
     <url-pattern>/account</url-pattern>
     <url-pattern>/Account</url-pattern>
+    <url-pattern>/account/*</url-pattern>
   </servlet-mapping>
 </web-app>

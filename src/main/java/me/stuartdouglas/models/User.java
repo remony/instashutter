@@ -6,7 +6,6 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
@@ -14,8 +13,7 @@ import java.security.NoSuchAlgorithmException;
 
 import java.util.LinkedList;
 
-import me.stuartdouglas.lib.AeSimpleSHA1;
-import me.stuartdouglas.stores.Pic;
+import me.stuartdouglas.lib.*;
 import me.stuartdouglas.stores.UserSession;
 
 /**
@@ -23,7 +21,8 @@ import me.stuartdouglas.stores.UserSession;
  * @author Administrator
  */
 public class User {
-    Cluster cluster;
+    private Cluster cluster;
+    
     public User(){
         
     }
@@ -82,24 +81,30 @@ public class User {
     return false;  
     }
     
-   public String getFName(String username) {
-	   String fname = null;
-	   Session session = cluster.connect("instashutter");
-	   PreparedStatement ps = session.prepare("select fname from userprofiles where login =?");
-	   ResultSet rs = null;
-	   BoundStatement boundStatement = new BoundStatement(ps);
-	   rs = session.execute(boundStatement.bind(username));
-	   if (rs.isExhausted()) {
-		   System.out.println("Requested user doesn't exist.");
-		   return null;
-	   } else {
-		   for (Row row : rs) {
-			   fname = row.getString("first_name");
-			   return fname;
-		   }
-	   }
-	return null;
-	   
+
+   
+   public LinkedList<UserSession> getUserInfo(String user) {
+   	LinkedList<UserSession> userList = new LinkedList<UserSession>();
+   	Session session = cluster.connect("instashutter");
+   	System.out.println("sarah needs to speak");
+   	PreparedStatement ps = session.prepare("SELECT * from userprofiles where login =?");
+    ResultSet rs = null;
+    BoundStatement boundStatement = new BoundStatement(ps);
+    rs = session.execute( // this is where the query is executed
+            boundStatement.bind( // here you are binding the 'boundStatement'
+                    user));
+    if (rs.isExhausted()) {
+        System.out.println("No Images returned");
+    } else {
+        for (Row row : rs) {
+        	UserSession ps1 = new UserSession();
+   			ps1.setAll(row.getString("login"), row.getString("first_name"), row.getString("last_name"));
+   			userList.add(ps1);
+        }
+    }
+   	
+   	session.close();
+		return userList;
    }
     
     

@@ -92,8 +92,8 @@ public class PicModel {
     		for (Row row : rs) {
     			PostStore ps = new PostStore();
     			ps.setUUID(row.getUUID("picid"));
-    			ps.setTitle(row.getString("user"));
-    			ps.setPostedUsername(row.getString("title"));
+    			ps.setTitle(row.getString("title"));
+    			ps.setPostedUsername(row.getString("user"));
     			
     			instaList.add(ps);
     		}
