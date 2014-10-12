@@ -15,30 +15,20 @@ package me.stuartdouglas.models;
  */
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Host;
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
-import com.datastax.driver.core.utils.Bytes;
-import com.datastax.driver.core.Metadata;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.security.Timestamp;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.Part;
-
 import static org.imgscalr.Scalr.*;
 
 import org.imgscalr.Scalr.Method;
@@ -50,31 +40,11 @@ import me.stuartdouglas.stores.PostStore;
 
 public class PicModel {
 	private Cluster cluster;
-	private Session session;
 
-    public void PicModel() {
+    public PicModel() {
     	
     }
     
-    public void connect(String node) {
-    	cluster = Cluster.builder()
-    			.addContactPoint(node).build();
-    	Metadata metadata = cluster.getMetadata();
-    	System.out.printf("Connected to cluster: %s\n" , metadata.getClusterName());
-    	for (Host host : metadata.getAllHosts()) {
-    		System.out.printf("Datacenter: %s; Host %s; Rack: %s\n" , host.getDatacenter() , host.getAddress() , host.getRack());
-    	}
-    }
-    
-    public void close() {
-	   cluster.close();
-	}
-    
-    public static void main(String[] args) {
-    	PicModel client = new PicModel();
-    	client.connect("127.0.0.1");
-    	client.close();
-    }
     
     
     public LinkedList<PostStore> getPosts() {
@@ -99,7 +69,6 @@ public class PicModel {
     			instaList.add(ps);
     		}
     	}
-    	session.close();
     	instaList.stream()
         .sorted((e1, e2) -> e2.getPicAdded()
                 .compareTo(e1.getPicAdded()))
@@ -145,7 +114,7 @@ public class PicModel {
     	try {
         	
         	
-            Convertors convertor = new Convertors();
+            //Convertors convertor = new Convertors();
 
             String types[]=Convertors.SplitFiletype(type);
             ByteBuffer buffer = ByteBuffer.wrap(b);
@@ -153,7 +122,7 @@ public class PicModel {
             java.util.UUID picid = Convertors.getTimeUUID();
             
             //The following is a quick and dirty way of doing this, will fill the disk quickly !
-            Boolean success = (new File("/var/tmp/instashutter/")).mkdirs();
+            //Boolean success = (new File("/var/tmp/instashutter/")).mkdirs();
             FileOutputStream output = new FileOutputStream(new File("/var/tmp/instashutter/" + picid));
 
             output.write(b);
@@ -241,7 +210,7 @@ public class PicModel {
        String type = null;
        int length = 0;
        try {
-           Convertors convertor = new Convertors();
+           //Convertors convertor = new Convertors();
            ResultSet rs = null;
            PreparedStatement ps = null;
         
@@ -295,7 +264,7 @@ public class PicModel {
        String type = null;
        int length = 0;
        try {
-           Convertors convertor = new Convertors();
+           //Convertors convertor = new Convertors();
            ResultSet rs = null;
            PreparedStatement ps = null;
         

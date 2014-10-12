@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.datastax.driver.core.Cluster;
 
@@ -75,7 +74,7 @@ public class Account extends HttpServlet {
 	
 	private void editAccountDetails(String string, HttpServletRequest request,
 			HttpServletResponse response) {
-		String args[] = Convertors.SplitRequestPath(request);
+		//String args[] = Convertors.SplitRequestPath(request);
 		User tm = new User();
         tm.setCluster(cluster); 
         String Username = request.getSession().getAttribute("user").toString();
@@ -86,17 +85,15 @@ public class Account extends HttpServlet {
         try {
 			rd.forward(request, response);
 		} catch (ServletException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 
 	private void displayAccountDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String args[] = Convertors.SplitRequestPath(request);
+		//String args[] = Convertors.SplitRequestPath(request);
 		User tm = new User();
         tm.setCluster(cluster); 
         String Username = request.getSession().getAttribute("user").toString();
@@ -122,7 +119,28 @@ public class Account extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		String args[] = Convertors.SplitRequestPath(request);
+        int command;
+        try {
+            command = (Integer) CommandsMap.get(args[1]);
+        } catch (Exception et) {
+            error("Bad Operator", response);
+            return;
+        }
+        switch (command) {
+            case 1:
+            	//displayAccountDetails(request, response);
+                break;
+            case 2:
+                //editAccountDetails(args[1], request, response);
+            	System.out.println("User has attempted to change details");
+                break;
+            case 3:
+                //DisplayImage(Convertors.DISPLAY_THUMB,args[1],  response);
+                break;
+            default:
+                error("Bad Operator", response);
+        }
 	}
 
 }

@@ -13,7 +13,7 @@
 <jsp:include page="header.jsp" />
 
 	<%
-            LinkedList<PostStore> lsPics = (LinkedList<PostStore>) request.getAttribute("Pics");
+		LinkedList<PostStore> lsPics = (LinkedList<PostStore>) request.getAttribute("Pics");
             if (lsPics == null) {
         %>
         <p>No Pictures found</p>

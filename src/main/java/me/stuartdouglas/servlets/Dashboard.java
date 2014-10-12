@@ -77,16 +77,14 @@ public class Dashboard extends HttpServlet {
 	
 	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
+        try {
         tm.setCluster(cluster);
         LinkedList<PostStore> lsPics = tm.getPosts();
-        
-        
-        
-        
-        
-        
-        RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
         request.setAttribute("Pics", lsPics);
+        } catch (Exception e) {
+        	System.out.println("error: " + e);
+        }
+        RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
         rd.forward(request, response);
 
     }

@@ -35,7 +35,6 @@ public class Login extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		UserSession usrSession = new UserSession();
-		String message = null;
 		
 		HttpSession session = request.getSession();
 		
@@ -79,6 +78,7 @@ public class Login extends HttpServlet {
 				 userSession.setUserSession(true);
 				 userSession.setUsername(username);
 				 session.setAttribute("LoggedIn", userSession);
+				 //userSession.setUserSession(true);
 				 response.sendRedirect("/instashutter/");
 			} else {
 				System.out.println("Invalid user attempted to connected");

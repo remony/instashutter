@@ -12,19 +12,11 @@ import javax.servlet.RequestDispatcher;
 
 
 
-
-import com.datastax.driver.core.Cluster;
-
-import me.stuartdouglas.lib.CassandraHosts;
-import me.stuartdouglas.stores.UserSession;
-
-
 /**
  * Servlet implementation class Logout
  */
 public class Logout extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-    private Cluster cluster;
     /**
      * @see HttpServlet#HttpServlet()
      */

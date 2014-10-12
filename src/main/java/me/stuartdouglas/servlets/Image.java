@@ -130,40 +130,7 @@ public class Image extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		/*
-		for (Part part : request.getParts()) {	
-			
-            System.out.println("Part Name " + part.getName());
 
-            String type = part.getContentType();
-            String filename = part.getSubmittedFileName();
-            String title = request.getParameter("title");
-            
-            InputStream is = request.getPart(part.getName()).getInputStream();
-            int i = is.available();
-            HttpSession session=request.getSession();
-            UserSession lg= (UserSession)session.getAttribute("LoggedIn");
-            String username="null";
-            if (lg.getUserSession()){
-                username=lg.getUsername();
-            }
-            if (i > 0) {
-                byte[] b = new byte[i + 1];
-                is.read(b);
-                System.out.println("Length : " + b.length);
-                System.out.println("Title: " + title);
-                PicModel tm = new PicModel();
-                tm.setCluster(cluster);
-                System.out.println("uploading");
-                tm.insertPic(b, type, filename, username, title);
-                System.out.println("Uploaded");
-                is.close();
-            }
-             System.out.println("ended");
-        }*/
-		
-		
 		try {
 		Part file = request.getPart("file");
 		
@@ -186,14 +153,13 @@ public class Image extends HttpServlet {
             System.out.println("Title: " + description);
             PicModel tm = new PicModel();
             tm.setCluster(cluster);
-            System.out.println("File is uploading");
+
             try {
             	tm.insertPic(b, type, filename, username, description);
             } catch (Exception e) {
     			System.out.println("Error with uploading file: " + e);
     		}
-            
-            System.out.println("File has been uploaded");
+
             is.close();
         }
          System.out.println("ended");

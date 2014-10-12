@@ -30,9 +30,12 @@
         <div class = "post">
         	<h3>Your account details</h3>
         	<div class="post_desc">
-        Username: <%= p.getUsername() %><br>
-	      First name:  <%= p.getfname() %><br>
-	       Last name: <%= p.getlname() %>
+        	<form name="input" action="/instashutter/account/edit" method="post">
+				Username: <input type="text" name="user" value = "<%= p.getUsername() %>">
+				First name: <input type="text" name="user" value = "<%= p.getfname() %>">
+				Last name: <input type="text" name="user" value = "<%= p.getlname() %>">
+				<input type="submit" value="Submit">
+			</form>
 	       </div>
         </div> 
         <%

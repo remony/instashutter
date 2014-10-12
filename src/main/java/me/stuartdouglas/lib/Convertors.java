@@ -4,14 +4,13 @@ import java.net.URLDecoder;
 import java.util.StringTokenizer;
 //import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
-import com.eaio.uuid.UUID;
 
 public class Convertors {
 	public static int DISPLAY_IMAGE=0;
     public static int DISPLAY_THUMB=1;
     public static int DISPLAY_PROCESSED=2;
     
-    public void Convertors() {}
+    public Convertors() {}
     
     public static java.util.UUID getTimeUUID() {
         return java.util.UUID.fromString(new com.eaio.uuid.UUID().toString());
@@ -61,7 +60,7 @@ public class Convertors {
     public static void displayByteArrayAsHex(byte[] buffer) {
         int byteArrayLength = buffer.length;
         for (int i = 0; i < byteArrayLength; i++) {
-            int val = (int) buffer[i];
+            //int val = (int) buffer[i];
             // System.out.print(Integer.toHexString(val)+",");
         }
 

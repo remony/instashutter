@@ -23,7 +23,7 @@
 
 
         <%
-        java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
+        List<Pic> lsPics = (List<Pic>)request.getAttribute("Pics");
             if (lsPics == null) {
         %>
         <p>No Pictures found</p>
@@ -32,7 +32,7 @@
             Iterator<Pic> iterator;
             iterator = lsPics.iterator();
             while (iterator.hasNext()) {
-                Pic p = (Pic) iterator.next();
+            	Pic p = (Pic) iterator.next();
 
         %>
         <%-- <%= p.getTitle() %>

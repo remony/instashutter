@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@page import="me.stuartdouglas.stores.*"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -17,14 +17,7 @@
 
 	<wrapper> <jsp:include page="header.jsp" />
 
-	<%
-	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
-	if (currentSession != null) {
-		String userName = currentSession.getUsername();
-		if (currentSession.getUserSession()) {
-			response.sendRedirect("/instashutter/dashboard");}
-	} else {
-			%>
+
 
 	<h3>Welcome to InstaShutter, where you can share images</h3>
 	<form method="POST" action="login">
@@ -34,9 +27,7 @@
 		</ul>
 		<br /> <input type="submit" value="Login">
 	</form>
-	<%
-		}
-			%>
+
  </wrapper>
 </body>
 </html>
