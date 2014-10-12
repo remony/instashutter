@@ -46,7 +46,7 @@
 		        <tr>
 		        	<td>	
 		        		<div class="post_desc"><%= p.getTitle() %></div>
-		        		<%= p.getTimeAdded() %>
+		        		<%= p.getPicAdded() %>
 	        		</td>
 	       		</tr>
 	        </table>

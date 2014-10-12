@@ -79,6 +79,12 @@ public class Dashboard extends HttpServlet {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
         LinkedList<PostStore> lsPics = tm.getPosts();
+        
+        
+        
+        
+        
+        
         RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
         request.setAttribute("Pics", lsPics);
         rd.forward(request, response);

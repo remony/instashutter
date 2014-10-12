@@ -12,6 +12,7 @@ public class PostStore {
     private java.util.UUID UUID=null;
     private String user;
     private String title = "";
+    private Date picAdded = new Date();
     java.util.Date timeAdded = new java.util.Date();
     
     public PostStore() {
@@ -71,5 +72,13 @@ public class PostStore {
     
     public Date getTimeAdded() {
     	return timeAdded;
+    }
+    
+    public void setPicAdded(Date time) {
+    	this.picAdded = time;
+    }
+    
+    public Date getPicAdded() {
+    	return picAdded;
     }
 }

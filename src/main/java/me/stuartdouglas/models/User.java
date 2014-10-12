@@ -6,12 +6,15 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
 
 
 import java.util.LinkedList;
+
+import javax.servlet.http.HttpServletRequest;
 
 import me.stuartdouglas.lib.*;
 import me.stuartdouglas.stores.UserSession;
@@ -112,5 +115,12 @@ public class User {
         this.cluster = cluster;
     }
 
-    
+   public String CurrentSessionUser(HttpServletRequest request) {
+	   String username = request.getSession().getAttribute("user").toString();
+	   if (username != null){
+		   return username;
+	   } else {
+		   return null;
+	   }
+   }
 }

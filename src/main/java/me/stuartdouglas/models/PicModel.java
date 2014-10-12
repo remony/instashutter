@@ -79,6 +79,7 @@ public class PicModel {
     
     public LinkedList<PostStore> getPosts() {
     	LinkedList<PostStore> instaList = new LinkedList<PostStore>();
+    	LinkedList<PostStore> instaSortedList = new LinkedList<PostStore>();
     	Session session = cluster.connect("instashutter");
     	
     	PreparedStatement statement = session.prepare("SELECT * from userpiclist");
@@ -94,12 +95,16 @@ public class PicModel {
     			ps.setUUID(row.getUUID("picid"));
     			ps.setTitle(row.getString("title"));
     			ps.setPostedUsername(row.getString("user"));
-    			
+    			ps.setPicAdded(row.getDate("pic_added"));
     			instaList.add(ps);
     		}
     	}
     	session.close();
-		return instaList;
+    	instaList.stream()
+        .sorted((e1, e2) -> e2.getPicAdded()
+                .compareTo(e1.getPicAdded()))
+        .forEach(e ->  instaSortedList.add(e));
+		return instaSortedList;
     }
     
     public java.util.LinkedList<Pic> getPicsForUser(String User) {
