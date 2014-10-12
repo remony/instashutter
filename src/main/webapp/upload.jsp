@@ -5,14 +5,53 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
+<link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script class="jsbin" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
 </head>
 <body>
 <jsp:include page="header.jsp" /> 
-<form method="POST" enctype="multipart/form-data" action="Image">
-	<input type="file" name="file" value="/tmp"><br/>
-	<h5>Title:</h5><input type="text" name="description"><br/>
-	<input type="submit" value="Press">
-</form>
+
+<div class = "post">
+	        <table>
+		        <tr>
+		        	<td>
+			        	<div class="post_image">
+			        		<img id="blah" src="assets/images/upload.png" alt="your image" />
+			        	</div>
+		        	</td>
+		        </tr>
+		        <tr>
+		        	<td>	
+		        		<div class="post_desc">
+			        		<form method="POST" enctype="multipart/form-data" action="Image" >
+								<input type="file" name="file" value="/tmp"  onchange="readURL(this);"><br/>
+								<h5>Title:</h5><input type="text" name="description"><br/>
+								<input type="submit" value="Press">
+							</form>
+		        		</div>
+	        		</td>
+	       		</tr>
+	        </table>
+        </div> 
+
+<script>
+function readURL(input)
+{
+      if (input.files && input.files[0])
+              {
+                    var reader = new FileReader();
+                   reader.onload = function (e)
+                                          {
+                                                $('#blah')
+                                                .attr('src',e.target.result);
+                                          };
+                   reader.readAsDataURL(input.files[0]);
+                   }
+}
+
+</script>
+
 
 
 </body>

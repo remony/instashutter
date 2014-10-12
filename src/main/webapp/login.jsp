@@ -24,8 +24,8 @@
 	<div class="alert alert-warning" role="alert">${message}</div>
 	<form method="POST" action="login">
 		<ul>
-			<li>User Name <input type="text" name="username"></li>
-			<li>Password <input type="password" name="password"></li>
+			<li>User Name <input type="text" name="username" required="required" ></li>
+			<li>Password <input type="password" name="password" required="required" ></li>
 		</ul>
 		<br /> <input type="submit" value="Login">
 	</form>
