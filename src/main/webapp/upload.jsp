@@ -17,7 +17,7 @@
 		        <tr>
 		        	<td>
 			        	<div class="post_image">
-			        		<img id="blah" src="assets/images/upload.png" alt="your image" />
+			        		<img id="imagepreview" src="assets/images/upload.png" alt="Preview of image being uploaded" />
 			        	</div>
 		        	</td>
 		        </tr>
@@ -25,7 +25,7 @@
 		        	<td>	
 		        		<div class="post_desc">
 			        		<form method="POST" enctype="multipart/form-data" action="Image" >
-								<input type="file" name="file" value="/tmp"  onchange="readURL(this);"><br/>
+								<input type="file" name="file" value="/tmp"  onchange="readfile(this);"><br/>
 								<h5>Title:</h5><input type="text" name="description"><br/>
 								<input type="submit" value="Press">
 							</form>
@@ -36,19 +36,33 @@
         </div> 
 
 <script>
-function readURL(input)
+function readfile(input)
 {
-      if (input.files && input.files[0])
-              {
-                    var reader = new FileReader();
-                   reader.onload = function (e)
-                                          {
-                                                $('#blah')
-                                                .attr('src',e.target.result);
-                                          };
-                   reader.readAsDataURL(input.files[0]);
-                   }
+	if (input.files && input.files[0]) {
+		var reader = new FileReader();
+		reader.onload = function (e) {
+			$('#imagepreview')
+			.attr('src', e.target.result);
+		};
+		reader.readAsDataURL(input.files[0]);
+		
+	}
+	
 }
+/*
+	
+if (input.files && input.files[0])
+        {
+ 		
+              var reader = new FileReader();
+             reader.onload = function (e)
+                                    {
+                                          $('#blah')
+                                          .attr('src',e.target.result);
+                                    };
+             reader.readAsDataURL(input.files[0]);
+             }
+}*/
 
 </script>
 

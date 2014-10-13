@@ -130,6 +130,8 @@ public class Account extends HttpServlet {
         switch (command) {
             case 1:
             	//displayAccountDetails(request, response);
+            	System.out.println("derp");
+            	editAccountDetails(request, response);
                 break;
             case 2:
                 //editAccountDetails(args[1], request, response);
@@ -137,10 +139,40 @@ public class Account extends HttpServlet {
                 break;
             case 3:
                 //DisplayImage(Convertors.DISPLAY_THUMB,args[1],  response);
-                break;
+                System.out.println("nerP");
+            	break;
             default:
                 error("Bad Operator", response);
         }
+	}
+	
+	private void editAccountDetails (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String username = request.getParameter("username");
+		String previousUsername = request.getParameter("previousUsername");
+		String fname = request.getParameter("fname");
+		String previousFname = request.getParameter("previousFname");
+		String lname = request.getParameter("lname");
+		String previousLname = request.getParameter("previousLname");
+		
+		if (username != previousUsername){
+			System.out.println("Username has been altered");
+		} else {
+			System.out.println("No change to username");
+		}
+		
+		if (fname != previousFname) {
+			System.out.println("First name has been altered");
+		} else {
+			System.out.println("No change to first name");
+		}
+		
+		if (lname != previousLname) {
+			System.out.println("Last name has been altered");
+		} else {
+			System.out.println("No change to last name");
+		}
+		
+		System.out.println("Username: " + previousUsername + " > " + username  + "\nFirst name: " + previousFname + " > " + fname + "\nLast name: " + previousLname + " > " +  lname);
 	}
 
 }
