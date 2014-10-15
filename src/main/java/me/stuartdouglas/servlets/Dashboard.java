@@ -1,5 +1,20 @@
 package me.stuartdouglas.servlets;
+/*
+							TO DO
+				- Display only to logged in users
+				- If implemented only show followed users
+					- Move code into Discovery (global public posts)
+				- If implemented display only public posts
+				- Display comments (limit to 3 with link to full image and comments page)
+				- Display owner and posters profile pictures
+				- If got time convert output to be in JSON
+				- Make UI use bootstrap instead of writing css from scratch
+				- Add like button or favorite or heart
+				- Give a more twitter approach (since twitter does it better with the dashboard)
+				- Add in searching?
 
+
+*/
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -34,13 +49,13 @@ public class Dashboard extends HttpServlet {
      * @see HttpServlet#HttpServlet()
      */
     public Dashboard() {
-        super();        
+        super();
         CommandsMap.put("Image", 1);
         CommandsMap.put("dashboard", 2);
         CommandsMap.put("Thumb", 3);
         // TODO Auto-generated constructor stub
     }
-    
+
     public void init(ServletConfig config) throws ServletException {
         // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
@@ -73,7 +88,7 @@ public class Dashboard extends HttpServlet {
                 error("Bad Operator", response);
         }
 	}
-	
+
 	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
         try {
@@ -83,24 +98,24 @@ public class Dashboard extends HttpServlet {
         } catch (Exception e) {
         	System.out.println("error: " + e);
         }
-        
+
         RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
         rd.forward(request, response);
 
     }
-	
+
 	private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
-  
-        
+
+
         Pic p = tm.getPic(type,java.util.UUID.fromString(Image));
-        
+
         OutputStream out = response.getOutputStream();
 
         response.setContentType(p.getType());
         response.setContentLength(p.getLength());
-        
+
         //out.write(Image);
         InputStream is = new ByteArrayInputStream(p.getBytes());
         BufferedInputStream input = new BufferedInputStream(is);
@@ -118,7 +133,7 @@ public class Dashboard extends HttpServlet {
 		// TODO Auto-generated method stub
 	}
 
-	
+
 	private void error(String mess, HttpServletResponse response) throws ServletException, IOException {
 
         PrintWriter out = null;

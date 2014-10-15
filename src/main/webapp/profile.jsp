@@ -37,17 +37,29 @@
                 Pic p = (Pic) iterator.next();
 
         %>
-        <%-- <%= p.getTitle() %>
-       	<a href="/instashutter/profile/<%= p.getPostedUsername() %>">@<%= p.getPostedUsername() %></a> --%>
-       	Title:<%= p.getCaption() %>
-        <a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><br/>
-        
-        
-		<form name="input" action="/instashutter/Images/" method="get">
-		
-		<input type="text" name="user" value="<%=p.getSUUID()%>">
-		<input type="submit" value="Submit">
-		</form>
+        <div class = "post">
+			<div class = "post_image">
+				<a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
+			</div>
+			<div class = "post_timestamp">
+				<%= p.getPicAdded() %>
+			</div>
+			<div class = "post_author">
+				<a href="/instashutter/profile/<%= request.getAttribute("viewingUser") %>">@<%= request.getAttribute("viewingUser") %></a>
+			</div>
+			<div class = "post_caption">
+				<div class="post_desc"><%= p.getCaption() %></div>
+			</div>
+			
+			
+			<div class = "post_share">
+				<p>Sharing coming soon</p>
+			</div>
+			
+			<div class = "post_comments">
+				<p>Comments coming soon</p>
+			</div>
+		</div>
 		
 		
 <%

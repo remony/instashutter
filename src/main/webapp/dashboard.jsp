@@ -11,6 +11,8 @@
 
 <body>	
 <jsp:include page="header.jsp" />
+<div class="container">
+<div class="row">
 
 	<%
 		LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
@@ -25,32 +27,31 @@
                 Pic p = (Pic) iterator.next();
 
         %>
-        
-        
         <div class = "post">
-	        <table>
-		        <tr>
-		        	<td>
-			        	<div class="post_image">
-			        		<a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
-			        	</div>
-		        	</td>
-		        </tr>
-		        <tr>
-	        		<td>
-		        		<div class="post_header">
-		        			<a href="/instashutter/profile/<%= p.getPostedUsername() %>">@<%= p.getPostedUsername() %></a>
-		        		</div>
-	        		</td>
-	        	</tr>
-		        <tr>
-		        	<td>	
-		        		<div class="post_desc"><%= p.getCaption() %></div>
-		        		<%= p.getPicAdded() %>
-	        		</td>
-	       		</tr>
-	        </table>
-        </div> 
+			<div class = "post_image">
+				<a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
+			</div>
+			<div class = "post_timestamp">
+				<%= p.getPicAdded() %>
+			</div>
+			<div class = "post_author">
+				<a href="/instashutter/profile/<%= p.getPostedUsername() %>">@<%= p.getPostedUsername() %></a>
+			</div>
+			<div class = "post_caption">
+				<div class="post_desc"><%= p.getCaption() %></div>
+			</div>
+			
+			
+			<div class = "post_share">
+				<p>Sharing coming soon</p>
+			</div>
+			
+			<div class = "post_comments">
+				<p>Comments coming soon</p>
+			</div>
+		</div>
+			      
+
         <%
 
             }
@@ -58,6 +59,8 @@
        
         %>
         
+</div>
+   
         
         
         <% %>

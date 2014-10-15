@@ -13,32 +13,30 @@
 <jsp:include page="header.jsp" /> 
 
 <div class = "post">
-	        <table>
-		        <tr>
-		        	<td>
-			        	<div class="post_image">
-			        		<img id="imagepreview" src="assets/images/upload.png" alt="Preview of image being uploaded" />
-			        	</div>
-		        	</td>
-		        </tr>
-		        <tr>
-		        	<td>	
-		        		<div class="post_desc">
-			        		<form method="POST" id="uploadform" enctype="multipart/form-data" action="Image" >
-								<input type="file" name="file" value="/tmp"  onchange="readfile(this);"><br/>
-								<textarea rows="4" cols="50" name="description" form="uploadform"></textarea>
-								<INPUT TYPE="radio" NAME="filterChoice" VALUE="bw">Black and White
-								<INPUT TYPE="radio" NAME="filterChoice" VALUE="colour" checked>Colour [default]
-								<input type="submit" value="Post">
-							</form>
-							
-							
-							
-		        		</div>
-	        		</td>
-	       		</tr>
-	        </table>
-        </div> 
+	        
+	<div class="post_image">
+		<img id="imagepreview" src="assets/images/upload.png" alt="Preview of image being uploaded" />
+	</div>
+	<form method="POST" id="uploadform" enctype="multipart/form-data" action="Image" >
+	<div class="post_timestamp">
+		<input type="file" name="file" value="/tmp"  onchange="readfile(this);"><br/>
+	</div>
+
+	<div class="post_caption">
+	<textarea rows="4" cols="50" name="description" form="uploadform"></textarea>
+	<INPUT TYPE="radio" NAME="filterChoice" VALUE="bw">Black and White
+	<INPUT TYPE="radio" NAME="filterChoice" VALUE="colour" checked>Colour [default]
+	
+	
+	
+	</div>
+	<div class="post_comments">
+	<input type="submit" value="Post">
+	</div>
+   		
+			
+		</form>
+
 
 <script>
 function readfile(input)

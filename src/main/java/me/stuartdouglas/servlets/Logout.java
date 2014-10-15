@@ -35,19 +35,21 @@ public class Logout extends HttpServlet {
 
 			HttpSession session = request.getSession();
 			if (session.getAttribute("LoggedIn") == null) {
+				//If the session is not active redirect to homepage
 				response.sendRedirect("/instashutter/");
 			} else {
-			    //chain.doFilter(request, response); // Logged in, just continue chain.
+			    //Display logout jsp and terminate session.
 				session.invalidate();
 				RequestDispatcher rd=request.getRequestDispatcher("/logout.jsp");
-			    rd.forward(request,response);
+		    rd.forward(request,response);
+
 			}
-			
-			
+
+
 		} catch (Exception e) {
 			System.out.println("Error: " + e);
 		}
-		
+
 	}
 
 	/**
@@ -56,7 +58,7 @@ public class Logout extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
-	
-	
+
+
 
 }

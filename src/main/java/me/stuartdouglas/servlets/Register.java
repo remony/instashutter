@@ -38,20 +38,22 @@ public class Register extends HttpServlet {
 		try {
 			HttpSession session = request.getSession();
 			if (session.getAttribute("LoggedIn") == null) {
+				//If the user is not logged in or new display the register page
 				RequestDispatcher rd=request.getRequestDispatcher("/register.jsp");
 			    rd.forward(request,response);
-				
+
 			} else {
+				//If the user if logged in redirect them out of the register
 				response.sendRedirect("/instashutter/");
 			}
-			
-			
+
+
 		} catch (Exception e) {
 			System.out.println("Error: " + e);
 		}
-		
-		
-		
+
+
+
 	}
 
 	/**
@@ -64,11 +66,11 @@ public class Register extends HttpServlet {
 		String lname = request.getParameter("lname");
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		
+
 		User user = new User();
 		user.setCluster(cluster);
 		user.RegisterUser(fname, lname, username, password);
-		
+
 		response.sendRedirect("Login");
 		} catch (Exception e) {
 			System.out.println("ERROR: " + e);

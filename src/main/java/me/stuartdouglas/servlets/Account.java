@@ -33,7 +33,8 @@ public class Account extends HttpServlet {
         super();
         CommandsMap.put("account", 1);
         CommandsMap.put("edit", 2);
-        CommandsMap.put("Thumb", 3);
+        CommandsMap.put("editpassword", 2);
+        
         // TODO Auto-generated constructor stub
     }
     
@@ -63,7 +64,7 @@ public class Account extends HttpServlet {
                 editAccountDetails(args[1], request, response);
                 break;
             case 3:
-                //DisplayImage(Convertors.DISPLAY_THUMB,args[1],  response);
+            	editPassword(args[1], request, response);
                 break;
             default:
                 error("Bad Operator", response);
@@ -178,6 +179,10 @@ public class Account extends HttpServlet {
 		}
 		
 		System.out.println("Username: " + previousUsername + " > " + newUsername  + "\nFirst name: " + previousFname + " > " + newFname + "\nLast name: " + previousLname + " > " +  newLname);
+	}
+	
+	private void editPassword (String username, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("time to change your password");
 	}
 
 }

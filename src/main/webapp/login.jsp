@@ -20,14 +20,21 @@
 	<%}
 	} else {
 			%>
-	<h3>Login</h3>
-	<div class="alert alert-warning" role="alert">${message}</div>
-	<form method="POST" action="login">
-		<ul>
+	<div class="post">
+		
+			<h3>Login</h3>
+		
+		<form method="POST" action="login">
+		
+			<div class="alert alert-warning" role="alert">${message}</div>
+		
 			<li>User Name <input type="text" name="username" required="required" ></li>
 			<li>Password <input type="password" name="password" required="required" ></li>
 		</ul>
-		<br /> <input type="submit" value="Login">
+		
+			<input type="submit" value="Login">
+		
+	</div>
 	</form>
 	<%
 		}

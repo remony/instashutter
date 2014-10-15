@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
 
 public class Index extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -32,27 +32,28 @@ public class Index extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+
 		try {
 
 			HttpSession session = request.getSession();
+			//If the user is not logged in display index
 			if (session.getAttribute("LoggedIn") == null) {
 				RequestDispatcher rd=request.getRequestDispatcher("/index.jsp");
 			    rd.forward(request,response);
-				
-			} else {
+			} else {	//User is logged in so redirect logged in user to dashboard
 			    //chain.doFilter(request, response); // Logged in, just continue chain.
+					//User is online
 				response.sendRedirect("/instashutter/dashboard");
 			}
-			
-			
+
+
 		} catch (Exception e) {
 			System.out.println("Error: " + e);
 		}
-		
-		
-		
-		
+
+
+
+
 	}
 
 	/**
