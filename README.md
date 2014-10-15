@@ -1,5 +1,8 @@
 #Instagram clone
-A simple instagram clone.
+A simple instagram clone writing in java.
+The web app is to replicate the functionality provided by instagram allowing users to post images and to be able to add filters to those images. 
+
+
 
 Made for AC32007
 
