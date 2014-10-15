@@ -37,7 +37,7 @@
         %>
         <%-- <%= p.getTitle() %>
        	<a href="/instashutter/profile/<%= p.getPostedUsername() %>">@<%= p.getPostedUsername() %></a> --%>
-       	Title:<%= p.getTitle() %>
+       	Title:<%= p.getCaption() %>
         <a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><br/>
         
         

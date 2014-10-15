@@ -37,7 +37,7 @@ public class Profile extends HttpServlet {
         super();
         CommandsMap.put("Image", 1);
         CommandsMap.put("profile", 2);
-        CommandsMap.put("Thumb", 3);
+        CommandsMap.put("follow", 3);
         // TODO Auto-generated constructor stub
     }
     
@@ -66,7 +66,7 @@ public class Profile extends HttpServlet {
                 DisplayImageList(args[2], request, response);
                 break;
             case 3:
-                DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
+                followUser(args[2],  response);
                 break;
             default:
                 error("Bad Operator", response);
@@ -77,9 +77,9 @@ public class Profile extends HttpServlet {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
         //java.util.LinkedList<UserSession> lsProfile = getUser.getUserInfo(Username);
-        java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(Username);
+        java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(Username.toString());
         RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
-        //request.setAttribute("ProfileInfo", lsProfile);
+        request.setAttribute("viewingUser", Username);
         request.setAttribute("Pics", lsPics);
         rd.forward(request, response);
 
@@ -107,6 +107,11 @@ public class Profile extends HttpServlet {
     	}
         out.close();
     }
+	
+	private void followUser(String username, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println(username);
+	
+	}
 
 	
 	private void error(String mess, HttpServletResponse response) throws ServletException, IOException {

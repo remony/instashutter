@@ -22,7 +22,6 @@ import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
 import me.stuartdouglas.stores.Pic;
-import me.stuartdouglas.stores.Pic;
 
 /**
  * Servlet implementation class Dashboard
@@ -84,6 +83,7 @@ public class Dashboard extends HttpServlet {
         } catch (Exception e) {
         	System.out.println("error: " + e);
         }
+        
         RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
         rd.forward(request, response);
 

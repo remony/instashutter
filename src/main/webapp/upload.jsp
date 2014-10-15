@@ -27,6 +27,8 @@
 			        		<form method="POST" id="uploadform" enctype="multipart/form-data" action="Image" >
 								<input type="file" name="file" value="/tmp"  onchange="readfile(this);"><br/>
 								<textarea rows="4" cols="50" name="description" form="uploadform"></textarea>
+								<INPUT TYPE="radio" NAME="filterChoice" VALUE="bw">Black and White
+								<INPUT TYPE="radio" NAME="filterChoice" VALUE="colour" checked>Colour [default]
 								<input type="submit" value="Post">
 							</form>
 							

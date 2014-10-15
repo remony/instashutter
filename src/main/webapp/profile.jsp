@@ -17,9 +17,8 @@
 	if (currentSession != null) {
 		String userName = currentSession.getUsername();
 		if (currentSession.getUserSession()) {%>
-			<h3><%= userName %></h3>
-			First name <%= currentSession.getfname() %>
-			Last name <%= currentSession.getlname() %>
+			<h3><%= request.getAttribute("viewingUser") %></h3>
+			<a href="/instashutter/follow/<%= request.getAttribute("viewingUser") %>">Follow</a>
 			
 			
 			

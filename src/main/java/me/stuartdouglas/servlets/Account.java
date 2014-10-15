@@ -147,32 +147,37 @@ public class Account extends HttpServlet {
 	}
 	
 	private void editAccountDetails (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = request.getParameter("username");
+		String newUsername = request.getParameter("username");
 		String previousUsername = request.getParameter("previousUsername");
-		String fname = request.getParameter("fname");
+		String newFname = request.getParameter("fname");
 		String previousFname = request.getParameter("previousFname");
-		String lname = request.getParameter("lname");
+		String newLname = request.getParameter("lname");
 		String previousLname = request.getParameter("previousLname");
+		String password = request.getParameter("password");
+		String username = request.getSession().getAttribute("user").toString();
 		
-		if (username.equals(previousUsername)){
-			System.out.println("Username has been altered");
+		if (newUsername.equals(previousUsername) && newFname .equals (previousFname) && newLname .equals (previousLname)) {
+			System.out.println("No changes to be made");
 		} else {
-			System.out.println("No change to username");
+			System.out.println("Changes to be made");
+			User tm = new User();
+	        tm.setCluster(cluster); 
+	        boolean isValidUser = tm.IsValidUser(username, password);
+	        if (isValidUser) {
+	        	try {
+	        		tm.updateUserDetails(username, newFname, newLname);
+	        		response.sendRedirect("/instashutter/account");
+	        	} catch (Exception e) {
+		        	System.out.println("Error: " + e);
+		        }
+	        	
+	        } else {
+	        	System.out.println("Invalid user details");
+	        }
+	        
 		}
 		
-		if (fname != previousFname) {
-			System.out.println("First name has been altered");
-		} else {
-			System.out.println("No change to first name");
-		}
-		
-		if (lname != previousLname) {
-			System.out.println("Last name has been altered");
-		} else {
-			System.out.println("No change to last name");
-		}
-		
-		System.out.println("Username: " + previousUsername + " > " + username  + "\nFirst name: " + previousFname + " > " + fname + "\nLast name: " + previousLname + " > " +  lname);
+		System.out.println("Username: " + previousUsername + " > " + newUsername  + "\nFirst name: " + previousFname + " > " + newFname + "\nLast name: " + previousLname + " > " +  newLname);
 	}
 
 }

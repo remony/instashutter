@@ -30,13 +30,22 @@
         <div class = "post">
         	<h3>Your account details</h3>
         	<div class="post_desc">
+        	<h2>Change user details</h2>
         	<form name="input" action="/instashutter/account/edit" method="post">
-				Username: <input type="text" name="username" value = "<%= p.getUsername() %>">
-				<input type="hidden" name="previousUsername" value = "<%= p.getUsername() %>">
-				First name: <input type="text" name="fname" value = "<%= p.getfname() %>">
+				Your username: <%= p.getUsername() %> (cannot be changed)<br>
+				First name: <input type="text" name="fname" value = "<%= p.getfname() %>"><br>
 				<input type="hidden" name="previousFname" value = "<%= p.getfname() %>">			
-				Last name: <input type="text" name="lname" value = "<%= p.getlname() %>">
+				Last name: <input type="text" name="lname" value = "<%= p.getlname() %>"><br>
 				<input type="hidden" name="previousLname" value = "<%= p.getlname() %>">
+				Password: <input type="password" name="password" ><br>
+				<input type="submit" value="Submit">
+			</form>
+			
+			<br><br>
+			<h2>Change password</h2>
+			<form name="input" action="/instashutter/account/editpassword" method="post">
+				New Password: <input type="password" name="password" ><br>
+				Old Password: <input type="password" name="password" ><br>
 				<input type="submit" value="Submit">
 			</form>
 	       </div>

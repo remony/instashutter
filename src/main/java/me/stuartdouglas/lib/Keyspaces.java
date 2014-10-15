@@ -50,6 +50,18 @@ public final class Keyspaces {
                     + "      email set<text>,\n"
                     + "      addresses  map<text, frozen <address>>\n"
                     + "  );";
+            String CreateFriendList = "CREATE TABLE if not exists instashutter.friends ("
+            	    +"username text,"
+            	    +"friend text,"
+            	    +"since timestamp,"
+            	    +"PRIMARY KEY (username, friend)"
+            	+");";
+            String CreateFollowerList = "CREATE TABLE if not exists instashutter.followers ("
+            	    +"username text,"
+            	   + "follower text,"
+            	   + "since timestamp,"
+            	  +  "PRIMARY KEY (username, follower)"
+            	+");";
             Session session = c.connect();
             try {
                 PreparedStatement statement = session
@@ -92,6 +104,18 @@ public final class Keyspaces {
             //System.out.println("" + CreateUserProfile);
             try {
                 SimpleStatement cqlQuery = new SimpleStatement(CreateUserProfile);
+                session.execute(cqlQuery);
+            } catch (Exception et) {
+                System.out.println("Can't create Address Profile " + et);
+            }
+            try {
+                SimpleStatement cqlQuery = new SimpleStatement(CreateFriendList);
+                session.execute(cqlQuery);
+            } catch (Exception et) {
+                System.out.println("Can't create Address Profile " + et);
+            }
+            try {
+                SimpleStatement cqlQuery = new SimpleStatement(CreateFollowerList);
                 session.execute(cqlQuery);
             } catch (Exception et) {
                 System.out.println("Can't create Address Profile " + et);

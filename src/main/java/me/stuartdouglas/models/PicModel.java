@@ -35,11 +35,9 @@ import org.imgscalr.Scalr.Method;
 
 import me.stuartdouglas.lib.*;
 import me.stuartdouglas.stores.Pic;
-import me.stuartdouglas.stores.Pic;
-//import uk.ac.dundee.computing.aec.stores.TweetStore;
 
 public class PicModel {
-	private Cluster cluster;
+	private static Cluster cluster;
 
     public PicModel() {
     	
@@ -52,7 +50,7 @@ public class PicModel {
     	LinkedList<Pic> instaSortedList = new LinkedList<Pic>();
     	Session session = cluster.connect("instashutter");
     	
-    	PreparedStatement statement = session.prepare("SELECT * from userpiclist");
+    	PreparedStatement statement = session.prepare("SELECT * from pics");
     	
     	BoundStatement boundStatement = new BoundStatement(statement);
     	
@@ -65,7 +63,7 @@ public class PicModel {
     			ps.setUUID(row.getUUID("picid"));
     			ps.setCaption(row.getString("caption"));
     			ps.setPostedUsername(row.getString("user"));
-    			ps.setPicAdded(row.getDate("pic_added"));
+    			ps.setPicAdded(row.getDate("interaction_time"));
     			instaList.add(ps);
     		}
     	}
@@ -76,7 +74,7 @@ public class PicModel {
 		return instaSortedList;
     }
     
-    public java.util.LinkedList<Pic> getPicsForUser(String User) {
+    public static java.util.LinkedList<Pic> getPicsForUser(String User) {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instashutter");
         PreparedStatement ps = session.prepare("select picid from userpiclist where user =?");

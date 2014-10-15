@@ -123,4 +123,25 @@ public class User {
 		   return null;
 	   }
    }
+
+	public void updateUserDetails(String username,
+			String fname, String lname) {
+		// TODO Auto-generated method stub
+		System.out.println("yay");
+		Session session = cluster.connect("instashutter");
+		PreparedStatement ps = session.prepare("UPDATE userprofiles set first_name = ?, last_name = ? where login = ?");
+		ResultSet rs = null;
+		BoundStatement boundStatement = new BoundStatement(ps);
+		rs = session.execute(boundStatement.bind(fname, lname, username));
+		if (rs.isExhausted()){
+			System.out.println("something went wrong");
+			//return null;
+		} else {
+			System.out.println("success");
+			//return true;
+		}
+		
+		
+	}
+
 }
