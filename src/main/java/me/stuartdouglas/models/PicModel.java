@@ -35,7 +35,7 @@ import org.imgscalr.Scalr.Method;
 
 import me.stuartdouglas.lib.*;
 import me.stuartdouglas.stores.Pic;
-import me.stuartdouglas.stores.PostStore;
+import me.stuartdouglas.stores.Pic;
 //import uk.ac.dundee.computing.aec.stores.TweetStore;
 
 public class PicModel {
@@ -47,9 +47,9 @@ public class PicModel {
     
     
     
-    public LinkedList<PostStore> getPosts() {
-    	LinkedList<PostStore> instaList = new LinkedList<PostStore>();
-    	LinkedList<PostStore> instaSortedList = new LinkedList<PostStore>();
+    public LinkedList<Pic> getPosts() {
+    	LinkedList<Pic> instaList = new LinkedList<Pic>();
+    	LinkedList<Pic> instaSortedList = new LinkedList<Pic>();
     	Session session = cluster.connect("instashutter");
     	
     	PreparedStatement statement = session.prepare("SELECT * from userpiclist");
@@ -61,9 +61,9 @@ public class PicModel {
     		System.out.println("No posts returned");
     	} else {
     		for (Row row : rs) {
-    			PostStore ps = new PostStore();
+    			Pic ps = new Pic();
     			ps.setUUID(row.getUUID("picid"));
-    			ps.setTitle(row.getString("title"));
+    			ps.setCaption(row.getString("caption"));
     			ps.setPostedUsername(row.getString("user"));
     			ps.setPicAdded(row.getDate("pic_added"));
     			instaList.add(ps);
@@ -109,7 +109,7 @@ public class PicModel {
     
     
     
-    public void insertPic(byte[] b, String type, String name, String user, String title) {
+    public void insertPic(byte[] b, String type, String name, String user, String caption) {
     	
     	try {
         	
@@ -134,14 +134,14 @@ public class PicModel {
             int processedlength=processedb.length;
             Session session = cluster.connect("instashutter");
 
-            PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name, title) values(?,?,?,?,?,?,?,?,?,?,?,?)");
-            PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added, title) values(?,?,?,?)");
+            PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name, caption) values(?,?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added, caption) values(?,?,?,?)");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
             BoundStatement bsInsertPicToUser = new BoundStatement(psInsertPicToUser);
 
             Date DateAdded = new Date();
-            session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, title));
-            session.execute(bsInsertPicToUser.bind(picid, user, DateAdded, title));
+            session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, caption));
+            session.execute(bsInsertPicToUser.bind(picid, user, DateAdded, caption));
             try {
             	session.close();
             } catch (Exception e) {

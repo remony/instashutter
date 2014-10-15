@@ -19,7 +19,7 @@ public final class Keyspaces {
                     + " user varchar,"
                     + " picid uuid, "
                     + " interaction_time timestamp,"
-                    + " title varchar,"
+                    + " caption varchar,"
                     + " image blob,"
                     + " thumb blob,"
                     + " processed blob,"
@@ -32,7 +32,7 @@ public final class Keyspaces {
                     + ")";
             String Createuserpiclist = "CREATE TABLE if not exists instashutter.userpiclist (\n"
                     + "picid uuid,\n"
-                    + "title varchar,\n"
+                    + "caption varchar,\n"
                     + "user varchar,\n"
                     + "pic_added timestamp,\n"
                     + "PRIMARY KEY (user, pic_added)\n"

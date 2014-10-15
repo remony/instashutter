@@ -154,7 +154,7 @@ public class Account extends HttpServlet {
 		String lname = request.getParameter("lname");
 		String previousLname = request.getParameter("previousLname");
 		
-		if (username != previousUsername){
+		if (username.equals(previousUsername)){
 			System.out.println("Username has been altered");
 		} else {
 			System.out.println("No change to username");

@@ -22,7 +22,7 @@ import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
 import me.stuartdouglas.stores.Pic;
-import me.stuartdouglas.stores.PostStore;
+import me.stuartdouglas.stores.Pic;
 
 /**
  * Servlet implementation class Dashboard
@@ -79,7 +79,7 @@ public class Dashboard extends HttpServlet {
         PicModel tm = new PicModel();
         try {
         tm.setCluster(cluster);
-        LinkedList<PostStore> lsPics = tm.getPosts();
+        LinkedList<Pic> lsPics = tm.getPosts();
         request.setAttribute("Pics", lsPics);
         } catch (Exception e) {
         	System.out.println("error: " + e);

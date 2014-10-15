@@ -18,8 +18,10 @@ public class Pic {
     private String type;
     private java.util.UUID UUID=null;
     private String user;
-    private String title = "";
+    private String caption = "";
     java.util.Date timeAdded = new java.util.Date();
+    private Date picAdded = new Date();
+    
     
     public Pic() {
 
@@ -62,25 +64,26 @@ public class Pic {
         return image;
     }
     
-    public void setTitle(String title) {
-    	if (title == null)	{
-    		this.title = "opps";
+    public void setCaption(String caption) {
+    	if (caption == null)	{
+    		this.caption = "opps";
     	} else {
-    	this.title = title;
+    	this.caption = caption;
     	}
 	}
     
-    public String getTitle() {
-    	return title;
+    public String getCaption() {
+    	return caption;
     }
     
     
-    public Date getTimeAdded() {
-    	return timeAdded;
+    
+    public void setPicAdded(Date time) {
+    	this.picAdded = time;
     }
     
-    public void setTimeAdded(Date time) {
-    	this.timeAdded = time;
+    public Date getPicAdded() {
+    	return picAdded;
     }
 
 }

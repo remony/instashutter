@@ -24,11 +24,14 @@
 		        <tr>
 		        	<td>	
 		        		<div class="post_desc">
-			        		<form method="POST" enctype="multipart/form-data" action="Image" >
+			        		<form method="POST" id="uploadform" enctype="multipart/form-data" action="Image" >
 								<input type="file" name="file" value="/tmp"  onchange="readfile(this);"><br/>
-								<h5>Title:</h5><input type="text" name="description"><br/>
-								<input type="submit" value="Press">
+								<textarea rows="4" cols="50" name="description" form="uploadform"></textarea>
+								<input type="submit" value="Post">
 							</form>
+							
+							
+							
 		        		</div>
 	        		</td>
 	       		</tr>

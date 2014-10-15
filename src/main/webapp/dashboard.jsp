@@ -13,16 +13,16 @@
 <jsp:include page="header.jsp" />
 
 	<%
-		LinkedList<PostStore> lsPics = (LinkedList<PostStore>) request.getAttribute("Pics");
+		LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
             if (lsPics == null) {
         %>
         <p>No Pictures found</p>
         <%
         } else {
-            Iterator<PostStore> iterator;
+            Iterator<Pic> iterator;
             iterator = lsPics.iterator();
             while (iterator.hasNext()) {
-                PostStore p = (PostStore) iterator.next();
+                Pic p = (Pic) iterator.next();
 
         %>
         
@@ -45,7 +45,7 @@
 	        	</tr>
 		        <tr>
 		        	<td>	
-		        		<div class="post_desc"><%= p.getTitle() %></div>
+		        		<div class="post_desc"><%= p.getCaption() %></div>
 		        		<%= p.getPicAdded() %>
 	        		</td>
 	       		</tr>
