@@ -131,7 +131,7 @@ public class Account extends HttpServlet {
         switch (command) {
             case 1:
             	//displayAccountDetails(request, response);
-            	System.out.println("derp");
+            	//System.out.println("derp");
             	editAccountDetails(request, response);
                 break;
             case 2:
@@ -148,6 +148,7 @@ public class Account extends HttpServlet {
 	}
 	
 	private void editAccountDetails (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("Editing user informations");
 		String newUsername = request.getParameter("username");
 		String previousUsername = request.getParameter("previousUsername");
 		String newFname = request.getParameter("fname");
@@ -157,9 +158,11 @@ public class Account extends HttpServlet {
 		String password = request.getParameter("password");
 		String username = request.getSession().getAttribute("user").toString();
 		
-		if (newUsername.equals(previousUsername) && newFname .equals (previousFname) && newLname .equals (previousLname)) {
-			System.out.println("No changes to be made");
-		} else {
+		//If statement commented out for revision: caused error
+		
+		//if (newUsername.equals(previousUsername) && newFname .equals (previousFname) && newLname .equals (previousLname)) {
+		//				System.out.println("No changes to be made");
+		//} else {
 			System.out.println("Changes to be made");
 			User tm = new User();
 	        tm.setCluster(cluster); 
@@ -176,9 +179,9 @@ public class Account extends HttpServlet {
 	        	System.out.println("Invalid user details");
 	        }
 	        
-		}
+		//}
 		
-		System.out.println("Username: " + previousUsername + " > " + newUsername  + "\nFirst name: " + previousFname + " > " + newFname + "\nLast name: " + previousLname + " > " +  newLname);
+		//System.out.println("Username: " + previousUsername + " > " + newUsername  + "\nFirst name: " + previousFname + " > " + newFname + "\nLast name: " + previousLname + " > " +  newLname);
 	}
 	
 	private void editPassword (String username, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
