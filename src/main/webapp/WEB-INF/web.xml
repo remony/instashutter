@@ -124,6 +124,25 @@
     <servlet-name>Account</servlet-name>
     <url-pattern>/account</url-pattern>
     <url-pattern>/Account</url-pattern>
-    <url-pattern>/account/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>UserDetails</display-name>
+    <servlet-name>UserDetails</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.UserDetails</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserDetails</servlet-name>
+    <url-pattern>/account/editdetails</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Editpassword</display-name>
+    <servlet-name>Editpassword</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.Editpassword</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Editpassword</servlet-name>
+    <url-pattern>/account/editpassword</url-pattern>
   </servlet-mapping>
 </web-app>

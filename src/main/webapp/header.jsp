@@ -50,7 +50,7 @@ if (currentSession != null) {
 
   <li><a href="/instashutter/profile/<%=currentSession.getUsername()%>">Your
       Profile</a></li>
-  <li><a href="/instashutter/account/<%=currentSession.getUsername()%>">Your
+  <li><a href="/instashutter/account">Your
       Account</a></li>
   <li><a href="/instashutter/logout">Sign out</a></li>
   <%}

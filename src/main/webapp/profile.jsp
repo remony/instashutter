@@ -31,6 +31,12 @@
         <p>No Pictures found</p>
         <%
         } else {
+        	%>
+        	
+        	<a href="/instashutter/account/editdetails">Edit your profile</a>
+        	
+        	<%
+        	
             Iterator<Pic> iterator;
             iterator = lsPics.iterator();
             while (iterator.hasNext()) {

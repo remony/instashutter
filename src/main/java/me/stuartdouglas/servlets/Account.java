@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,7 @@ import me.stuartdouglas.stores.UserSession;
 /**
  * Servlet implementation class Account
  */
+
 public class Account extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Cluster cluster;
@@ -32,7 +34,7 @@ public class Account extends HttpServlet {
     public Account() {
         super();
         CommandsMap.put("account", 1);
-        CommandsMap.put("edit", 2);
+        CommandsMap.put("editprofile", 2);
         CommandsMap.put("editpassword", 2);
         
         // TODO Auto-generated constructor stub
@@ -58,10 +60,12 @@ public class Account extends HttpServlet {
         }
         switch (command) {
             case 1:
-            	displayAccountDetails(request, response);
+            	displayAccount(args[1], request, response);
+            	System.out.println("Display user settings options");
                 break;
             case 2:
-                editAccountDetails(args[1], request, response);
+            	displayAccountDetails(args[1], request, response);
+            	System.out.println("Displaying options for editing");
                 break;
             case 3:
             	editPassword(args[1], request, response);
@@ -73,7 +77,7 @@ public class Account extends HttpServlet {
 	}
 	
 	
-	private void editAccountDetails(String string, HttpServletRequest request,
+	private void viewAccount(String string, HttpServletRequest request,
 			HttpServletResponse response) {
 		//String args[] = Convertors.SplitRequestPath(request);
 		User tm = new User();
@@ -92,16 +96,18 @@ public class Account extends HttpServlet {
 		}
 		
 	}
-
-	private void displayAccountDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//String args[] = Convertors.SplitRequestPath(request);
-		User tm = new User();
-        tm.setCluster(cluster); 
-        String Username = request.getSession().getAttribute("user").toString();
-
-        LinkedList<UserSession> lsUser = tm.getUserInfo(Username);
+	
+	private void displayAccount(String args, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher("/account.jsp");
-        request.setAttribute("UserInfo", lsUser);
+        
+        rd.forward(request, response);
+        
+	}
+
+	private void displayAccountDetails(String args, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+        RequestDispatcher rd = request.getRequestDispatcher("/account/userdetails.jsp");
+
         rd.forward(request, response);
         
 	}

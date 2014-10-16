@@ -12,47 +12,24 @@
 <body>
 <jsp:include page="header.jsp" />
 
-	<%
-            LinkedList<UserSession> lsUser = (LinkedList<UserSession>) request.getAttribute("UserInfo");
-            if (lsUser == null) {
-        %>
-        <p>No Pictures found</p>
-        <%
-        } else {
-            Iterator<UserSession> iterator;
-            iterator = lsUser.iterator();
-            while (iterator.hasNext()) {
-            	UserSession p = (UserSession) iterator.next();
-
-        %>
+	
+       	<div class="post">
+       		<div class="post_timestamp">
+       			<h2>Account details</h2>
+       		</div>
+       		<div class="account_caption">
+       			<div class="account_options">
+       				<a href="account/editdetails">Edit User Details</a><br>
+       				<a href="account/editpassword">Change Password</a>
+       			</div>
+       			<div class="account_view">
+       				<p>stuff here</p>
+       			</div>
+       		</div>
+       	</div>
+        	
         
-        
-        <div class = "post">
-        	<h3>Your account details</h3>
-        	<div class="post_desc">
-        	<h2>Change user details</h2>
-        	<form name="input" action="/instashutter/account/edit" method="post">
-				
-				Your username: <%= p.getUsername() %> (cannot be changed)<br>
-				First name: <input type="text" name="fname" value = "<%= p.getfname() %>"><br>
-				<input type="hidden" name="previousFname" value = "<%= p.getfname() %>">			
-				
-				Last name: <input type="text" name="lname" value = "<%= p.getlname() %>"><br>
- 				<input type="hidden" name="previousLname" value = "<%= p.getlname() %>">
-				Password: <input type="password" name="password" ><br>
-				<input type="submit" value="Submit">
-			</form>
-			
-			<br><br>
-			
-	       </div>
-        </div> 
-        <%
-
-            }
-            }
-       
-        %>
+   
         
 </body>
 </html>
