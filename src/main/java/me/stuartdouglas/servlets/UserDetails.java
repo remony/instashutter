@@ -59,19 +59,23 @@ public class UserDetails extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		String username = request.getParameter("user").toString();
-		String newFname = request.getParameter("newFname");
-		String prevFname = request.getParameter("prevFnamw");
-		String newLname = request.getParameter("newLname");
-		String prevLname = request.getParameter("prevLanem");
+		String username = request.getSession().getAttribute("user").toString();
+		//String username = request.getParameter("previousFname").toString();
+		String newFname = request.getParameter("fname");
+		String prevFname = request.getParameter("prevFname");
+		String newLname = request.getParameter("lname");
+		String prevLname = request.getParameter("prevLname");
 		String password = request.getParameter("password");
 		
 		User user = new User();
 		user.setCluster(cluster);
 		
 		boolean isValidUser = user.IsValidUser(username, password);
-		
+		if (isValidUser) {
+			System.out.println("Correct");
+		} else {
+			System.out.println("Incorrect password or something broke.");
+		}
 		if (isValidUser) {
 			try {
 				user.updateUserDetails(username, newFname, newLname);

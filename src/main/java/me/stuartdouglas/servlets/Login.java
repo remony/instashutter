@@ -90,6 +90,8 @@ public class Login extends HttpServlet {
 			response.sendRedirect("/instashutter/login");
 		}
 		
+		//cluster.close();
+		
 
     }
 

@@ -143,5 +143,30 @@ public class User {
 		
 		
 	}
+	
+	public void updateUserPassword(String username, String password) {
+		// TODO Auto-generated method stub
+		System.out.println("Editing user password");
+		String EncodedPassword=null;
+        try {
+            EncodedPassword= AeSimpleSHA1.SHA1(password);
+        }catch (UnsupportedEncodingException | NoSuchAlgorithmException et){
+            System.out.println("Can't check your password");
+        }
+		Session session = cluster.connect("instashutter");
+		PreparedStatement ps = session.prepare("UPDATE userprofiles set password = ? where login = ?");
+		ResultSet rs = null;
+		BoundStatement boundStatement = new BoundStatement(ps);
+		rs = session.execute(boundStatement.bind(EncodedPassword, username));
+		if (rs.isExhausted()){
+			System.out.println("something went wrong");
+			//return null;
+		} else {
+			System.out.println("success");
+			//return true;
+		}
+		
+		
+	}
 
 }

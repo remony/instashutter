@@ -21,8 +21,12 @@
        				<a href="editpassword">Change Password</a>
        			</div>
        			<div class="account_view">
-       				Enter your password: <br>
-					Enter your old password: <br>
+	       			<form name="input" action="/instashutter/account/editpassword" method="post">
+	       				Current password: <input type="text" name="currentPassword" value = ""><br>
+						Enter your new password:<input type="text" name="newPassword" value = ""><br>
+						Enter your new password again: <input type="text" name="newPasswordVerify" value = ""><br>
+						<input type="submit" value="Update password">
+	       			</form>
        			</div>
        		</div>
 </div>

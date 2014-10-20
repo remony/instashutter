@@ -99,8 +99,10 @@ public class Dashboard extends HttpServlet {
         	System.out.println("error: " + e);
         }
 
+        
         RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
         rd.forward(request, response);
+        
 
     }
 

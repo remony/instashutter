@@ -17,26 +17,29 @@
 	if (currentSession != null) {
 		String userName = currentSession.getUsername();
 		if (currentSession.getUserSession()) {%>
-			<h3><%= request.getAttribute("viewingUser") %></h3>
-			<a href="/instashutter/follow/<%= request.getAttribute("viewingUser") %>">Follow</a>
+			<div class="profile_header">
+				<div class="profile_background">
+					<div class="profile_content">
+						<h3><%= request.getAttribute("viewingUser") %></h3>
+						<a href="/instashutter/follow/<%= request.getAttribute("viewingUser") %>">Follow</a>
+						<div class="profile_follow">
+							<a href="/instashutter/account/editdetails">Edit your profile</a>
+						</div>
+					</div>		
+				</div>
+			</div>
 			
 			
 			
 			
 			
 			<%
-        java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
+        LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
             if (lsPics == null) {
         %>
         <p>No Pictures found</p>
         <%
         } else {
-        	%>
-        	
-        	<a href="/instashutter/account/editdetails">Edit your profile</a>
-        	
-        	<%
-        	
             Iterator<Pic> iterator;
             iterator = lsPics.iterator();
             while (iterator.hasNext()) {
@@ -83,7 +86,16 @@
 		<%}%>
 		
 
+<style>
+	body {
+	background: url(/instashutter/assets/images/profilebk.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+	}
 
+</style>
 
 
 </body>
