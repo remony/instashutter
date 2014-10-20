@@ -7,9 +7,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Insert title here</title>
+
 </head>
 <body>
 <jsp:include page="header.jsp" />
+
 <%
 		LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
             if (lsPics == null) {
@@ -23,6 +25,16 @@
                 Pic p = (Pic) iterator.next();
 
         %>
+        <style>
+        	html {
+		      	background: url(/instashutter/Image/<%=p.getSUUID()%>) no-repeat center center fixed; 
+				-webkit-background-size: cover;
+				-moz-background-size: cover;
+				-o-background-size: cover;
+				background-size: cover;
+        	
+        	}
+        </style>
         <div class = "post">
 			<div class = "post_image">
 				<a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>

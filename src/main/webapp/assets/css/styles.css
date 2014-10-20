@@ -31,10 +31,10 @@ header {
 
 
 body {
-	width:80%;
+	width:100%;
 	font-family: 'Roboto', sans-serif;
 	margin:0 auto;
-	background-color:#eceff1;
+	background:none;
 }
 
 .post {
@@ -83,7 +83,7 @@ box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
 .post_caption {
 	background-color:#fff;
 	padding:20px;
-	min-height:150px;
+	min-height:75px;
 	font-size:1.1em;
 }
 
@@ -147,7 +147,7 @@ box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
 }
 
 .profile_header {
-	width:100%;
+	width:60%;
 	min-height:250px;
 	padding:15px;
 	background-color:rgba(20, 20, 20, 0.4);
@@ -161,8 +161,8 @@ box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
 	padding:15px;
 }
 
-.profile_content h3 {
-	color:#fff;
+.profile_content h1 {
+	color:#8bc34a;
 }
 
 .profile_right {
