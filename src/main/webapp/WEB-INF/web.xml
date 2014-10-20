@@ -178,4 +178,14 @@
     <url-pattern>/post</url-pattern>
     <url-pattern>/post/*</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>UserBio</display-name>
+    <servlet-name>UserBio</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.UserBio</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserBio</servlet-name>
+    <url-pattern>/account/editbio</url-pattern>
+  </servlet-mapping>
 </web-app>

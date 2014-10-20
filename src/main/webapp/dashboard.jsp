@@ -25,7 +25,7 @@
             iterator = lsPics.iterator();
             while (iterator.hasNext()) {
                 Pic p = (Pic) iterator.next();
-
+			String username = p.getPostedUsername();
         %>
         <div class = "post">
 			<div class = "post_image">
@@ -35,7 +35,8 @@
 				<%= p.getPicAdded() %>
 			</div>
 			<div class = "post_author">
-				<a href="/instashutter/profile/<%= p.getPostedUsername() %>">@<%= p.getPostedUsername() %></a>
+				<a href="/instashutter/profile/<%= username %>">@<%= username %></a>
+				<a href="<%=request.getContextPath()%>/picture/<%= username %>"><img src="<%=request.getContextPath()%>/picture/<%= username %>" alt="Profile image" /></a>
 			</div>
 			<div class = "post_caption">
 				<div class="post_desc"><%= p.getCaption() %></div>
@@ -45,7 +46,7 @@
 			<div class = "post_share">
 				
 				<!-- Button from  https://about.twitter.com/resources/buttons#tweet  -->
-<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://localhost:8080/instashutter/Thumb/<%=p.getSUUID()%>" data-hashtags="instashutter">Tweet</a>
+<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://localhost:8080/instashutter/post/<%=p.getSUUID()%>" data-hashtags="instashutter">Tweet</a>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>			
 				
 			</div>

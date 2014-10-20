@@ -12,7 +12,9 @@
 <body>
 <jsp:include page="header.jsp" />
 
-	<% String background = null; %>
+	<% String background = null;
+		String bio = null;
+		%>
        	<div class="account">
        		<div class="post_timestamp">
        			<h2>Account details</h2>
@@ -86,6 +88,7 @@
        					while (iterator.hasNext()) {
        						UserSession p = (UserSession) iterator.next();
        						background = p.getBackground();
+       						bio = p.getBio();
        			%>
        			<form name="input" action="/instashutter/account/editdetails" method="post">
 					Your username: (cannot be changed)<br>
@@ -98,10 +101,7 @@
 					<input type="submit" value="Submit">
 				</form>
        			
-       			<%       			
-       					}
-       				}
-   				%>
+       			
        				</div>
        				<div id="password">
 	       				<form name="input" action="/instashutter/account/editpassword" method="post">
@@ -124,15 +124,24 @@
 						</form>
        				</div>
        				<div id="bio">
-       					<h4>Coming soon.</h4>
+       				
+       					<form name="input" id="updatebio" action="/instashutter/account/editbio" method="post">
+		       				Bio: <textarea rows="4" cols="50" name="bio" form="updatebio"><%= p.getBio() %></textarea><br>
+							<input type="submit" value="Update background">
+		       			</form>
        				</div>
        				<div id="profileBackground">
        					<form name="input" action="/instashutter/account/profilePersonalization" method="post">
-		       				Background URL: <input type="text" name="url" value = "<%= background %>"><br>
+		       				Background URL: <input type="text" name="url" value = "<%= p.getBackground() %>"><br>
 							<input type="submit" value="Update background">
 		       			</form>
        				</div>
        			</div>
+       			
+       			<%       			
+       					}
+       				}
+   				%>
        		</div>
        	</div>
         	

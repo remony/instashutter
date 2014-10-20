@@ -24,7 +24,9 @@
 			<div class="profile_header">
 				<div class="profile_background">
 					<div class="profile_content">
-					<a href="<%=request.getContextPath()%>/picture/<%= user %>"><img src="<%=request.getContextPath()%>/picture/<%= user %>" alt="Profile image" /></a>
+						<div class="profile_image">
+							<a href="<%=request.getContextPath()%>/picture/<%= user %>"><img src="<%=request.getContextPath()%>/picture/<%= user %>" alt="Profile image" /></a>					
+						</div>
 						
 
 	<%
@@ -40,9 +42,16 @@
        						UserSession p = (UserSession) iterator.next();
        						background = p.getBackground();
        			%>
-					First name: <%= p.getfname() %><br>			
-					Last name: <%= p.getlname() %><br>
-					Location: <%= p.getLocation() %>
+       			<div class="profile_info">
+	       			<ul>  
+	       				<li><h1>@<%= p.getUsername() %></h1></li>
+				        <li>First name: <%= p.getfname() %></li>  
+				        <li>Last name: <%= p.getlname() %></li>  
+				        <li>Location: <%= p.getLocation() %>  </li>
+				        <li>About: <%= p.getBio() %></li>
+				    </ul> 
+			    </div>
+
        			
        			<%       			
        					}

@@ -19,6 +19,7 @@ public final class UserSession {
     String lname = "null";
     String userBackground = null;
     String location = null;
+    String bio = null;
     private ByteBuffer profileImage = null;
     
     public UserSession() {
@@ -93,6 +94,14 @@ public final class UserSession {
     
     public String getLocation()	{
     	return location;
+    }
+    
+    public void setBio(String bio) {
+    	this.bio = bio;
+    }
+    
+    public String getBio()	{
+    	return bio;
     }
     
 

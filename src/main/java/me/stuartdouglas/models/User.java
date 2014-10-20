@@ -114,6 +114,7 @@ public class User {
    			ps1.setAll(row.getString("login"), row.getString("first_name"), row.getString("last_name"));
    			ps1.setBackground(row.getString("background"));
    			ps1.setLocation(row.getString("location"));
+   			ps1.setBio(row.getString("bio"));
    			userList.add(ps1);
         }
     }
@@ -274,7 +275,7 @@ public class User {
 
 	public void updateBackground(String username, String url) {
 		try {
-Session session = cluster.connect("instashutter");
+			Session session = cluster.connect("instashutter");
             
             PreparedStatement ps = session.prepare("update userprofiles set background=? where login=?");
             BoundStatement bs = new BoundStatement(ps);
@@ -285,6 +286,22 @@ Session session = cluster.connect("instashutter");
 		}	catch (Exception e)	{
 			System.out.println("Error change user background: " + e);
 		}
+	}
+
+	public void updateBio(String username, String bio) {
+		try {
+			Session session = cluster.connect("instashutter");
+            
+            PreparedStatement ps = session.prepare("update userprofiles set bio=? where login=?");
+            BoundStatement bs = new BoundStatement(ps);
+
+            session.execute(bs.bind(bio, username));
+
+            session.close();
+		}	catch (Exception e)	{
+			System.out.println("Error change user background: " + e);
+		}
+		
 	}
 
 
