@@ -21,6 +21,8 @@
        			<div class="account_options">
        				<a href="account/editdetails">Edit User Details</a><br>
        				<a href="account/editpassword">Change Password</a>
+       				<a href="account/editProfileImage">Change Profile image</a>
+       				<a href="account/editBio">Change Bio</a>
        			</div>
        			<div class="account_view">
        				<p>stuff here</p>

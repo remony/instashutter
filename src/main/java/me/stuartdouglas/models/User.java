@@ -7,16 +7,27 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 
 
 
 import java.util.LinkedList;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import static org.imgscalr.Scalr.*;
+
+import org.imgscalr.Scalr.Method;
+
 import me.stuartdouglas.lib.*;
+import me.stuartdouglas.stores.Pic;
 import me.stuartdouglas.stores.UserSession;
 
 /**
@@ -168,5 +179,97 @@ public class User {
 		
 		
 	}
+	
+	public UserSession getProfilePic(String user)
+    {
+		ByteBuffer bImage = null;
+		Session session = cluster.connect("instashutter");
+        
+        try {
+            ResultSet rs = null;
+            PreparedStatement ps = null;               
+            ps = session.prepare("select profileimage from userprofiles where login =?");
+            BoundStatement boundStatement = new BoundStatement(ps);
+            rs = session.execute(boundStatement.bind(user));
+
+            if (rs.isExhausted()) {
+                System.out.println("No profile image returned");
+                return null;
+            } else {
+                for (Row row : rs) {         	
+                        bImage = row.getBytes("profileimage");                
+                }
+            }
+        }	catch (Exception e)	{
+            System.out.println("Unable to get profile image: " + e);
+            return null;
+        }
+        session.close();
+        UserSession p = new UserSession();
+        p.setPic(bImage);
+                       
+        return p;
+
+    }
+	
+	
+	
+	public void setProfilePic(byte[] b, String filename, String type) {
+		try {
+			
+			System.out.println("Starting upload of profile image");
+			new Convertors();
+            ByteBuffer.wrap(b);
+        
+            String types[]=Convertors.SplitFiletype(type);
+            (new File("/var/tmp/instagram/")).mkdirs();
+            @SuppressWarnings("resource")
+			FileOutputStream output = new FileOutputStream(new File("/var/tmp/instashutter/" + filename));
+            output.write(b);
+            
+            byte [] profilepic =profileImage(filename,types[1]);
+            ByteBuffer picbuf=ByteBuffer.wrap(profilepic);
+
+            Session session = cluster.connect("instashutter");
+            
+            PreparedStatement psInsertPic = session.prepare("update userprofiles set profileimage=? where login=?");
+            BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
+
+            session.execute(bsInsertPic.bind(picbuf,filename));
+
+            session.close();
+			
+			
+		}	catch (Exception e) {
+			System.out.println("Error Setting profile picture: " + e);
+		}
+	}
+
+	private byte[] profileImage(String filename, String type) {
+		// TODO Auto-generated method stub
+		try {
+			BufferedImage BI = ImageIO.read(new File("/var/tmp/instashutter/" + filename));
+			BufferedImage profileImage = createImage(BI);
+			
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(profileImage, type, baos);
+			baos.flush();
+			
+			byte[] imageOutput = baos.toByteArray();
+			baos.close();
+			return imageOutput;
+			
+			
+		}	catch (Exception e)	{
+			System.out.println("Error: " + e);
+		}
+		return null;
+	}
+	
+	public static BufferedImage createImage(BufferedImage img)
+    {
+    	img = resize(img, Method.SPEED, 300, OP_ANTIALIAS);
+        return pad(img, 1);
+    }
 
 }

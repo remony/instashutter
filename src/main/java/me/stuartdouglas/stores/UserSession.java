@@ -1,5 +1,9 @@
 package me.stuartdouglas.stores;
 
+import java.nio.ByteBuffer;
+
+import com.datastax.driver.core.utils.Bytes;
+
 /*
  * 	Author: Stuart Douglas
  *  
@@ -13,6 +17,7 @@ public final class UserSession {
     String Username = null;
     String fname = "null";
     String lname = "null";
+    private ByteBuffer profileImage = null;
     
     public UserSession() {
     	
@@ -57,4 +62,20 @@ public final class UserSession {
     	
     	return lname;
     }
+    
+    public void setPic(ByteBuffer bImage) {
+        this.profileImage = bImage;
+    }
+    
+    public ByteBuffer getProfilePic() {
+    	return profileImage;
+    }
+    
+    public byte[] getBytes() {
+        
+        byte image[] = Bytes.getArray(profileImage);
+        return image;
+    }
+    
+
 }

@@ -9,8 +9,8 @@
 <title>Insert title here</title>
 </head>
 <body>
-
-
+<%String userz = (String)request.getAttribute("user"); %>
+<%String user = (String)request.getAttribute("user"); %>
 <jsp:include page="header.jsp" />
 <%
 	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
@@ -20,6 +20,7 @@
 			<div class="profile_header">
 				<div class="profile_background">
 					<div class="profile_content">
+					<a href="<%=request.getContextPath()%>/picture/<%= request.getAttribute("viewingUser") %>"><img src="<%=request.getContextPath()%>/picture/<%= request.getAttribute("viewingUser") %>" alt="Profile image" /></a>
 						<h3><%= request.getAttribute("viewingUser") %></h3>
 						<a href="/instashutter/follow/<%= request.getAttribute("viewingUser") %>">Follow</a>
 						<div class="profile_follow">

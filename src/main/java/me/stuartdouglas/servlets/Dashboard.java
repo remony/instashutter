@@ -76,10 +76,10 @@ public class Dashboard extends HttpServlet {
         }
         switch (command) {
             case 1:
-                DisplayImage(Convertors.DISPLAY_PROCESSED,args[1], response);
+                DisplayImage(Convertors.DISPLAY_IMAGE,args[1], response);
                 break;
             case 2:
-                DisplayImageList(args[1], request, response);
+                DisplayImageList(Convertors.DISPLAY_IMAGE, args[1], request, response);
                 break;
             case 3:
                 DisplayImage(Convertors.DISPLAY_THUMB,args[1],  response);
@@ -89,7 +89,7 @@ public class Dashboard extends HttpServlet {
         }
 	}
 
-	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void DisplayImageList(int type, String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
         try {
         tm.setCluster(cluster);

@@ -145,4 +145,15 @@
     <servlet-name>Editpassword</servlet-name>
     <url-pattern>/account/editpassword</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>EditProfileImage</display-name>
+    <servlet-name>EditProfileImage</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.EditProfileImage</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditProfileImage</servlet-name>
+    <url-pattern>/account/editProfileImage</url-pattern>
+    <url-pattern>/account/EditProfileImage</url-pattern>
+  </servlet-mapping>
 </web-app>
