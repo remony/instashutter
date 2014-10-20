@@ -8,17 +8,16 @@ import java.util.LinkedList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.datastax.driver.core.Cluster;
 
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.User;
 import me.stuartdouglas.stores.UserSession;
+
+import com.datastax.driver.core.Cluster;
 
 /**
  * Servlet implementation class Account
@@ -76,26 +75,6 @@ public class Account extends HttpServlet {
 		
 	}
 	
-	
-	private void viewAccount(String string, HttpServletRequest request,
-			HttpServletResponse response) {
-		//String args[] = Convertors.SplitRequestPath(request);
-		User tm = new User();
-        tm.setCluster(cluster); 
-        String Username = request.getSession().getAttribute("user").toString();
-
-        LinkedList<UserSession> lsUser = tm.getUserInfo(Username);
-        RequestDispatcher rd = request.getRequestDispatcher("/account.jsp");
-        request.setAttribute("UserInfo", lsUser);
-        try {
-			rd.forward(request, response);
-		} catch (ServletException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
 	
 	private void displayAccount(String args, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		User tm = new User();

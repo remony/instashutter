@@ -27,7 +27,6 @@ import static org.imgscalr.Scalr.*;
 import org.imgscalr.Scalr.Method;
 
 import me.stuartdouglas.lib.*;
-import me.stuartdouglas.stores.Pic;
 import me.stuartdouglas.stores.UserSession;
 
 /**

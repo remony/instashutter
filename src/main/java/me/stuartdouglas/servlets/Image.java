@@ -26,7 +26,6 @@ import javax.servlet.http.Part;
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
-import me.stuartdouglas.models.User;
 import me.stuartdouglas.stores.UserSession;
 import me.stuartdouglas.stores.Pic;
 

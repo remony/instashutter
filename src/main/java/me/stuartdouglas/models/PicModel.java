@@ -104,7 +104,7 @@ public class PicModel {
     
     
     public void setCluster(Cluster cluster) {
-        this.cluster = cluster;
+        PicModel.cluster = cluster;
     }
     
     

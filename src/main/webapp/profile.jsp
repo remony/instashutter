@@ -118,6 +118,10 @@
 		<%}%>
 		
 
+
+
+
+</body>
 <style>
 	body {
 	background: url("<%= background %>") no-repeat center center fixed; 
@@ -128,7 +132,4 @@
 	}
 
 </style>
-
-
-</body>
 </html>

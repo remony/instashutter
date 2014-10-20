@@ -1,9 +1,6 @@
 package me.stuartdouglas.servlets;
 
 import java.io.IOException;
-import java.util.LinkedList;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +11,6 @@ import com.datastax.driver.core.Cluster;
 
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.models.User;
-import me.stuartdouglas.stores.UserSession;
 
 /**
  * Servlet implementation class UserDetails

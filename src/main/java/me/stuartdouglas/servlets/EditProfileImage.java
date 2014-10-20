@@ -2,13 +2,9 @@ package me.stuartdouglas.servlets;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedList;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +15,6 @@ import com.datastax.driver.core.Cluster;
 
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.models.User;
-import me.stuartdouglas.stores.UserSession;
 
 /**
  * Servlet implementation class EditProfileImage
