@@ -120,6 +120,7 @@ public class Image extends HttpServlet {
             out.write(buffer, 0, length);
         }
         out.close();
+        
     }
 
 	

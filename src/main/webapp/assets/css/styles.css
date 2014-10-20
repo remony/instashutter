@@ -5,6 +5,12 @@
 	font-family: 'Roboto', sans-serif;
 }
 
+ul {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
 header {
 	background-color:#3f51b5;
 	margin-bottom:20px;
@@ -15,10 +21,10 @@ header {
 	color:#fff;
 }
 
-nav {
+.navbar {
 	padding:5px;
 	margin-top:-10px;
-	background-color:#e8eaf6;
+	background-color:#fafafa;
 	font-family: 'Roboto', sans-serif;
 }
 
@@ -28,7 +34,7 @@ body {
 	width:80%;
 	font-family: 'Roboto', sans-serif;
 	margin:0 auto;
-	background-color:#e3e3e3;
+	background-color:#eceff1;
 }
 
 .post {

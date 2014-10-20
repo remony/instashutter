@@ -167,4 +167,15 @@
     <url-pattern>/account/profilePersonalization</url-pattern>
     <url-pattern>/account/ProfilePersonalization</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Post</display-name>
+    <servlet-name>Post</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.Post</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Post</servlet-name>
+    <url-pattern>/post</url-pattern>
+    <url-pattern>/post/*</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -22,20 +22,22 @@
 			%>
 	<div class="post">
 		
-			<h3>Login</h3>
-		
-		<form method="POST" action="login">
-		
-			<div class="alert alert-warning" role="alert">${message}</div>
-		
-			<li>User Name <input type="text" name="username" required="required" ></li>
-			<li>Password <input type="password" name="password" required="required" ></li>
-		</ul>
-		
-			<input type="submit" value="Login">
-		
-	</div>
-	</form>
+			
+		<div class="post_timestamp">
+		<h3>Login</h3>
+		</div>
+		<div class="post_caption">
+		<form name="login" action="login" method="POST" accept-charset="utf-8">  
+			    <ul>  
+			        <li><label for="username">Username</label>  
+			        <input type="text" name="username" placeholder="username" required></li>  
+			        <li><label for="password">Password</label>  
+			        <input type="password" name="password" placeholder="password" required></li>  
+			        <li>  
+			        <input type="submit" value="Login"></li>  
+			    </ul>  
+			</form> 
+		</div>
 	<%
 		}
 			%>

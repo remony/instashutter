@@ -29,7 +29,7 @@
         %>
         <div class = "post">
 			<div class = "post_image">
-				<a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
+				<a href="/instashutter/post/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
 			</div>
 			<div class = "post_timestamp">
 				<%= p.getPicAdded() %>
@@ -43,7 +43,11 @@
 			
 			
 			<div class = "post_share">
-				<p>Sharing coming soon</p>
+				
+				<!-- Button from  https://about.twitter.com/resources/buttons#tweet  -->
+<a href="https://twitter.com/share" class="twitter-share-button" data-url="http://localhost:8080/instashutter/Thumb/<%=p.getSUUID()%>" data-hashtags="instashutter">Tweet</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>			
+				
 			</div>
 			
 			<div class = "post_comments">

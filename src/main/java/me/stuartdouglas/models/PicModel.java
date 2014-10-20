@@ -19,6 +19,7 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,8 +28,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
+
 import static org.imgscalr.Scalr.*;
 
 import org.imgscalr.Scalr.Method;
@@ -73,6 +76,38 @@ public class PicModel {
         .forEach(e ->  instaSortedList.add(e));
 		return instaSortedList;
     }
+    
+    public LinkedList<Pic> getPost(String user) {
+    	LinkedList<Pic> instaList = new LinkedList<Pic>();
+    	LinkedList<Pic> instaSortedList = new LinkedList<Pic>();
+    	Session session = cluster.connect("instashutter");
+    	UUID picid = UUID.fromString(user);
+    	PreparedStatement statement = session.prepare("SELECT * from pics where picid =?");
+    	
+    	BoundStatement boundStatement = new BoundStatement(statement);
+    	
+    	ResultSet rs = session.execute(boundStatement.bind(picid));
+    	if (rs.isExhausted()){
+    		System.out.println("No posts returned");
+    	} else {
+    		for (Row row : rs) {
+    			Pic ps = new Pic();
+    			ps.setUUID(row.getUUID("picid"));
+    			ps.setCaption(row.getString("caption"));
+    			ps.setPostedUsername(row.getString("user"));
+    			ps.setPicAdded(row.getDate("interaction_time"));
+    			instaList.add(ps);
+    		}
+    	}
+    	instaList.stream()
+        .sorted((e1, e2) -> e2.getPicAdded()
+                .compareTo(e1.getPicAdded()))
+        .forEach(e ->  instaSortedList.add(e));
+		return instaSortedList;
+    }
+    
+    
+    
     
     public static java.util.LinkedList<Pic> getPicsForUser(String User) {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
