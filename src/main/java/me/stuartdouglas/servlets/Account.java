@@ -98,7 +98,13 @@ public class Account extends HttpServlet {
 	}
 	
 	private void displayAccount(String args, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("/account.jsp");
+		User tm = new User();
+        tm.setCluster(cluster); 
+        String Username = request.getSession().getAttribute("user").toString();
+
+        LinkedList<UserSession> lsUser = tm.getUserInfo(Username);
+		request.setAttribute("UserInfo", lsUser);
+		RequestDispatcher rd = request.getRequestDispatcher("/account.jsp");
         
         rd.forward(request, response);
         

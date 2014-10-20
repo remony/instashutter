@@ -42,27 +42,6 @@ public class EditProfileImage extends HttpServlet {
     	cluster = CassandraHosts.getCluster();
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		User user = new User();
-		user.setCluster(cluster);
-		
-		String username = request.getSession().getAttribute("user").toString();
-		
-		LinkedList<UserSession> lsUser = user.getUserInfo(username);
-		
-		
-		
-		
-	    request.setAttribute("UserInfo", lsUser);
-		
-		System.out.println("Displaying user profile editor");
-		RequestDispatcher rd=request.getRequestDispatcher("/account/editProfileImage.jsp");
-		rd.forward(request,response);
-	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -87,7 +66,7 @@ public class EditProfileImage extends HttpServlet {
 					tm.setProfilePic(b, user, type);
 					is.close();
 				}
-				response.sendRedirect("/instashutter/account/editProfileImage");
+				response.sendRedirect("/instashutter/account");
 			}
 		} catch (Exception e)	{
 			System.out.println("Error uploading new profile image: " + e);

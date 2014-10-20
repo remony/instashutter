@@ -70,8 +70,7 @@
 				<p>Comments coming soon</p>
 			</div>
 		</div>
-		
-		
+
 <%
 
             }
