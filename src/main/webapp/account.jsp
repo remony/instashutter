@@ -7,7 +7,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Accounts page</title>
+<script src="/instashutter/assets/js/Accounts.js"></script>
 </head>
 <body>
 <jsp:include page="header.jsp" />
@@ -21,54 +22,14 @@
        		</div>
        		<div class="account_caption">
        			<div class="account_options">
-       				<a href="#editDetails" onclick="toggle_visibility('details')">Edit User Details</a><br>
-       				<a href="#editPassword" onclick="toggle_visibility('password')">Change Password</a><br>
-       				<a href="#editProfileImage" onclick="toggle_visibility('profileimage')">Change Profile image</a><br>
-       				<a href="#editBio" onclick="toggle_visibility('bio')">Change Bio</a><br>
-       				<a href="#changeProfileBackground" onclick="toggle_visibility('profileBackground')">Change profile background</a>
+       				<a href="#editDetails" onclick="toggle_hidden('details')">Edit User Details</a><br>
+       				<a href="#editPassword" onclick="toggle_hidden('password')">Change Password</a><br>
+       				<a href="#editProfileImage" onclick="toggle_hidden('profileimage')">Change Profile image</a><br>
+       				<a href="#editBio" onclick="toggle_hidden('bio')">Change Bio</a><br>
+       				<a href="#changeProfileBackground" onclick="toggle_hidden('profileBackground')">Change profile background</a>
        			</div>
        			
-       			<script type="text/javascript">
-
-				    function toggle_visibility(id) {
-				       var e = document.getElementById(id);
-				       if (id == "details") {
-				    	   var id = ["password", "profileimage", "bio", "profileBackground", "account_message"];
-				    	   for (var i = 0; i < id.length; i++){
-				    		   var tmp = document.getElementById(id[i]);
-				    		   tmp.style.display = 'none';
-				    	   } 
-				       } else if (id == "password") {
-				    	   var id = ["details", "profileimage", "bio","profileBackground", "account_message"];
-				    	   for (var i = 0; i < id.length; i++){
-				    		   var tmp = document.getElementById(id[i]);
-				    		   tmp.style.display = 'none';
-				    	   }
-				       } else if (id == "profileimage") {
-				    	   var id = ["details", "password", "bio","profileBackground", "account_message"];
-				    	   for (var i = 0; i < id.length; i++){
-				    		   var tmp = document.getElementById(id[i]);
-				    		   tmp.style.display = 'none';
-				    	   }
-				       }	else if (id == "bio")	{
-				    	   var id = ["details", "profileimage","profileBackground", "profileimage", "account_message"];
-				    	   for (var i = 0; i < id.length; i++){
-				    		   var tmp = document.getElementById(id[i]);
-				    		   tmp.style.display = 'none';
-				    	   }
-				       }	else if (id == "profileBackground")	{
-				    	   var id = ["details", "profileimage","profileBackground", "profileimage", "bio"];
-				    	   for (var i = 0; i < id.length; i++){
-				    		   var tmp = document.getElementById(id[i]);
-				    		   tmp.style.display = 'none';
-				    	   }
-				       }	else	{
-				    		console.log("Error unknown ID");   
-				       }
-				          e.style.display = 'block';
-				    }
-				
-				</script>
+       			
        			
        			
        			<div class="account_view">

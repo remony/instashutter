@@ -109,6 +109,8 @@ box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
 }
 
 .account {
+	width:800px;
+	margin: 0 auto;
 	background-color:#fff;
 	min-height:300px;
 	height:100%;
