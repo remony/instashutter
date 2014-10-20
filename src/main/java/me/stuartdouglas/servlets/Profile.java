@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -81,7 +82,12 @@ public class Profile extends HttpServlet {
 	
 	private void DisplayImageList(String Username, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
+        User user = new User();
         tm.setCluster(cluster);
+        user.setCluster(cluster);
+
+        LinkedList<UserSession> lsUser = user.getUserInfo(Username);
+		request.setAttribute("UserInfo", lsUser);
         //java.util.LinkedList<UserSession> lsProfile = getUser.getUserInfo(Username);
         java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(Username.toString());
         RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");

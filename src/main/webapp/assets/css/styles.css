@@ -127,7 +127,7 @@ box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
 
 
 
-.account #details, #password, #profileimage, #bio {
+.account #details, #password, #profileimage, #bio, #profileBackground {
 	display:none;
 }
 
@@ -141,15 +141,7 @@ box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
 	padding:15px;
 }
 
-.profile_background {
-	background: url(/instashutter/assets/images/profilebk.jpg) no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  height:200px;
-  width:100%;
-}
+
 
 .profile_content {
 	background-color:rgba(20, 20, 20, 0.2);

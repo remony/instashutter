@@ -156,4 +156,15 @@
     <url-pattern>/account/editProfileImage</url-pattern>
     <url-pattern>/account/EditProfileImage</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ProfilePersonalization</display-name>
+    <servlet-name>ProfilePersonalization</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.ProfilePersonalization</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProfilePersonalization</servlet-name>
+    <url-pattern>/account/profilePersonalization</url-pattern>
+    <url-pattern>/account/ProfilePersonalization</url-pattern>
+  </servlet-mapping>
 </web-app>

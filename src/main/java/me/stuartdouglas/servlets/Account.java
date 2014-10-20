@@ -101,7 +101,7 @@ public class Account extends HttpServlet {
 		User tm = new User();
         tm.setCluster(cluster); 
         String Username = request.getSession().getAttribute("user").toString();
-
+        
         LinkedList<UserSession> lsUser = tm.getUserInfo(Username);
 		request.setAttribute("UserInfo", lsUser);
 		RequestDispatcher rd = request.getRequestDispatcher("/account.jsp");
@@ -169,6 +169,7 @@ public class Account extends HttpServlet {
 		String previousLname = request.getParameter("previousLname");
 		String password = request.getParameter("password");
 		String username = request.getSession().getAttribute("user").toString();
+		String location = request.getParameter("location");
 		
 		//If statement commented out for revision: caused error
 		
@@ -181,7 +182,7 @@ public class Account extends HttpServlet {
 	        boolean isValidUser = tm.IsValidUser(username, password);
 	        if (isValidUser) {
 	        	try {
-	        		tm.updateUserDetails(username, newFname, newLname);
+	        		tm.updateUserDetails(username, newFname, newLname, location);
 	        		response.sendRedirect("/instashutter/account");
 	        	} catch (Exception e) {
 		        	System.out.println("Error: " + e);

@@ -40,12 +40,12 @@ public class UserDetails extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String username = request.getSession().getAttribute("user").toString();
-		//String username = request.getParameter("previousFname").toString();
 		String newFname = request.getParameter("fname");
 		String prevFname = request.getParameter("prevFname");
 		String newLname = request.getParameter("lname");
 		String prevLname = request.getParameter("prevLname");
 		String password = request.getParameter("password");
+		String location = request.getParameter("location");
 		
 		User user = new User();
 		user.setCluster(cluster);
@@ -58,7 +58,7 @@ public class UserDetails extends HttpServlet {
 		}
 		if (isValidUser) {
 			try {
-				user.updateUserDetails(username, newFname, newLname);
+				user.updateUserDetails(username, newFname, newLname, location);
 				response.sendRedirect("/instashutter/account");
 			} catch (Exception e) {
 				System.out.println("Error editing user information: " + e);

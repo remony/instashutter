@@ -113,6 +113,8 @@ public class User {
         for (Row row : rs) {
         	UserSession ps1 = new UserSession();
    			ps1.setAll(row.getString("login"), row.getString("first_name"), row.getString("last_name"));
+   			ps1.setBackground(row.getString("background"));
+   			ps1.setLocation(row.getString("location"));
    			userList.add(ps1);
         }
     }
@@ -135,15 +137,14 @@ public class User {
 	   }
    }
 
-	public void updateUserDetails(String username,
-			String fname, String lname) {
+	public void updateUserDetails(String username, String fname, String lname, String location) {
 		// TODO Auto-generated method stub
 		System.out.println("yay");
 		Session session = cluster.connect("instashutter");
-		PreparedStatement ps = session.prepare("UPDATE userprofiles set first_name = ?, last_name = ? where login = ?");
+		PreparedStatement ps = session.prepare("UPDATE userprofiles set first_name = ?, last_name = ?, location = ? where login = ?");
 		ResultSet rs = null;
 		BoundStatement boundStatement = new BoundStatement(ps);
-		rs = session.execute(boundStatement.bind(fname, lname, username));
+		rs = session.execute(boundStatement.bind(fname, lname, location, username));
 		if (rs.isExhausted()){
 			System.out.println("something went wrong");
 			//return null;
@@ -271,5 +272,22 @@ public class User {
     	img = resize(img, Method.SPEED, 300, OP_ANTIALIAS);
         return pad(img, 1);
     }
+
+	public void updateBackground(String username, String url) {
+		try {
+Session session = cluster.connect("instashutter");
+            
+            PreparedStatement ps = session.prepare("update userprofiles set background=? where login=?");
+            BoundStatement bs = new BoundStatement(ps);
+
+            session.execute(bs.bind(url, username));
+
+            session.close();
+		}	catch (Exception e)	{
+			System.out.println("Error change user background: " + e);
+		}
+	}
+
+
 
 }

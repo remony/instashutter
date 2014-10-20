@@ -12,7 +12,7 @@
 <body>
 <jsp:include page="header.jsp" />
 
-	
+	<% String background = null; %>
        	<div class="account">
        		<div class="post_timestamp">
        			<h2>Account details</h2>
@@ -20,9 +20,10 @@
        		<div class="account_caption">
        			<div class="account_options">
        				<a href="#editDetails" onclick="toggle_visibility('details')">Edit User Details</a><br>
-       				<a href="#editPassword" onclick="toggle_visibility('password')">Change Password</a>
-       				<a href="#editProfileImage" onclick="toggle_visibility('profileimage')">Change Profile image</a>
-       				<a href="#editBio" onclick="toggle_visibility('bio')">Change Bio</a>
+       				<a href="#editPassword" onclick="toggle_visibility('password')">Change Password</a><br>
+       				<a href="#editProfileImage" onclick="toggle_visibility('profileimage')">Change Profile image</a><br>
+       				<a href="#editBio" onclick="toggle_visibility('bio')">Change Bio</a><br>
+       				<a href="#changeProfileBackground" onclick="toggle_visibility('profileBackground')">Change profile background</a>
        			</div>
        			
        			<script type="text/javascript">
@@ -30,25 +31,31 @@
 				    function toggle_visibility(id) {
 				       var e = document.getElementById(id);
 				       if (id == "details") {
-				    	   var id = ["password", "profileimage", "bio", "account_message"];
+				    	   var id = ["password", "profileimage", "bio", "profileBackground", "account_message"];
 				    	   for (var i = 0; i < id.length; i++){
 				    		   var tmp = document.getElementById(id[i]);
 				    		   tmp.style.display = 'none';
 				    	   } 
 				       } else if (id == "password") {
-				    	   var id = ["details", "profileimage", "bio", "account_message"];
+				    	   var id = ["details", "profileimage", "bio","profileBackground", "account_message"];
 				    	   for (var i = 0; i < id.length; i++){
 				    		   var tmp = document.getElementById(id[i]);
 				    		   tmp.style.display = 'none';
 				    	   }
 				       } else if (id == "profileimage") {
-				    	   var id = ["details", "password", "bio", "account_message"];
+				    	   var id = ["details", "password", "bio","profileBackground", "account_message"];
 				    	   for (var i = 0; i < id.length; i++){
 				    		   var tmp = document.getElementById(id[i]);
 				    		   tmp.style.display = 'none';
 				    	   }
 				       }	else if (id == "bio")	{
-				    	   var id = ["details", "profileimage", "profileimage", "account_message"];
+				    	   var id = ["details", "profileimage","profileBackground", "profileimage", "account_message"];
+				    	   for (var i = 0; i < id.length; i++){
+				    		   var tmp = document.getElementById(id[i]);
+				    		   tmp.style.display = 'none';
+				    	   }
+				       }	else if (id == "profileBackground")	{
+				    	   var id = ["details", "profileimage","profileBackground", "profileimage", "bio"];
 				    	   for (var i = 0; i < id.length; i++){
 				    		   var tmp = document.getElementById(id[i]);
 				    		   tmp.style.display = 'none';
@@ -78,14 +85,15 @@
        					iterator = userInfo.iterator();
        					while (iterator.hasNext()) {
        						UserSession p = (UserSession) iterator.next();
-       						
+       						background = p.getBackground();
        			%>
        			<form name="input" action="/instashutter/account/editdetails" method="post">
 					Your username: (cannot be changed)<br>
 					First name: <input type="text" name="fname" value = "<%= p.getfname() %>"><br>
 					<input type="hidden" name="previousFname" value = "<%= p.getfname() %>">			
 					Last name: <input type="text" name="lname" value = "<%= p.getlname() %>"><br>
-					<input type="hidden" name="previousLname" value = ""<%= p.getlname() %>>
+					<input type="hidden" name="previousLname" value = "<%= p.getlname() %>"><br>
+					Location: <input type="text" name="location" value = "<%= p.getLocation() %>"><br>
 					Password: <input type="password" name="password" ><br>
 					<input type="submit" value="Submit">
 				</form>
@@ -117,6 +125,12 @@
        				</div>
        				<div id="bio">
        					<h4>Coming soon.</h4>
+       				</div>
+       				<div id="profileBackground">
+       					<form name="input" action="/instashutter/account/profilePersonalization" method="post">
+		       				Background URL: <input type="text" name="url" value = "<%= background %>"><br>
+							<input type="submit" value="Update background">
+		       			</form>
        				</div>
        			</div>
        		</div>

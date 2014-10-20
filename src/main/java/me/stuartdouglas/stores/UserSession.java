@@ -17,6 +17,8 @@ public final class UserSession {
     String Username = null;
     String fname = "null";
     String lname = "null";
+    String userBackground = null;
+    String location = null;
     private ByteBuffer profileImage = null;
     
     public UserSession() {
@@ -75,6 +77,22 @@ public final class UserSession {
         
         byte image[] = Bytes.getArray(profileImage);
         return image;
+    }
+    
+    public void setBackground(String url) {
+    	this.userBackground = url;
+    }
+    
+    public String getBackground() {
+    	return userBackground;
+    }
+    
+    public void setLocation(String location) {
+    	this.location = location;
+    }
+    
+    public String getLocation()	{
+    	return location;
     }
     
 

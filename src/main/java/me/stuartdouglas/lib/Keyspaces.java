@@ -49,6 +49,8 @@ public final class Keyspaces {
                     + "      last_name text,\n"
                     + "profileImage blob,\n"
                     + "bio text, \n"
+                    + "background text, \n"
+                    + "location text, \n"
                     + "      email set<text>,\n"
                     + "      addresses  map<text, frozen <address>>\n"
                     + "  );";
