@@ -1,4 +1,15 @@
-
+/*
+ * 	Title: Toggle_hidden
+ * 	Author: Stuart Douglas
+ * 
+ * 
+ * 	A simple js file for the menu in /accounts
+ * 
+ * 	Hides and unhides elements of settings to keep the ui smaller and to show what it needed.
+ * 
+ *  Advantages: 1 file instead of multiple jsp's.
+ * 
+ */
 function toggle_hidden(id) {
 				       var e = document.getElementById(id);
 				       if (id == "details") {
