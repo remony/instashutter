@@ -27,17 +27,14 @@
        				<a href="#editProfileImage" onclick="toggle_hidden('profileimage')">Change Profile image</a><br>
        				<a href="#editBio" onclick="toggle_hidden('bio')">Change Bio</a><br>
        				<a href="#changeProfileBackground" onclick="toggle_hidden('profileBackground')">Change profile background</a>
+       				<a href="#changeprofileEmail" onclick="toggle_hidden('profileEmail')">Change email</a>
        			</div>
        			
        			
        			
        			
        			<div class="account_view">
-       				<div id="account_message">
-       					<h4>Please select one of the options to your left</h4>
-       				</div>
-       				<div id="details">
-       				<%
+       			<%
        				LinkedList<UserSession> userInfo = (LinkedList<UserSession>) request.getAttribute("UserInfo");
        				if (userInfo == null) {
        			%>
@@ -51,12 +48,24 @@
        						background = p.getBackground();
        						bio = p.getBio();
        			%>
+       				<div id="account_message">
+       					<h4>Please select one of the options to your left</h4><br>
+       					<a href="<%=request.getContextPath()%>/picture/<%= p.getUsername() %>"><img src="<%=request.getContextPath()%>/picture/<%= p.getUsername() %>" alt="Profile image" /></a>
+       					Username: <%= p.getUsername() %><br>
+       					Full name: <%= p.getfname() %> <%= p.getlname() %><br>
+       					Location: <%= p.getLocation() %><br>
+       					Bio: <%= p.getBio() %><br>
+       					Profile background: <%= p.getBackground() %><br>
+       					Profile email: <%= p.getEmail() %><br>
+       				</div>
+       				<div id="details">
+       				
        			<form name="input" action="/instashutter/account/editdetails" method="post">
 					Your username: (cannot be changed)<br>
 					First name: <input type="text" name="fname" value = "<%= p.getfname() %>"><br>
 					<input type="hidden" name="previousFname" value = "<%= p.getfname() %>">			
 					Last name: <input type="text" name="lname" value = "<%= p.getlname() %>"><br>
-					<input type="hidden" name="previousLname" value = "<%= p.getlname() %>"><br>
+					<input type="hidden" name="previousLname" value = "<%= p.getlname() %>">
 					Location: <input type="text" name="location" value = "<%= p.getLocation() %>"><br>
 					Password: <input type="password" name="password" ><br>
 					<input type="submit" value="Submit">
@@ -95,6 +104,13 @@
        					<form name="input" action="/instashutter/account/profilePersonalization" method="post">
 		       				Background URL: <input type="text" name="url" value = "<%= p.getBackground() %>"><br>
 							<input type="submit" value="Update background">
+		       			</form>
+       				</div>
+       				<div id="profileEmail">
+       					<form name="emailInput" action="/instashutter/account/editEmail" method="post">
+		       				Email: <input type="text" name="email" value = "<%= p.getEmail() %>"><br>
+							Enter your password:<input type="password" name="password" value = ""><br>
+							<input type="submit" value="Update email">
 		       			</form>
        				</div>
        			</div>

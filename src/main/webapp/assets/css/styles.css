@@ -140,7 +140,7 @@ box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
 
 
 
-.account #details, #password, #profileimage, #bio, #profileBackground {
+.account #details, #password, #profileimage, #bio, #profileBackground, #profileEmail {
 	display:none;
 }
 
@@ -186,5 +186,9 @@ box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
 	color:#fff;
 	position:relative;
 	margin-left:20px;
+}
+
+.profile_background {
+	
 }
 

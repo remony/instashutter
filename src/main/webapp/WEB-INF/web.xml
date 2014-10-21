@@ -188,4 +188,14 @@
     <servlet-name>UserBio</servlet-name>
     <url-pattern>/account/editbio</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>UpdateEmail</display-name>
+    <servlet-name>UpdateEmail</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.UpdateEmail</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateEmail</servlet-name>
+    <url-pattern>/account/editEmail</url-pattern>
+  </servlet-mapping>
 </web-app>

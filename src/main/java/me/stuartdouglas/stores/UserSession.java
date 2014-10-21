@@ -1,6 +1,8 @@
 package me.stuartdouglas.stores;
 
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Set;
 
 import com.datastax.driver.core.utils.Bytes;
 
@@ -20,6 +22,7 @@ public final class UserSession {
     String userBackground = null;
     String location = null;
     String bio = null;
+    Set<String> email = null;
     private ByteBuffer profileImage = null;
     
     public UserSession() {
@@ -103,6 +106,18 @@ public final class UserSession {
     public String getBio()	{
     	return bio;
     }
-    
 
-}
+    
+    public Set<String> getEmail()	{
+    	return email;
+    }
+
+
+	public void setEmail(Set<String> set) {
+		// TODO Auto-generated method stub
+		this.email = set;
+	}
+
+
+	}
+

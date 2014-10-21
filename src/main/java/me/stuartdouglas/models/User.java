@@ -18,6 +18,8 @@ import java.security.NoSuchAlgorithmException;
 
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -115,6 +117,7 @@ public class User {
    			ps1.setBackground(row.getString("background"));
    			ps1.setLocation(row.getString("location"));
    			ps1.setBio(row.getString("bio"));
+   			ps1.setEmail(row.getSet("email", String.class)); 
    			userList.add(ps1);
         }
     }
@@ -154,6 +157,21 @@ public class User {
 		}
 		
 		
+	}
+	
+	public void updateUserEmail(String username, Set<String> a)	{
+		System.out.println("User " + username + " is updating there email.");
+		Session session = cluster.connect("instashutter");
+		PreparedStatement ps = session.prepare("update userprofiles set email =? where login=?");
+		ResultSet rs = null;
+		BoundStatement boundStatement = new BoundStatement(ps);
+		rs = session.execute(boundStatement.bind(a, username));
+		if(rs.isExhausted())	{
+			System.out.println("User " + username + "Edited email successfully");
+		} else {
+			System.out.println("User " + username + "Edited email unsuccessfully, No change was made");
+			
+		}
 	}
 	
 	public void updateUserPassword(String username, String password) {
