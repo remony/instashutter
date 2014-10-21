@@ -44,6 +44,7 @@ public class User {
     
     public boolean RegisterUser(String first_name, String last_name, String username, String Password){
         //AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
+    	
         String EncodedPassword=null;
         try {
             EncodedPassword= AeSimpleSHA1.SHA1(Password);

@@ -9,6 +9,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Accounts page</title>
 <script src="/instashutter/assets/js/Accounts.js"></script>
+
 </head>
 <body>
 <jsp:include page="header.jsp" />

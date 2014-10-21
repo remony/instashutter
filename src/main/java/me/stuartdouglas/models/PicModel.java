@@ -81,6 +81,7 @@ public class PicModel {
     	    		}
     	    	}
     		}
+    		session.close();
     	}
     	
     	
@@ -121,6 +122,7 @@ public class PicModel {
         .sorted((e1, e2) -> e2.getPicAdded()
                 .compareTo(e1.getPicAdded()))
         .forEach(e ->  instaSortedList.add(e));
+    	session.close();
 		return instaSortedList;
     }
     
@@ -151,6 +153,7 @@ public class PicModel {
                 Pics.add(pic);
             }
         }
+        session.close();
         return Pics;
     }
     
