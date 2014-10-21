@@ -66,6 +66,13 @@ public final class Keyspaces {
             	   + "since timestamp,"
             	  +  "PRIMARY KEY (username, follower)"
             	+");";
+        	String CreateCommentsTable ="CREATE TABLE if not exists instashutter.comments ("
+        			+ "username text,"
+        			+ "picid uuid,"
+        			+ "comment_text text,"
+        			+ "comment_added timestamp,"
+        			+ "PRIMARY KEY (picid, comment_added)"
+        			+ ") WITH CLUSTERING ORDER BY (comment_added DESC);";
             Session session = c.connect();
             try {
                 PreparedStatement statement = session
@@ -110,19 +117,25 @@ public final class Keyspaces {
                 SimpleStatement cqlQuery = new SimpleStatement(CreateUserProfile);
                 session.execute(cqlQuery);
             } catch (Exception et) {
-                System.out.println("Can't create Address Profile " + et);
+                System.out.println("Can't create User Profile " + et);
             }
             try {
                 SimpleStatement cqlQuery = new SimpleStatement(CreateFriendList);
                 session.execute(cqlQuery);
             } catch (Exception et) {
-                System.out.println("Can't create Address Profile " + et);
+                System.out.println("Can't create Friend List " + et);
             }
             try {
                 SimpleStatement cqlQuery = new SimpleStatement(CreateFollowerList);
                 session.execute(cqlQuery);
             } catch (Exception et) {
-                System.out.println("Can't create Address Profile " + et);
+                System.out.println("Can't create Follower List " + et);
+            }
+            try {
+                SimpleStatement cqlQuery = new SimpleStatement(CreateCommentsTable);
+                session.execute(cqlQuery);
+            } catch (Exception et) {
+                System.out.println("Can't create Comments Table " + et);
             }
             session.close();
 

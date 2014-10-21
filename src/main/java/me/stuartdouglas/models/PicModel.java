@@ -62,14 +62,32 @@ public class PicModel {
     		System.out.println("No posts returned");
     	} else {
     		for (Row row : rs) {
-    			Pic ps = new Pic();
-    			ps.setUUID(row.getUUID("picid"));
-    			ps.setCaption(row.getString("caption"));
-    			ps.setPostedUsername(row.getString("user"));
-    			ps.setPicAdded(row.getDate("interaction_time"));
-    			instaList.add(ps);
+    			Pic pic = new Pic();
+    			UUID picid = row.getUUID("picid");
+    			pic.setUUID(row.getUUID("picid"));
+    			pic.setCaption(row.getString("caption"));
+    			pic.setPostedUsername(row.getString("user"));
+    			pic.setPicAdded(row.getDate("interaction_time"));
+    			instaList.add(pic);
+    			//Get comments from post and limit to 5 (stops endless list on dashboard)
+    			PreparedStatement pss = session.prepare("SELECT * from comments where picid =? limit 5");
+    	    	ResultSet rss = null;
+    	    	BoundStatement boundStatement2 = new BoundStatement(pss);
+    	    	rss = session.execute(boundStatement2.bind(picid));
+    	    	if (rss.isExhausted())	{
+    	    	}	else	{
+    	    		for (Row rows : rss)	{
+    	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    		}
+    	    	}
     		}
     	}
+    	
+    	
+    	
+    	
+    	
+    	//Sorting posts by pic_added
     	instaList.stream()
         .sorted((e1, e2) -> e2.getPicAdded()
                 .compareTo(e1.getPicAdded()))
@@ -345,8 +363,27 @@ public class PicModel {
        session.close();
        Pic p = new Pic();
        p.setPic(bImage, length, type);
-
+       
        return p;
 
    }
+
+
+
+	public void postComment(String username, String picid, String comment) {
+		try {
+			Session session = cluster.connect("instashutter");
+            
+            PreparedStatement ps = session.prepare("insert into comments (comment_added, picid, comment_text, username) values(?,?,?,?)");
+            BoundStatement bs = new BoundStatement(ps);
+            UUID uuid = UUID.fromString(picid);
+            Date date = new Date();
+            session.execute(bs.bind(date, uuid, comment, username));
+
+            session.close();
+		}	catch (Exception e)	{
+			System.out.println("Error posting comment to database: " + e);
+		}
+		
+	}
 }

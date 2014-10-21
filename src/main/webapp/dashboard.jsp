@@ -52,7 +52,34 @@
 			</div>
 			
 			<div class = "post_comments">
-				<p>Comments coming soon</p>
+				<% LinkedList<CommentStore> lsComments = (LinkedList<CommentStore>) p.getCommentlist();
+				
+				if (lsComments == null) {
+				} else { %>
+				<%
+				Iterator<CommentStore> commentIterator;
+				commentIterator = lsComments.iterator();
+				while(commentIterator.hasNext()){
+					CommentStore c = (CommentStore) commentIterator.next();
+					%>
+						<!-- Print out comments -->
+						<div class="comment_container">
+							<div class="comment_username">
+								<a href="/instashutter/profile/<%=c.getUsername()%>"><%= c.getUsername() %></a>
+							</div>
+							<div class="comment_text">
+								<%= c.getCommentMessage() %>
+							</div>
+						</div>
+						
+					<% } } %>
+					<div class="post_comment_form">
+						<form name="comment_input" action="/instashutter/dashboard" method="POST">
+						<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
+						Comment: <input type="text" name="comment">
+						<input type="submit" value="comment">
+						</form>
+					</div>
 			</div>
 		</div>
 			      

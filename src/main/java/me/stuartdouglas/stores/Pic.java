@@ -4,6 +4,8 @@ import com.datastax.driver.core.utils.Bytes;
 
 import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.UUID;
 
 //import me.stuartdouglas.models.User;
 
@@ -21,6 +23,8 @@ public class Pic {
     private String caption = "";
     java.util.Date timeAdded = new java.util.Date();
     private Date picAdded = new Date();
+    private String postComment;
+    private LinkedList<CommentStore> commentlist = new LinkedList<>();
     
     
     public Pic() {
@@ -85,6 +89,24 @@ public class Pic {
     public Date getPicAdded() {
     	return picAdded;
     }
+	public LinkedList<CommentStore> getCommentlist() {
+		return commentlist;
+	}
+
+	public String getPostComment() {
+		return postComment;
+	}
+	public void setPostComment(String postComment) {
+		this.postComment = postComment;
+	}
+	public void setCommentlist(String username, UUID picid, String comment_text, Date date) {
+		CommentStore comment = new CommentStore();
+		comment.setUsername(username);
+		comment.setUuid(picid);
+		comment.setCommentMessage(comment_text);
+		comment.setPosted_time(date);
+		commentlist.add(comment);
+	}
 
 }
 

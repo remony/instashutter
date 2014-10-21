@@ -36,6 +36,7 @@ import com.datastax.driver.core.Cluster;
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
+import me.stuartdouglas.models.User;
 import me.stuartdouglas.stores.Pic;
 
 /**
@@ -132,7 +133,24 @@ public class Dashboard extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		String username = request.getSession().getAttribute("user").toString();
+		String comment = request.getParameter("comment");
+		String picid = request.getParameter("uuid");
+		System.out.println(comment + " " + picid);
+		
+		PicModel pic = new PicModel();
+		pic.setCluster(cluster);
+		
+		try {
+			
+		}	catch (Exception e)	{
+			System.out.println("Error posting new comment: " + e);
+		}
+		pic.postComment(username, picid, comment);
+
+		
+		
+		response.sendRedirect("/instashutter/dashboard");
 	}
 
 
