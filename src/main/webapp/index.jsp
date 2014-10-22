@@ -10,6 +10,35 @@
 
 
 
+
+
+
+<body>
+
+	<jsp:include page="header.jsp" />
+
+	<div class="wrapper">
+		<div class="index_message">
+		<h1>Welcome to InstaShutter, where you can share images</h1>
+		</div>
+		<div class="index_login">
+
+			<form name="login" action="login" method="POST" accept-charset="utf-8">  
+			    <ul>  
+			        <li><label for="username">Username</label>  
+			        <input type="text" name="username" placeholder="username" required></li>  
+			        <li><label for="password">Password</label>  
+			        <input type="password" name="password" placeholder="password" required></li>  
+			        <li>  
+			        <input type="submit" value="Login"></li>  
+			    </ul>  
+			</form>  
+		</div>
+		
+	</div>
+
+
+</body>
 <style>
 	body {
 		background: url('/instashutter/assets/images/new-york-14480.jpg') no-repeat center center fixed; 
@@ -47,33 +76,5 @@
     	border: none; 
 	}
 </style>
-
-
-<body>
-
-	<jsp:include page="header.jsp" />
-
-	<div class="wrapper">
-		<div class="index_message">
-		<h1>Welcome to InstaShutter, where you can share images</h1>
-		</div>
-		<div class="index_login">
-
-			<form name="login" action="login" method="POST" accept-charset="utf-8">  
-			    <ul>  
-			        <li><label for="username">Username</label>  
-			        <input type="text" name="username" placeholder="username" required></li>  
-			        <li><label for="password">Password</label>  
-			        <input type="password" name="password" placeholder="password" required></li>  
-			        <li>  
-			        <input type="submit" value="Login"></li>  
-			    </ul>  
-			</form>  
-		</div>
-		
-	</div>
-
-
-</body>
 </html>
 

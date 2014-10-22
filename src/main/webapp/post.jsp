@@ -44,7 +44,7 @@
         		position:absolute;
         		width:100%;
         		height:100%;
-        		opacity:0.12;
+        		opacity:0.2;
 		      	background: url(/instashutter/Image/<%=p.getSUUID()%>) no-repeat center center fixed; 
 				-webkit-background-size: cover;
 				-moz-background-size: cover;
@@ -122,4 +122,6 @@
 		</div>
 
 </body>
+<script src="/instashutter/assets/js/jquery.timeago.js"></script>
+<script src="/instashutter/assets/js/app.js"></script>
 </html>

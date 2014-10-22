@@ -184,7 +184,7 @@ public class Dashboard extends HttpServlet {
 
 		
 		
-		response.sendRedirect("/instashutter/dashboard");
+		response.sendRedirect("/instashutter/post/" + picid);
 	}
 
 

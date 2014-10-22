@@ -177,4 +177,8 @@
 	}
 
 </style>
+
+<script src="/instashutter/assets/js/jquery.timeago.js"></script>
+<script src="/instashutter/assets/js/app.js"></script>
+
 </html>
