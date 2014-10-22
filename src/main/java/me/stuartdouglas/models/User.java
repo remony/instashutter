@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 
 
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -42,25 +43,29 @@ public class User {
         
     }
     
-    public boolean RegisterUser(String first_name, String last_name, String username, String Password){
+    public boolean RegisterUser(String first_name, String last_name, String username, String password, String email, String location, String bio){
         //AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
     	
         String EncodedPassword=null;
         try {
-            EncodedPassword= AeSimpleSHA1.SHA1(Password);
+            EncodedPassword= AeSimpleSHA1.SHA1(password);
         }catch (UnsupportedEncodingException | NoSuchAlgorithmException et){
             System.out.println("Can't check your password");
             return false;
         }
+        
+        Set<String> Email = new HashSet<String>();
+		Email.add(email);
+		
         Session session = cluster.connect("instashutter");
-        PreparedStatement ps = session.prepare("insert into userprofiles (first_name, last_name, login,password) Values(?,?,?,?)");
+        PreparedStatement ps = session.prepare("insert into userprofiles (first_name, last_name, login,password, email, location, bio) Values(?,?,?,?,?,?,?)");
        
         BoundStatement boundStatement = new BoundStatement(ps);
         session.execute( // this is where the query is executed
                 boundStatement.bind( // here you are binding the 'boundStatement'
-                        first_name, last_name, username,EncodedPassword));
+                        first_name, last_name, username,EncodedPassword, Email, location, bio));
         //We are assuming this always works.  Also a transaction would be good here !
-        
+        session.close();
         return true;
     }
 
@@ -92,7 +97,7 @@ public class User {
                     return true;
             }
         }
-   
+        session.close();
     
     return false;  
     }
@@ -139,6 +144,7 @@ public class User {
 	   } else {
 		   return null;
 	   }
+	   
    }
 
 	public void updateUserDetails(String username, String fname, String lname, String location) {
@@ -149,6 +155,7 @@ public class User {
 		ResultSet rs = null;
 		BoundStatement boundStatement = new BoundStatement(ps);
 		rs = session.execute(boundStatement.bind(fname, lname, location, username));
+		session.close();
 		if (rs.isExhausted()){
 			System.out.println("something went wrong");
 			//return null;
@@ -167,6 +174,7 @@ public class User {
 		ResultSet rs = null;
 		BoundStatement boundStatement = new BoundStatement(ps);
 		rs = session.execute(boundStatement.bind(a, username));
+		session.close();
 		if(rs.isExhausted())	{
 			System.out.println("User " + username + "Edited email successfully");
 		} else {
@@ -189,6 +197,7 @@ public class User {
 		ResultSet rs = null;
 		BoundStatement boundStatement = new BoundStatement(ps);
 		rs = session.execute(boundStatement.bind(EncodedPassword, username));
+		session.close();
 		if (rs.isExhausted()){
 			System.out.println("something went wrong");
 			//return null;
@@ -321,6 +330,27 @@ public class User {
 			System.out.println("Error change user background: " + e);
 		}
 		
+	}
+	
+	public boolean isUserRegistered(String username)	{
+		try {
+			Session session = cluster.connect("instashutter");
+			PreparedStatement ps = session.prepare("select login from userprofiles where login=?");
+			BoundStatement bs = new BoundStatement(ps);
+			ResultSet rs = session.execute(bs.bind(username));
+			session.close();
+			if (rs.isExhausted()) {
+                System.out.println("No profile image returned");
+                return false;
+            } else {
+                return true;
+            }
+			
+			
+		}	catch	(Exception e)	{
+			System.out.println("Error checking if user exists: " + e);
+		}
+		return false;
 	}
 
 

@@ -41,19 +41,13 @@ public class Register extends HttpServlet {
 				//If the user is not logged in or new display the register page
 				RequestDispatcher rd=request.getRequestDispatcher("/register.jsp");
 			    rd.forward(request,response);
-
 			} else {
 				//If the user if logged in redirect them out of the register
 				response.sendRedirect("/instashutter/");
 			}
-
-
 		} catch (Exception e) {
 			System.out.println("Error: " + e);
 		}
-
-
-
 	}
 
 	/**
@@ -62,16 +56,30 @@ public class Register extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		try {
-		String fname = request.getParameter("fname");
-		String lname = request.getParameter("lname");
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-
-		User user = new User();
-		user.setCluster(cluster);
-		user.RegisterUser(fname, lname, username, password);
-
-		response.sendRedirect("Login");
+			String fname = request.getParameter("fname");
+			String lname = request.getParameter("lname");
+			String username = request.getParameter("username");
+			String password = request.getParameter("password");
+			String password2 = request.getParameter("passwordAgain");
+			String email = request.getParameter("email");
+			String location = request.getParameter("location");
+			String bio = request.getParameter("bio");
+	
+			User user = new User();
+			user.setCluster(cluster);
+			//If the username is already taken redirect back to register form. 
+			if (user.isUserRegistered(username) != false)	{
+				response.sendRedirect("register");
+			}	else 	{
+				if (password.equals(password2)){
+					user.RegisterUser(fname, lname, username, password, email, location, bio);
+					response.sendRedirect("Login");
+				}	else	{
+					System.out.println("Passwords are not the same");
+					response.sendRedirect("/instashutter/register");
+				}
+				
+			}
 		} catch (Exception e) {
 			System.out.println("ERROR: " + e);
 			response.sendRedirect("/instashutter/dashboard");

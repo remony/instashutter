@@ -26,30 +26,23 @@ public class Login extends HttpServlet {
      */
     public Login() {
     	cluster = CassandraHosts.getCluster();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		UserSession usrSession = new UserSession();
-		
 		HttpSession session = request.getSession();
-		
-		Object isLogged  = session.getAttribute("login.isDone");
-		
-		if (isLogged == null) {
+		//If the user is already logged in redirect to dashboard
+		if (session.getAttribute("LoggedIn") != null) {
+			response.sendRedirect("/instashutter/dashboard");
+		}	else	{
+			//If the user is not logged in display the login view
+			UserSession usrSession = new UserSession();
 			session.setAttribute("username", usrSession.getUsername());
 			RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
 		    rd.forward(request,response);
-		} else {
-			response.sendRedirect("/instashutter/dashboard");
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		}
-		
-		
 	}
 
 	/**
@@ -58,19 +51,13 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		UserSession userSession = new UserSession();
-
-		try {
+		try {	
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
-			
-			
 			User user = new User();
 			user.setCluster(cluster);
-			
 			boolean isValidUser = user.IsValidUser(username, password);
-			
 			System.out.println("Session established: " + session);
-			
 			if (isValidUser){
 				System.out.println("Valid user has connected");
 				 session = request.getSession(true);
@@ -83,15 +70,10 @@ public class Login extends HttpServlet {
 				System.out.println("Invalid user attempted to connected");
 				response.sendRedirect("/instashutter/login");
 			}
-			
 		} catch (Throwable e) {
 			System.out.println("ERROR: " + e);
 			response.sendRedirect("/instashutter/login");
 		}
-		
-		//cluster.close();
-		
-
     }
 
     /**
@@ -101,7 +83,7 @@ public class Login extends HttpServlet {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Login servlet: handles login requests and posts";
     }// </editor-fold>
 
 

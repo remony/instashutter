@@ -116,6 +116,17 @@ public class PicModel {
     			ps.setPostedUsername(row.getString("user"));
     			ps.setPicAdded(row.getDate("interaction_time"));
     			instaList.add(ps);
+    			//Get comments from posts
+    			PreparedStatement pss = session.prepare("SELECT * from comments where picid =?");
+    	    	ResultSet rss = null;
+    	    	BoundStatement boundStatement2 = new BoundStatement(pss);
+    	    	rss = session.execute(boundStatement2.bind(picid));
+    	    	if (rss.isExhausted())	{
+    	    	}	else	{
+    	    		for (Row rows : rss)	{
+    	    			ps.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    		}
+    	    	}
     		}
     	}
     	instaList.stream()
@@ -151,6 +162,17 @@ public class PicModel {
                 System.out.println("UUID" + UUID.toString());
                 pic.setUUID(UUID);
                 Pics.add(pic);
+                //Get comments from posts
+    			PreparedStatement pss = session.prepare("SELECT * from comments where picid =?");
+    	    	ResultSet rss = null;
+    	    	BoundStatement boundStatement2 = new BoundStatement(pss);
+    	    	rss = session.execute(boundStatement2.bind(UUID));
+    	    	if (rss.isExhausted())	{
+    	    	}	else	{
+    	    		for (Row rows : rss)	{
+    	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    		}
+    	    	}
             }
         }
         session.close();
@@ -315,62 +337,7 @@ public class PicModel {
        return p;
 
    }
-   public Pic delPic(int image_type, java.util.UUID picid) {
-       Session session = cluster.connect("instashutter");
-       ByteBuffer bImage = null;
-       String type = null;
-       int length = 0;
-       try {
-           //Convertors convertor = new Convertors();
-           ResultSet rs = null;
-           PreparedStatement ps = null;
-        
-           if (image_type == Convertors.DISPLAY_IMAGE) {
-               
-               ps = session.prepare("DELETE image,imagelength,type from pics where picid =?");
-           } else if (image_type == Convertors.DISPLAY_THUMB) {
-               ps = session.prepare("DELETE thumb,imagelength,thumblength,type from pics where picid =?");
-           } else if (image_type == Convertors.DISPLAY_PROCESSED) {
-               ps = session.prepare("DELETE processed,processedlength,type from pics where picid =?");
-           }
-           BoundStatement boundStatement = new BoundStatement(ps);
-           rs = session.execute( // this is where the query is executed
-                   boundStatement.bind( // here you are binding the 'boundStatement'
-                           picid));
-
-           if (rs.isExhausted()) {
-               System.out.println("No Images returned");
-               return null;
-           } else {
-               for (Row row : rs) {
-                   if (image_type == Convertors.DISPLAY_IMAGE) {
-                       bImage = row.getBytes("image");
-                       length = row.getInt("imagelength");
-                   } else if (image_type == Convertors.DISPLAY_THUMB) {
-                       bImage = row.getBytes("thumb");
-                       length = row.getInt("thumblength");
-               
-                   } else if (image_type == Convertors.DISPLAY_PROCESSED) {
-                       bImage = row.getBytes("processed");
-                       length = row.getInt("processedlength");
-                   }
-                   
-                   type = row.getString("type");
-
-               }
-           }
-       } catch (Exception et) {
-           System.out.println("Can't get Pic" + et);
-           return null;
-       }
-       session.close();
-       Pic p = new Pic();
-       p.setPic(bImage, length, type);
-       
-       return p;
-
-   }
-
+   
 
 
 	public void postComment(String username, String picid, String comment) {
@@ -386,6 +353,47 @@ public class PicModel {
             session.close();
 		}	catch (Exception e)	{
 			System.out.println("Error posting comment to database: " + e);
+		}
+		
+	}
+
+	public String getUserPosted(UUID picid)	{
+		try {
+			Session session = cluster.connect("instashutter");
+			String username = null;
+			PreparedStatement ps = session.prepare("select user from pics where picid=?");
+			BoundStatement bs = new BoundStatement(ps);
+			ResultSet rs = session.execute(bs.bind(picid));
+			if (rs.isExhausted()) {
+                System.out.println("No Images returned");
+                return null;
+            } else {
+                for (Row row : rs) {
+                    username = row.getString("user");
+                }
+                return username;
+            }
+		}	catch(Exception e)	{
+			System.out.println("Error getting username: " + e);
+		}
+		return null;
+	}
+
+	public void deletePost(String username, UUID picid) {
+		// TODO Auto-generated method stub
+		try {
+			Session session = cluster.connect("instashutter");
+			PreparedStatement psPicList = session.prepare("delete from pics where picid =?");
+			PreparedStatement psUserPicList = session.prepare("delete from userpiclist where user = ? and picid =?");
+			PreparedStatement psComments = session.prepare("delete from comments where picid=?");
+			BoundStatement bsPicList = new BoundStatement(psPicList);
+			BoundStatement bsUserPicList = new BoundStatement(psUserPicList);
+			BoundStatement bsComments = new BoundStatement(psComments);
+			session.execute(bsPicList.bind(picid));
+			session.execute(bsUserPicList.bind(username, picid));
+			session.execute(bsComments.bind(picid));
+		}	catch(Exception e)	{
+			System.out.println("Error deleting post" + e);
 		}
 		
 	}

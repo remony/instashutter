@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.UUID;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -57,6 +58,7 @@ public class Image extends HttpServlet {
         CommandsMap.put("Image", 1);
         CommandsMap.put("Images", 2);
         CommandsMap.put("Thumb", 3);
+        CommandsMap.put("delete", 4);
     }
     
     public void init(ServletConfig config) throws ServletException {
@@ -70,6 +72,7 @@ public class Image extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String args[] = Convertors.SplitRequestPath(request);
+		
         int command;
         try {
             command = (Integer) CommandsMap.get(args[1]);
@@ -79,13 +82,25 @@ public class Image extends HttpServlet {
         }
         switch (command) {
             case 1:
-                DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
-                break;
+            	DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
+            	if(args.length != 3){
+	            	System.out.println("Displaying image during image.java");
+	            	try {
+	            		if (args[3] != null && args[3].toLowerCase().equals("delete"))	{
+	            			System.out.println("oh my");
+	            			deletePost(args[2], request, response);
+	            		}
+	            	}	catch(Exception e)	{
+	            		e.printStackTrace();
+	            	}
+            	}
+            	break;
             case 2:
                 DisplayImageList(args[2], request, response);
                 break;
             case 3:
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
+                System.out.println("IMAGE.JAVA DisplayImage");
                 break;
             default:
                 error("Bad Operator", response);
@@ -93,8 +108,36 @@ public class Image extends HttpServlet {
 	}
 	
 	
-	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PicModel tm = new PicModel();
+	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		HttpSession session = request.getSession();
+		PicModel pic = new PicModel();
+		PicModel tm = new PicModel();
+		String username = request.getSession().getAttribute("user").toString();
+		tm.setCluster(cluster);
+		
+		System.out.println("user wants to delete image " + picid);
+		
+		if (session.getAttribute("LoggedIn")!= null)	{
+			System.out.println("User is logged in");
+			
+			String username2 = pic.getUserPosted(UUID.fromString(picid));
+			
+			if (username.equals(username2))	{
+				tm.deletePost(username, UUID.fromString(picid));
+				System.out.println("User " + username + "has successfully delete own post " + picid);
+				
+			}	else	{
+				System.out.println("User " + username + " has attempted to ilegally delete post " + picid);
+			}
+		}	else	{
+			System.out.println("User is not logged in");
+		}
+		
+		
+	}
+
+	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
+		PicModel tm = new PicModel();
         tm.setCluster(cluster);
         java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(User);
         RequestDispatcher rd = request.getRequestDispatcher("/UserPics.jsp");
@@ -165,7 +208,7 @@ public class Image extends HttpServlet {
 		} catch (Exception e) {
 			System.out.println("Error processing upload request: " + e);
 		}
-		response.sendRedirect("/instashutter/upload");
+		response.sendRedirect("/instashutter/dashboard");
 	}
 	
 	private void error(String mess, HttpServletResponse response) throws ServletException, IOException {

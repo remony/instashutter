@@ -30,6 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.datastax.driver.core.Cluster;
 
@@ -67,27 +68,33 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String args[] = Convertors.SplitRequestPath(request);
-        int command;
-        try {
-            command = (Integer) CommandsMap.get(args[1]);
-        } catch (Exception et) {
-            error("Bad Operator", response);
-            return;
-        }
-        switch (command) {
-            case 1:
-                DisplayImage(Convertors.DISPLAY_IMAGE,args[1], response);
-                break;
-            case 2:
-                DisplayImageList(Convertors.DISPLAY_IMAGE, args[1], request, response);
-                break;
-            case 3:
-                DisplayImage(Convertors.DISPLAY_THUMB,args[1],  response);
-                break;
-            default:
-                error("Bad Operator", response);
-        }
+		HttpSession session = request.getSession();
+		//If the user is not logged in display index
+		if (session.getAttribute("LoggedIn") != null) {
+			String args[] = Convertors.SplitRequestPath(request);
+	        int command;
+	        try {
+	            command = (Integer) CommandsMap.get(args[1]);
+	        } catch (Exception et) {
+	            error("Bad Operator", response);
+	            return;
+	        }
+	        switch (command) {
+	            case 1:
+	                DisplayImage(Convertors.DISPLAY_IMAGE,args[1], response);
+	                break;
+	            case 2:
+	                DisplayImageList(Convertors.DISPLAY_IMAGE, args[1], request, response);
+	                break;
+	            case 3:
+	                DisplayImage(Convertors.DISPLAY_THUMB,args[1],  response);
+	                break;
+	            default:
+	                error("Bad Operator", response);
+	        }
+		}	else	{
+			response.sendRedirect("/instashutter/login");
+		}
 	}
 
 	private void DisplayImageList(int type, String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

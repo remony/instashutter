@@ -5,6 +5,7 @@
 	font-family: 'Roboto', sans-serif;
 }
 
+
 ul {
     list-style-type: none;
     padding: 0px;
@@ -21,12 +22,6 @@ header {
 	color:#fff;
 }
 
-.navbar {
-	padding:5px;
-	margin-top:-10px;
-	background-color:#fafafa;
-	font-family: 'Roboto', sans-serif;
-}
 
 
 

@@ -35,8 +35,8 @@ public final class Keyspaces {
                     + "caption varchar,\n"
                     + "user varchar,\n"
                     + "pic_added timestamp,\n"
-                    + "PRIMARY KEY (user, pic_added)\n"
-                    + ") WITH CLUSTERING ORDER BY (pic_added desc);";
+                    + "PRIMARY KEY (user, picid, pic_added)\n"
+                    + ") WITH CLUSTERING ORDER BY (picid desc, pic_added desc);";
             String CreateAddressType = "CREATE TYPE if not exists instashutter.address (\n"
                     + "      street text,\n"
                     + "      city text,\n"

@@ -2,6 +2,8 @@
     pageEncoding="ISO-8859-1"%>
     <%@ page import="me.stuartdouglas.stores.*" %>
     <%@page import="java.util.*"%>
+    <%@ page import = "java.text.DateFormat" %>
+<%@ page import = "java.text.SimpleDateFormat" %>
     <%
     String user = request.getAttribute("viewingUser").toString();
     String background = null;
@@ -18,9 +20,9 @@
 <jsp:include page="header.jsp" />
 <%
 	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
-	if (currentSession != null) {
-		String userName = currentSession.getUsername();
-		if (currentSession.getUserSession()) {%>
+	Object message = request.getAttribute("message");
+		
+	%>
 			<div class="profile_header">
 				<div class="profile_background">
 					<div class="profile_content">
@@ -75,56 +77,89 @@
 			
 			
 			
-			<%
-        LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
-            if (lsPics == null) {
-        %>
-        <p>No Pictures found</p>
-        <%
-        } else {
-            Iterator<Pic> iterator;
-            iterator = lsPics.iterator();
-            while (iterator.hasNext()) {
-                Pic p = (Pic) iterator.next();
-				
-        %>
-        <div class = "post">
-			<div class = "post_image">
-				<a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
+		<div class="container">
+			<div class="row">
+				<%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
+	        	if (lsPics == null) {%>
+	        		<p>No Pictures found</p>
+	       		<%} else {
+	            Iterator<Pic> iterator;
+	            iterator = lsPics.iterator();
+	            while (iterator.hasNext()) {
+	                Pic p = (Pic) iterator.next();
+					String username = p.getPostedUsername();%>
+	       			<div class = "post">
+						<div class = "post_image">
+							<a href="/instashutter/post/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
+						</div>
+					<div class = "post_timestamp">
+						<%  //Convert date to iso 8601 format for use with jquery.timeago.js using code from http://stackoverflow.com/questions/3914404/how-to-get-current-moment-in-iso-8601-format
+						TimeZone timeZone = TimeZone.getTimeZone("UTC");
+		    			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+			    		df.setTimeZone(timeZone);
+			    		String timeSince = df.format(p.getPicAdded()); %>
+						<div class="timeConvertsince" title="<%= timeSince %>"><%= timeSince %></div>
+					</div>
+				<div class = "post_author">
+					<a href="/instashutter/profile/<%= username %>">@<%= username %></a>
+					<a href="<%=request.getContextPath()%>/picture/<%= username %>"><img src="<%=request.getContextPath()%>/picture/<%= username %>" alt="Profile image" /></a>
+				</div>
+				<div class = "post_caption">
+					<div class="post_desc"><%= p.getCaption() %></div>
+				</div>
+				<div class = "post_share">
+					<p>Sharing coming soon</p>		
+				</div>
+				<div class = "post_comments">
+					<% LinkedList<CommentStore> lsComments = (LinkedList<CommentStore>) p.getCommentlist();
+					int count = 0;
+					if (lsComments == null) {
+					} else { %>
+					<div class="comment_container">
+						<table>
+							<%Iterator<CommentStore> commentIterator;
+							commentIterator = lsComments.iterator();
+							while(commentIterator.hasNext()){
+								CommentStore c = (CommentStore) commentIterator.next();
+								String timeSinceComment = df.format(c.getPosted_time());
+								count++;%>
+								<!-- Print out comments -->
+							
+								<tr>
+									<td>
+										<div class="comment_user">
+											<a href="/instashutter/profile/<%=c.getUsername()%>"><%= c.getUsername() %></a>
+										</div>
+									</td> 									
+									<td>
+										<div class="comment_message">
+											<%= c.getCommentMessage() %>
+										</div>
+										
+									</td>
+								</tr>
+							<%}}%>
+						</table>
+						<% if (count == 5) { %>
+							<div class="comment_readmore">
+								<p>
+									<a href="/instashutter/profile/<%= username %>">More comments</a>
+								</p>
+							</div>
+						<%} %>
+					</div>
+					<div class="post_comment_form">
+						<form name="comment_input" action="/instashutter/dashboard" method="POST">
+							<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
+							Comment: <input type="text" name="comment">
+							<input type="submit" value="comment">
+						</form>
+					</div>
+				</div>
 			</div>
-			<div class = "post_timestamp">
-				<%= p.getPicAdded() %>
-			</div>
-			<div class = "post_author">
-				<a href="/instashutter/profile/<%= request.getAttribute("viewingUser") %>">@<%= request.getAttribute("viewingUser") %></a>
-			</div>
-			<div class = "post_caption">
-				<div class="post_desc"><%= p.getCaption() %></div>
-			</div>
-			
-			
-			<div class = "post_share">
-				<p>Sharing coming soon</p>
-			</div>
-			
-			<div class = "post_comments">
-				<p>Comments coming soon</p>
-			</div>
+	        <%}} %>   
 		</div>
-
-<%
-
-            }
-            }
-        %>
-			
-			
-			
-			
-			
-		<%}} else {%>
-		<p>You shouldn't be here</p>
-		<%}%>
+		</div>
 		
 
 

@@ -50,9 +50,9 @@ public class UpdateEmail extends HttpServlet {
 		if(isValidUser)	{
 			System.out.println("User with correct credentials is editing email.");
 			try {
-				Set<String> a = new HashSet<String>();
-				a.add(email);
-				user.updateUserEmail(username, a);
+				Set<String> set = new HashSet<String>();
+				set.add(email);
+				user.updateUserEmail(username, set);
 			}	catch (Exception e)	{
 				System.out.println("Error changing user email: " + e);
 			}

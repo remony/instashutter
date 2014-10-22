@@ -31,29 +31,17 @@ public class Index extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-
 		try {
-
 			HttpSession session = request.getSession();
-			//If the user is not logged in display index
 			if (session.getAttribute("LoggedIn") == null) {
 				RequestDispatcher rd=request.getRequestDispatcher("/index.jsp");
 			    rd.forward(request,response);
-			} else {	//User is logged in so redirect logged in user to dashboard
-			    //chain.doFilter(request, response); // Logged in, just continue chain.
-					//User is online
+			} else {
 				response.sendRedirect("/instashutter/dashboard");
 			}
-
-
 		} catch (Exception e) {
 			System.out.println("Error: " + e);
 		}
-
-
-
-
 	}
 
 	/**
@@ -61,6 +49,9 @@ public class Index extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		RequestDispatcher rd=request.getRequestDispatcher("/405.jsp");
+	    rd.forward(request,response);
 	}
 
 }

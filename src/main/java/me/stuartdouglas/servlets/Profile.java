@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -16,6 +20,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.json.simple.JSONObject;
 
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
@@ -60,7 +67,7 @@ public class Profile extends HttpServlet {
 		String args[] = Convertors.SplitRequestPath(request);
         int command;
         try {
-            command = (Integer) CommandsMap.get(args[1]);
+            command = CommandsMap.get(args[1]);
         } catch (Exception et) {
             error("Bad Operator", response);
             return;
@@ -70,7 +77,12 @@ public class Profile extends HttpServlet {
                 DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
                 break;
             case 2:
-                DisplayImageList(args[2], request, response);
+            	try {
+        			DisplayProfile(args[2], request, response);         		
+            	}	catch(Exception e)	{
+            		System.out.println("Error: " + e);
+            		userDoesntexist(" ", request, response);
+            	}
                 break;
             case 3:
             	DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
@@ -80,23 +92,56 @@ public class Profile extends HttpServlet {
         }
 	}
 	
-	private void DisplayImageList(String Username, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@SuppressWarnings("unchecked")
+	private void DisplayProfile(String Username, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
         User user = new User();
         tm.setCluster(cluster);
         user.setCluster(cluster);
-
+        try {
         LinkedList<UserSession> lsUser = user.getUserInfo(Username);
-		request.setAttribute("UserInfo", lsUser);
-        //java.util.LinkedList<UserSession> lsProfile = getUser.getUserInfo(Username);
-        java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(Username.toString());
-        RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
-        request.setAttribute("viewingUser", Username);
-        request.setAttribute("Pics", lsPics);
-        rd.forward(request, response);
+        if (user.isUserRegistered(Username)) {
+        	request.setAttribute("UserInfo", lsUser);
+            //java.util.LinkedList<UserSession> lsProfile = getUser.getUserInfo(Username);
+            java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(Username.toString());
+            RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
+            request.setAttribute("viewingUser", Username);
+            request.setAttribute("Pics", lsPics);
+            rd.forward(request, response);
+        }	else	{
+        	userDoesntexist(Username, request, response);
+        }
+		
+        }	catch (Exception e)	{
+        	System.out.println("Error " + e);
+        }
 
     }
 	
+	private void userDoesntexist(String username, HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
+		JSONObject json = new JSONObject();
+    	Date date = new Date();
+    	String dates = date.toString();
+    	json.put("title", "Invalid username");
+    	json.put("time_issued", dates);
+    	json.put("message", "The user " + username + " does not exist");
+
+    	//String message = "The user " + Username + " does not exist";
+    	response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        request.setAttribute("message", json);
+        try {
+			rd.forward(request, response);
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
 		User user = new User();
 		user.setCluster(cluster);

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.UUID;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -14,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.datastax.driver.core.Cluster;
 
@@ -35,9 +37,7 @@ public class Post extends HttpServlet {
      */
     public Post() {
         super();
-        CommandsMap.put("Image", 1);
         CommandsMap.put("post", 2);
-        CommandsMap.put("Thumb", 3);
         // TODO Auto-generated constructor stub
     }
     
@@ -52,28 +52,25 @@ public class Post extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String args[] = Convertors.SplitRequestPath(request);
-        int command;
-        try {
-            command = (Integer) CommandsMap.get(args[1]);
-        } catch (Exception et) {
-            error("Bad Operator", response);
-            return;
-        }
-        switch (command) {
-            case 1:
-                DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
-                break;
-            case 2:
-                DisplayImageList(args[2], request, response);
-                break;
-            case 3:
-                DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
-                break;
-            default:
-                error("Bad Operator", response);
-        }
+        
+       
+        if(args.length != 3){
+        	System.out.println("Displaying image during image.java");
+        	try {
+        		if (args[3] != null && args[3].toLowerCase().equals("delete"))	{
+        			System.out.println("oh my");
+        			deletePost(args[2], request, response);
+        			response.sendRedirect("/instashutter/dashboard");
+        		}
+        	}	catch(Exception e)	{
+        		e.printStackTrace();
+        	}
+    	}	else	{
+    		 DisplayPost(args[2], request, response);
+    	}
+            
 	}
-	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void DisplayPost(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Attempted to display image");
 		PicModel tm = new PicModel();
         tm.setCluster(cluster);
@@ -83,20 +80,29 @@ public class Post extends HttpServlet {
         rd.forward(request, response);
     }
 	
-	private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Attempted to print image");
+	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		HttpSession session = request.getSession();
+		PicModel pic = new PicModel();
+		PicModel tm = new PicModel();
+		String username = request.getSession().getAttribute("user").toString();
+		tm.setCluster(cluster);
 		
-    }
-
-	
-	private void error(String mess, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Oh an error..");
-        PrintWriter out = null;
-        out = new PrintWriter(response.getOutputStream());
-        out.println("<h1>You have an a error in your input</h1>");
-        out.println("<h2>" + mess + "</h2>");
-        out.close();
-        return;
-    }
-
+		System.out.println("user wants to delete image " + picid);
+		
+		if (session.getAttribute("LoggedIn")!= null)	{
+			System.out.println("User is logged in");
+			
+			String username2 = pic.getUserPosted(UUID.fromString(picid));
+			
+			if (username.equals(username2))	{
+				tm.deletePost(username, UUID.fromString(picid));
+				System.out.println("User " + username + "has successfully delete own post " + picid);
+				
+			}	else	{
+				System.out.println("User " + username + " has attempted to ilegally delete post " + picid);
+			}
+		}	else	{
+			System.out.println("User is not logged in");
+		}	
+	}
 }

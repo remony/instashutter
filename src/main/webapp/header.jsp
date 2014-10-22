@@ -2,17 +2,13 @@
 <%@page import="me.stuartdouglas.stores.*"%>
 
 
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
-<script src="/instashutter/assets/js/jquery-2.1.1.min.js"></script>
-<script src="/instashutter/assets/js/jquery.timeago.js"></script>
-<script src="/instashutter/assets/js/app.js"></script>
-
-<!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 </head>
 
@@ -32,38 +28,43 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Instashutter</a>
+      <a class="navbar-brand" href="/instashutter/">Instashutter</a>
     </div>
-
+	<%
+		UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
+		if (currentSession != null) {
+		  String userName = currentSession.getUsername();
+		  String background = currentSession.getBackground();
+		  if (currentSession.getUserSession()) {
+    %>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-
-      
+      <ul class="nav navbar-nav">
+        <li class=""><a href="/instashutter/upload">New Post</a></li>
+      </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/instashutter/">Home</a></li>
-  <li><a href="/instashutter/upload">New post</a></li>
-  <%
-  UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
-if (currentSession != null) {
-  String userName = currentSession.getUsername();
-  if (currentSession.getUserSession()) {
-    %>
-
-  <li><a href="/instashutter/profile/<%=currentSession.getUsername()%>">Your
-      Profile</a></li>
-  <li><a href="/instashutter/account">Your
-      Account</a></li>
-  <li><a href="/instashutter/logout">Sign out</a></li>
-  <%}
-} else {
-    %>
-
-  <li><a href="/instashutter/register">Register</a></li>
-  <li><a href="/instashutter/login">Login</a></li>
-  <%
-  }
-    %>
+        <li><a href="/instashutter/profile/<%= userName%>">View profile</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= userName%> <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="/instashutter/account">Account settings</a></li>
+            <li class="divider"></li>
+            <li><a href="/instashutter/logout">Log out</a></li>
+          </ul>
+        </li>
       </ul>
     </div><!-- /.navbar-collapse -->
+    <%}} else {%>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/instashutter/login">Login</a></li>
+        <li><a href="/instashutter/register">Register</a></li>
+        
+      </ul>
+    </div><!-- /.navbar-collapse -->
+    
+    
+    
+    <%}%>
   </div><!-- /.container-fluid -->
 </nav>

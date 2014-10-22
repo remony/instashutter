@@ -63,6 +63,7 @@ public class Editpassword extends HttpServlet {
 					response.sendRedirect("/instashutter/account");
 				} else {
 					System.out.println("Both passwords are not the same");
+					response.sendRedirect("/instashutter/account");
 				}
 			}
 			
