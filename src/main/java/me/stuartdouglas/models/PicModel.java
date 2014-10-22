@@ -19,6 +19,13 @@ import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
+import com.jhlabs.image.ChromeFilter;
+import com.jhlabs.image.CrystallizeFilter;
+import com.jhlabs.image.ExposureFilter;
+import com.jhlabs.image.FlareFilter;
+import com.jhlabs.image.GrayscaleFilter;
+import com.jhlabs.image.InvertFilter;
+import com.jhlabs.image.PointillizeFilter;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -32,6 +39,15 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+
+
+
+
+
+
+
+
+
 import static org.imgscalr.Scalr.*;
 
 import org.imgscalr.Scalr.Method;
@@ -41,6 +57,8 @@ import me.stuartdouglas.stores.Pic;
 
 public class PicModel {
 	private static Cluster cluster;
+	int width;
+	   int height;
 
     public PicModel() {
     	
@@ -188,7 +206,7 @@ public class PicModel {
     
     
     
-    public void insertPic(byte[] b, String type, String name, String user, String caption) {
+    public void insertPic(byte[] b, String type, String name, String user, String caption, String filter) {
     	
     	try {
         	
@@ -205,10 +223,18 @@ public class PicModel {
             FileOutputStream output = new FileOutputStream(new File("/var/tmp/instashutter/" + picid));
 
             output.write(b);
+            
+            applyFilter(filter, picid);
+            
+            	
             byte []  thumbb = picresize(picid.toString(),types[1]);
             int thumblength= thumbb.length;
             ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
-            byte[] processedb = picdecolour(picid.toString(),types[1]);
+            byte[] processedb = null;
+            System.out.println("FIlter is " + filter);
+            processedb = picdecolour(picid.toString(),types[1]);
+            
+            
             ByteBuffer processedbuf=ByteBuffer.wrap(processedb);
             int processedlength=processedb.length;
             Session session = cluster.connect("instashutter");
@@ -253,6 +279,51 @@ public class PicModel {
 
         }
         return null;
+    }
+    
+    public void applyFilter(String filter, UUID picid)	{
+    	try {
+    		File input = new File("/var/tmp/instashutter/" + picid);
+    		File output1 = new File("/var/tmp/instashutter/" + picid);
+        	BufferedImage imageIn = ImageIO.read(input);
+        	BufferedImage imageOut = ImageIO.read(input);
+
+        	if (filter.equals("bw"))	{
+        		GrayscaleFilter greyFilter = new GrayscaleFilter();
+            	greyFilter.filter(imageIn, imageOut);  
+            }	else if (filter.equals("invert"))	{
+            	InvertFilter invert = new InvertFilter();
+            	invert.filter(imageIn, imageOut);
+            }	else if (filter.equals("exposure"))	{
+            	ExposureFilter exposure = new ExposureFilter();
+            	exposure.filter(imageIn, imageOut);
+            }	else if (filter.equals("flare"))	{
+            	FlareFilter flare = new FlareFilter();
+            	flare.filter(imageIn, imageOut);
+            }	else if (filter.equals("pointillize"))	{
+            	PointillizeFilter pointillize = new PointillizeFilter();
+            	pointillize.filter(imageIn, imageOut);
+            }	else if (filter.equals("crystallize"))	{
+            	CrystallizeFilter crystallize = new CrystallizeFilter();
+            	crystallize.filter(imageIn, imageOut);
+            }	else if (filter.equals("chrome"))	{
+            	ChromeFilter chrome = new ChromeFilter();
+            	chrome.filter(imageIn, imageOut);
+            }
+            
+            
+            else	{
+            	
+            }
+            	System.out.println("not applying filter");
+            
+        	
+            ImageIO.write(imageOut, "jpg", output1);
+        }	catch(Exception e)	{
+        	System.out.println("Error applying filter");
+        	e.printStackTrace();
+        }
+        
     }
     
     public byte[] picdecolour(String picid,String type) {
@@ -397,4 +468,5 @@ public class PicModel {
 		}
 		
 	}
+	
 }

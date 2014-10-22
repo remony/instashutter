@@ -102,7 +102,7 @@ public class Profile extends HttpServlet {
         LinkedList<UserSession> lsUser = user.getUserInfo(Username);
         if (user.isUserRegistered(Username)) {
         	request.setAttribute("UserInfo", lsUser);
-            //java.util.LinkedList<UserSession> lsProfile = getUser.getUserInfo(Username);
+    		user.getNumberOfPostsFromUser(Username);
             java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(Username.toString());
             RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
             request.setAttribute("viewingUser", Username);

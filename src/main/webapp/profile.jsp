@@ -51,6 +51,7 @@
 				        <li>Last name: <%= p.getlname() %></li>  
 				        <li>Location: <%= p.getLocation() %>  </li>
 				        <li>About: <%= p.getBio() %></li>
+				        <li>Post count: <%= p.getPostCount() %></li>
 				    </ul> 
 			    </div>
 

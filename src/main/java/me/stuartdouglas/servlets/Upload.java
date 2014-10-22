@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class Upload
@@ -28,9 +29,21 @@ public class Upload extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		RequestDispatcher rd=request.getRequestDispatcher("upload.jsp");
-	    rd.forward(request,response);
+		try {
+			HttpSession session = request.getSession();
+			if (session.getAttribute("LoggedIn") == null) {
+				//If the user is not logged in or new display the register page
+				response.sendRedirect("/instashutter/login");
+			} else {
+				//If the user if logged in redirect them out of the register
+				
+				RequestDispatcher rd=request.getRequestDispatcher("upload.jsp");
+			    rd.forward(request,response);
+			}
+		} catch (Exception e) {
+			System.out.println("Error: " + e);
+		}
+		
 	}
 
 	/**

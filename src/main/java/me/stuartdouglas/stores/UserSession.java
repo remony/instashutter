@@ -23,6 +23,7 @@ public final class UserSession {
     String location = null;
     String bio = null;
     Set<String> email = null;
+    int postCount = 0;
     private ByteBuffer profileImage = null;
     
     public UserSession() {
@@ -116,6 +117,14 @@ public final class UserSession {
 	public void setEmail(Set<String> set) {
 		// TODO Auto-generated method stub
 		this.email = set;
+	}
+	
+	public void setPostCount(int count)	{
+		this.postCount = count;
+	}
+	
+	public int getPostCount()	{
+		return postCount;
 	}
 
 

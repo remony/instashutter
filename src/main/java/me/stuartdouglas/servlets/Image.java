@@ -87,7 +87,6 @@ public class Image extends HttpServlet {
 	            	System.out.println("Displaying image during image.java");
 	            	try {
 	            		if (args[3] != null && args[3].toLowerCase().equals("delete"))	{
-	            			System.out.println("oh my");
 	            			deletePost(args[2], request, response);
 	            		}
 	            	}	catch(Exception e)	{
@@ -100,7 +99,6 @@ public class Image extends HttpServlet {
                 break;
             case 3:
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
-                System.out.println("IMAGE.JAVA DisplayImage");
                 break;
             default:
                 error("Bad Operator", response);
@@ -174,37 +172,40 @@ public class Image extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
-		Part file = request.getPart("file");
-		
-		String description = request.getParameter("description");
-		String type = file.getContentType();
-        String filename = file.getSubmittedFileName();
-		
-		InputStream is = request.getPart(file.getName()).getInputStream();
-        int i = is.available();
-        HttpSession session=request.getSession();
-        UserSession lg= (UserSession)session.getAttribute("LoggedIn");
-        String username="null";
-        if (lg.getUserSession()){
-            username=lg.getUsername();
-        }
-        if (i > 0) {
-            byte[] b = new byte[i + 1];
-            is.read(b);
-            System.out.println("Length: " + b.length);
-            System.out.println("Title: " + description);
-            PicModel tm = new PicModel();
-            tm.setCluster(cluster);
-
-            try {
-            	tm.insertPic(b, type, filename, username, description);
-            } catch (Exception e) {
-    			System.out.println("Error with uploading file: " + e);
-    		}
-
-            is.close();
-        }
-         System.out.println("ended");
+			Part file = request.getPart("file");
+			
+			String description = request.getParameter("description");
+			String type = file.getContentType();
+	        String filename = file.getSubmittedFileName();
+			String filter = request.getParameter("filterChoice");
+			System.out.println(filter);
+			
+			InputStream is = request.getPart(file.getName()).getInputStream();
+	        int i = is.available();
+	        HttpSession session=request.getSession();
+	        UserSession lg= (UserSession)session.getAttribute("LoggedIn");
+	        String username="null";
+	        if (lg.getUserSession()){
+	            username=lg.getUsername();
+	        }
+	        if (i > 0) {
+	            byte[] b = new byte[i + 1];
+	            is.read(b);
+	            System.out.println("Length: " + b.length);
+	            System.out.println("Title: " + description);
+	            PicModel tm = new PicModel();
+	            tm.setCluster(cluster);
+	
+	            try {
+	            	tm.insertPic(b, type, filename, username, description, filter);
+	            } catch (Exception e) {
+	    			System.out.println("Error with uploading file: ");
+	    			e.printStackTrace();
+	    		}
+	
+	            is.close();
+	        }
+	         System.out.println("ended");
 		} catch (Exception e) {
 			System.out.println("Error processing upload request: " + e);
 		}

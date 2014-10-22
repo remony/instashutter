@@ -70,8 +70,13 @@ public class Dashboard extends HttpServlet {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		//If the user is not logged in display index
-		if (session.getAttribute("LoggedIn") != null) {
+		boolean isLoggedIn = false;
+		if(session.getAttribute("LoggedIn") != null){
+			isLoggedIn = true;
+			};
+		if (isLoggedIn) {
 			String args[] = Convertors.SplitRequestPath(request);
+			
 	        int command;
 	        try {
 	            command = (Integer) CommandsMap.get(args[1]);
@@ -88,6 +93,7 @@ public class Dashboard extends HttpServlet {
 	                break;
 	            case 3:
 	                DisplayImage(Convertors.DISPLAY_THUMB,args[1],  response);
+	                
 	                break;
 	            default:
 	                error("Bad Operator", response);
@@ -95,6 +101,7 @@ public class Dashboard extends HttpServlet {
 		}	else	{
 			response.sendRedirect("/instashutter/login");
 		}
+		
 	}
 
 	private void DisplayImageList(int type, String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -102,7 +109,27 @@ public class Dashboard extends HttpServlet {
         try {
         tm.setCluster(cluster);
         LinkedList<Pic> lsPics = tm.getPosts();
-        request.setAttribute("Pics", lsPics);
+        int start = 0;
+        if (request.getParameter("count") != null)	{
+        	start =  Integer.parseInt(request.getParameter("count"));
+        }
+        int end = start +5;
+        System.out.println("start: "+start+" end: "+end);
+        LinkedList<Pic> lsPicsSort = new LinkedList<Pic>();
+        for (int i = start; i < end; i++) {
+        	if (i != lsPics.size()-1){
+        		System.out.println(lsPics.get(i));
+                lsPicsSort.add(lsPics.get(i));
+        	} else {
+        		i = end;
+        	}
+            
+        }
+        
+        
+        request.setAttribute("Pics", lsPicsSort);
+        end = start + 5;
+        request.setAttribute("paging", end);
         } catch (Exception e) {
         	System.out.println("error: " + e);
         }

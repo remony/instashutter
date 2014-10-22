@@ -352,6 +352,29 @@ public class User {
 		}
 		return false;
 	}
+	
+	public void getNumberOfPostsFromUser(String username)	{
+		int count = 0;
+		try {
+			Session session = cluster.connect("instashutter");
+			PreparedStatement ps = session.prepare("select count(*) from userpiclist where user=?");
+			BoundStatement bs = new BoundStatement(ps);
+			ResultSet rs = session.execute(bs.bind(username));
+			session.close();
+			if (rs.isExhausted()) {
+                System.out.println("User has posted no posts");
+            } else {
+                for (Row row : rs) {
+                    count++;
+                }
+            }
+		}	catch(Exception e)	{
+			System.out.println("Error deleting post" + e);
+		}
+		UserSession user = new UserSession();
+        user.setPostCount(count);
+        
+	}
 
 
 
