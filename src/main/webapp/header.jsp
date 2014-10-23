@@ -40,6 +40,8 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
+      <li class=""><a href="/instashutter/dashboard">Timeline</a></li>
+      <li class=""><a href="/instashutter/explore">Explore</a></li>
         <li class=""><a href="/instashutter/upload">New Post</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -57,6 +59,7 @@
     <%}} else {%>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
+      <li><a href="/instashutter/explore">Explore</a></li>
         <li><a href="/instashutter/login">Login</a></li>
         <li><a href="/instashutter/register">Register</a></li>
         

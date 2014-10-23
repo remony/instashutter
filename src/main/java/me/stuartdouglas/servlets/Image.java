@@ -178,6 +178,13 @@ public class Image extends HttpServlet {
 			String type = file.getContentType();
 	        String filename = file.getSubmittedFileName();
 			String filter = request.getParameter("filterChoice");
+			boolean publicPhoto = true;
+			if (request.getParameter("public").equals("yes")){
+				publicPhoto = true;
+			}	else	{
+				publicPhoto = false;
+			}
+			
 			System.out.println(filter);
 			
 			InputStream is = request.getPart(file.getName()).getInputStream();
@@ -197,7 +204,7 @@ public class Image extends HttpServlet {
 	            tm.setCluster(cluster);
 	
 	            try {
-	            	tm.insertPic(b, type, filename, username, description, filter);
+	            	tm.insertPic(b, type, filename, username, description, filter, publicPhoto);
 	            } catch (Exception e) {
 	    			System.out.println("Error with uploading file: ");
 	    			e.printStackTrace();
@@ -209,6 +216,7 @@ public class Image extends HttpServlet {
 		} catch (Exception e) {
 			System.out.println("Error processing upload request: " + e);
 		}
+		//response.setStatus(HttpServletResponse.SC_CREATED);
 		response.sendRedirect("/instashutter/dashboard");
 	}
 	

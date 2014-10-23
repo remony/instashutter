@@ -28,14 +28,16 @@ public final class Keyspaces {
                     + "  processedlength int,"
                     + " type  varchar,"
                     + " name  varchar,"
-                    + " PRIMARY KEY (picid)"
+                    + " public boolean,"
+                    + " PRIMARY KEY (picid, public)"
                     + ")";
             String Createuserpiclist = "CREATE TABLE if not exists instashutter.userpiclist (\n"
                     + "picid uuid,\n"
                     + "caption varchar,\n"
                     + "user varchar,\n"
+                    + "public boolean,"
                     + "pic_added timestamp,\n"
-                    + "PRIMARY KEY (user, picid, pic_added)\n"
+                    + "PRIMARY KEY (user, picid, pic_added, public)\n"
                     + ") WITH CLUSTERING ORDER BY (picid desc, pic_added desc);";
             String CreateAddressType = "CREATE TYPE if not exists instashutter.address (\n"
                     + "      street text,\n"

@@ -353,7 +353,7 @@ public class User {
 		return false;
 	}
 	
-	public void getNumberOfPostsFromUser(String username)	{
+	public int getNumberOfPostsFromUser(String username)	{
 		int count = 0;
 		try {
 			Session session = cluster.connect("instashutter");
@@ -364,15 +364,12 @@ public class User {
 			if (rs.isExhausted()) {
                 System.out.println("User has posted no posts");
             } else {
-                for (Row row : rs) {
-                    count++;
-                }
+            	count++;
             }
 		}	catch(Exception e)	{
 			System.out.println("Error deleting post" + e);
 		}
-		UserSession user = new UserSession();
-        user.setPostCount(count);
+		return count;
         
 	}
 

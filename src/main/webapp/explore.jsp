@@ -1,24 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-    <%@ page import="me.stuartdouglas.stores.*" %>
-    
-	<%@page import="java.util.*"%>
-	<%@ page import = "java.text.DateFormat" %>
+	pageEncoding="ISO-8859-1"%>
+<%@ page import="me.stuartdouglas.stores.*" %>
+<%@page import="java.util.*"%>
+<%@ page import = "java.text.DateFormat" %>
 <%@ page import = "java.text.SimpleDateFormat" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+		<title>Explore</title>
+		
+	</head>
 
-</head>
-<body>
-
-<div class="profile_background"></div>
-<jsp:include page="header.jsp" />
-<div class="container">
+	<body>	
+		<jsp:include page="header.jsp" />
+	
+		<div class="container">
 			<div class="row">
 				<%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
+				
 	        	if (lsPics == null) {%>
 	        		<p>No Pictures found</p>
 	       		<%} else {
@@ -26,14 +27,10 @@
 	            iterator = lsPics.iterator();
 	            while (iterator.hasNext()) {
 	                Pic p = (Pic) iterator.next();
-					String username = p.getPostedUsername();
-
-					%>
-					
-					
+					String username = p.getPostedUsername();%>
 	       			<div class = "post">
 						<div class = "post_image">
-							<a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Image/<%=p.getSUUID()%>"></a>
+							<a href="/instashutter/post/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
 						</div>
 					<div class = "post_timestamp">
 						<%  //Convert date to iso 8601 format for use with jquery.timeago.js using code from http://stackoverflow.com/questions/3914404/how-to-get-current-moment-in-iso-8601-format
@@ -43,30 +40,9 @@
 			    		String timeSince = df.format(p.getPicAdded()); %>
 						<div class="timeConvertsince" title="<%= timeSince %>"><%= timeSince %></div>
 					</div>
-					<style>
-        	.profile_background {
-        		position:absolute;
-        		width:100%;
-        		height:100%;
-        		opacity:0.2;
-		      	background: url(/instashutter/Image/<%=p.getSUUID()%>) no-repeat center center fixed; 
-				-webkit-background-size: cover;
-				-moz-background-size: cover;
-				-o-background-size: cover;
-				background-size: cover;
-				z-index:-1;
-				display:block;
-				
-			    
-        	
-        	}
-        	.post {
-        		z-index:0;
-        	}
-        </style>
 				<div class = "post_author">
 					<a href="/instashutter/profile/<%= username %>">@<%= username %></a>
-					<a href="<%=request.getContextPath()%>/Image/<%= username %>"><img src="<%=request.getContextPath()%>/picture/<%= username %>" alt="Profile image" /></a>
+					<a href="<%=request.getContextPath()%>/picture/<%= username %>"><img src="<%=request.getContextPath()%>/picture/<%= username %>" alt="Profile image" /></a>
 				</div>
 				<div class = "post_caption">
 					<div class="post_desc"><%= p.getCaption() %></div>
@@ -121,11 +97,11 @@
 					</div>
 				</div>
 			</div>
-	        <%}} %>   
-		</div>
-		</div>
+	        <%}} %> 
 
-</body>
-<script src="/instashutter/assets/js/jquery.timeago.js"></script>
+		</div>
+		</div>
+	</body>
+	<script src="/instashutter/assets/js/jquery.timeago.js"></script>
 <script src="/instashutter/assets/js/app.js"></script>
 </html>

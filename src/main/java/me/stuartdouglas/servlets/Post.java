@@ -52,13 +52,9 @@ public class Post extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String args[] = Convertors.SplitRequestPath(request);
-        
-       
         if(args.length != 3){
-        	System.out.println("Displaying image during image.java");
         	try {
         		if (args[3] != null && args[3].toLowerCase().equals("delete"))	{
-        			System.out.println("oh my");
         			deletePost(args[2], request, response);
         			response.sendRedirect("/instashutter/dashboard");
         		}
@@ -97,6 +93,7 @@ public class Post extends HttpServlet {
 			if (username.equals(username2))	{
 				tm.deletePost(username, UUID.fromString(picid));
 				System.out.println("User " + username + "has successfully delete own post " + picid);
+				response.setStatus(HttpServletResponse.SC_OK);
 				
 			}	else	{
 				System.out.println("User " + username + " has attempted to ilegally delete post " + picid);

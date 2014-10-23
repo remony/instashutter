@@ -3,7 +3,6 @@
   <display-name>instashutter</display-name>
   <welcome-file-list>
     <welcome-file>/</welcome-file>
-    
   </welcome-file-list>
   <servlet>
     <description></description>
@@ -204,10 +203,29 @@
     <servlet-name>ErrorDetect</servlet-name>
     <url-pattern>/404</url-pattern>
   </servlet-mapping>
-  
-  
   <error-page>
-  	<error-code>404</error-code>
-  	<location>/404</location>
+    <error-code>404</error-code>
+    <location>/404</location>
   </error-page>
+  <servlet>
+    <description>A public timeline of posts</description>
+    <display-name>Timeline</display-name>
+    <servlet-name>Timeline</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.Timeline</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Timeline</servlet-name>
+    <url-pattern>/timeline</url-pattern>
+    <url-pattern>/timeline/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description>Lists public posts from all users</description>
+    <display-name>Explore</display-name>
+    <servlet-name>Explore</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.Explore</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Explore</servlet-name>
+    <url-pattern>/explore</url-pattern>
+  </servlet-mapping>
 </web-app>

@@ -25,6 +25,7 @@ public class Pic {
     private Date picAdded = new Date();
     private String postComment;
     private LinkedList<CommentStore> commentlist = new LinkedList<>();
+    private boolean isPublic = false;
     
     
     public Pic() {
@@ -106,6 +107,12 @@ public class Pic {
 		comment.setCommentMessage(comment_text);
 		comment.setPosted_time(date);
 		commentlist.add(comment);
+	}
+	public boolean getIsPublic() {
+		return isPublic;
+	}
+	public void setIsPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 }

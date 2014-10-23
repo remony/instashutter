@@ -28,6 +28,7 @@ import com.jhlabs.image.InvertFilter;
 import com.jhlabs.image.PointillizeFilter;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,6 +49,9 @@ import javax.imageio.ImageIO;
 
 
 
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+
 import static org.imgscalr.Scalr.*;
 
 import org.imgscalr.Scalr.Method;
@@ -64,20 +68,24 @@ public class PicModel {
     	
     }
     
+    /*
+     * getPublicPosts()
+     * Gets all public posts from all users
+     */
     
-    
-    public LinkedList<Pic> getPosts() {
+    public LinkedList<Pic> getPublicPosts() {
     	LinkedList<Pic> instaList = new LinkedList<Pic>();
     	LinkedList<Pic> instaSortedList = new LinkedList<Pic>();
     	Session session = cluster.connect("instashutter");
     	
-    	PreparedStatement statement = session.prepare("SELECT * from pics");
+    	PreparedStatement statement = session.prepare("SELECT * from pics where public = true allow filtering");
     	
     	BoundStatement boundStatement = new BoundStatement(statement);
     	
     	ResultSet rs = session.execute(boundStatement);
     	if (rs.isExhausted()){
     		System.out.println("No posts returned");
+    		return null;
     	} else {
     		for (Row row : rs) {
     			Pic pic = new Pic();
@@ -111,7 +119,64 @@ public class PicModel {
         .sorted((e1, e2) -> e2.getPicAdded()
                 .compareTo(e1.getPicAdded()))
         .forEach(e ->  instaSortedList.add(e));
+    	
 		return instaSortedList;
+		
+    }
+    /*
+     * GetPosts()
+     * Gets all posts public and private from all users
+     * 
+     */
+    public LinkedList<Pic> getPosts() {
+    	LinkedList<Pic> instaList = new LinkedList<Pic>();
+    	LinkedList<Pic> instaSortedList = new LinkedList<Pic>();
+    	Session session = cluster.connect("instashutter");
+    	
+    	PreparedStatement statement = session.prepare("SELECT * from pics");
+    	
+    	BoundStatement boundStatement = new BoundStatement(statement);
+    	
+    	ResultSet rs = session.execute(boundStatement);
+    	if (rs.isExhausted()){
+    		System.out.println("No posts returned");
+    		return null;
+    	} else {
+    		for (Row row : rs) {
+    			Pic pic = new Pic();
+    			UUID picid = row.getUUID("picid");
+    			pic.setUUID(row.getUUID("picid"));
+    			pic.setCaption(row.getString("caption"));
+    			pic.setPostedUsername(row.getString("user"));
+    			pic.setPicAdded(row.getDate("interaction_time"));
+    			instaList.add(pic);
+    			//Get comments from post and limit to 5 (stops endless list on dashboard)
+    			PreparedStatement pss = session.prepare("SELECT * from comments where picid =? limit 5");
+    	    	ResultSet rss = null;
+    	    	BoundStatement boundStatement2 = new BoundStatement(pss);
+    	    	rss = session.execute(boundStatement2.bind(picid));
+    	    	if (rss.isExhausted())	{
+    	    	}	else	{
+    	    		for (Row rows : rss)	{
+    	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    		}
+    	    	}
+    		}
+    		session.close();
+    	}
+    	
+    	
+    	
+    	
+    	
+    	//Sorting posts by pic_added
+    	instaList.stream()
+        .sorted((e1, e2) -> e2.getPicAdded()
+                .compareTo(e1.getPicAdded()))
+        .forEach(e ->  instaSortedList.add(e));
+    	
+		return instaSortedList;
+		
     }
     
     public LinkedList<Pic> getPost(String user) {
@@ -206,7 +271,7 @@ public class PicModel {
     
     
     
-    public void insertPic(byte[] b, String type, String name, String user, String caption, String filter) {
+    public void insertPic(byte[] b, String type, String name, String user, String caption, String filter, boolean publicPhoto) {
     	
     	try {
         	
@@ -219,34 +284,35 @@ public class PicModel {
             java.util.UUID picid = Convertors.getTimeUUID();
             
             //The following is a quick and dirty way of doing this, will fill the disk quickly !
-            //Boolean success = (new File("/var/tmp/instashutter/")).mkdirs();
+            Boolean success = (new File("/var/tmp/instashutter/")).mkdirs();
             FileOutputStream output = new FileOutputStream(new File("/var/tmp/instashutter/" + picid));
 
+            
             output.write(b);
             
-            applyFilter(filter, picid);
             
-            	
             byte []  thumbb = picresize(picid.toString(),types[1]);
             int thumblength= thumbb.length;
             ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
             byte[] processedb = null;
-            System.out.println("FIlter is " + filter);
-            processedb = picdecolour(picid.toString(),types[1]);
-            
-            
+            System.out.println("Image type:" + type);
+            if (type.equals("image/gif")){
+            	processedb = b;
+            }	else	{
+            	processedb = picdecolour(picid.toString(),types[1]);
+            }
             ByteBuffer processedbuf=ByteBuffer.wrap(processedb);
             int processedlength=processedb.length;
             Session session = cluster.connect("instashutter");
 
-            PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name, caption) values(?,?,?,?,?,?,?,?,?,?,?,?)");
-            PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added, caption) values(?,?,?,?)");
+            PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name, caption, public) values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added, caption, public) values(?,?,?,?,?)");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
             BoundStatement bsInsertPicToUser = new BoundStatement(psInsertPicToUser);
 
             Date DateAdded = new Date();
-            session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, caption));
-            session.execute(bsInsertPicToUser.bind(picid, user, DateAdded, caption));
+            session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, caption, publicPhoto));
+            session.execute(bsInsertPicToUser.bind(picid, user, DateAdded, caption, publicPhoto));
             try {
             	session.close();
             } catch (Exception e) {
@@ -285,6 +351,7 @@ public class PicModel {
     	try {
     		File input = new File("/var/tmp/instashutter/" + picid);
     		File output1 = new File("/var/tmp/instashutter/" + picid);
+    		
         	BufferedImage imageIn = ImageIO.read(input);
         	BufferedImage imageOut = ImageIO.read(input);
 
@@ -318,7 +385,7 @@ public class PicModel {
             	System.out.println("not applying filter");
             
         	
-            ImageIO.write(imageOut, "jpg", output1);
+            ImageIO.write(imageOut, "gif", output1);
         }	catch(Exception e)	{
         	System.out.println("Error applying filter");
         	e.printStackTrace();
@@ -332,7 +399,7 @@ public class PicModel {
             BufferedImage processed = createProcessed(BI);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(processed, type, baos);
-            baos.flush();
+            baos.flush();     
             byte[] imageInByte = baos.toByteArray();
             baos.close();
             return imageInByte;
@@ -343,15 +410,14 @@ public class PicModel {
     }
 
     public static BufferedImage createThumbnail(BufferedImage img) {
-        img = resize(img, Method.SPEED, 500, OP_ANTIALIAS);//, OP_GRAYSCALE);
-        // Let's add a little border before we return result.
-        return pad(img, 1);
+        img = resize(img, Method.AUTOMATIC, 500, OP_ANTIALIAS);
+        return img;
     }
     
    public static BufferedImage createProcessed(BufferedImage img) {
         int Width=img.getWidth()-1;
-        img = resize(img, Method.SPEED, Width, OP_ANTIALIAS);//, OP_GRAYSCALE);
-        return pad(img, 1);
+        img = resize(img, Method.AUTOMATIC, Width, OP_ANTIALIAS);//, OP_GRAYSCALE);
+        return img;
     }
    
    public Pic getPic(int image_type, java.util.UUID picid) {
@@ -359,17 +425,19 @@ public class PicModel {
        ByteBuffer bImage = null;
        String type = null;
        int length = 0;
+       boolean privacy = false;
+       
        try {
            //Convertors convertor = new Convertors();
            ResultSet rs = null;
            PreparedStatement ps = null;
-        
+           
            if (image_type == Convertors.DISPLAY_IMAGE) {
-               ps = session.prepare("select image,imagelength,type from pics where picid =?");
+               ps = session.prepare("select image,imagelength,type,public from pics where picid =?");
            } else if (image_type == Convertors.DISPLAY_THUMB) {
-               ps = session.prepare("select thumb,imagelength,thumblength,type from pics where picid =?");
+               ps = session.prepare("select thumb,imagelength,thumblength,type,public from pics where picid =?");
            } else if (image_type == Convertors.DISPLAY_PROCESSED) {
-               ps = session.prepare("select processed,processedlength,type from pics where picid =?");
+               ps = session.prepare("select processed,processedlength,type,public from pics where picid =?");
            }
            BoundStatement boundStatement = new BoundStatement(ps);
            rs = session.execute( // this is where the query is executed
@@ -392,6 +460,7 @@ public class PicModel {
                        bImage = row.getBytes("processed");
                        length = row.getInt("processedlength");
                    }
+                   privacy = row.getBool("public");
                    
                    type = row.getString("type");
 
@@ -404,7 +473,9 @@ public class PicModel {
        session.close();
        Pic p = new Pic();
        p.setPic(bImage, length, type);
-
+         
+       
+       p.setIsPublic(privacy);
        return p;
 
    }

@@ -19,7 +19,7 @@
 		<div class="container">
 			<div class="row">
 				<%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
-				int paging = (Integer)request.getAttribute("paging");
+				
 	        	if (lsPics == null) {%>
 	        		<p>No Pictures found</p>
 	       		<%} else {
@@ -98,10 +98,7 @@
 				</div>
 			</div>
 	        <%}} %> 
- <form name="paging" action="/instashutter/dashboard" method="get">
-<input type="hidden" name="count" value="<%=paging%>"><br>
-<input type="submit" name="submit" value ="Next page">
-</form>
+
 		</div>
 		</div>
 	</body>

@@ -29,6 +29,11 @@
 	<div class="post_caption">
 	<p><h3>Caption</h3>enter the text you want with your image</p>
 	<textarea rows="4" cols="50" name="description" form="uploadform"></textarea><br>
+	<h4>Do you want this photo to be public?</h4>
+	<input type="radio" name="public" value="yes" checked>Yes<br>
+	<input type="radio" name="public" value="no">No<br>
+	
+	
 	<h2>Filters</h2>
 	<p>Filters shown in preview are limited to the capabilities of css.</p>
 	<input type="radio" name="filterChoice" value="bw" onclick = 'filter("bw")'>Black and White<br>

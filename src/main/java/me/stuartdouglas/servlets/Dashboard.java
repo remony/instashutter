@@ -113,23 +113,10 @@ public class Dashboard extends HttpServlet {
         if (request.getParameter("count") != null)	{
         	start =  Integer.parseInt(request.getParameter("count"));
         }
-        int end = start +5;
-        System.out.println("start: "+start+" end: "+end);
-        LinkedList<Pic> lsPicsSort = new LinkedList<Pic>();
-        for (int i = start; i < end; i++) {
-        	if (i != lsPics.size()-1){
-        		System.out.println(lsPics.get(i));
-                lsPicsSort.add(lsPics.get(i));
-        	} else {
-        		i = end;
-        	}
-            
-        }
         
         
-        request.setAttribute("Pics", lsPicsSort);
-        end = start + 5;
-        request.setAttribute("paging", end);
+        request.setAttribute("Pics", lsPics);
+        
         } catch (Exception e) {
         	System.out.println("error: " + e);
         }
