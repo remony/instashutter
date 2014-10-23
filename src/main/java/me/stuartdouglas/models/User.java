@@ -19,15 +19,12 @@ import java.security.NoSuchAlgorithmException;
 
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.imgscalr.Scalr.*;
-
-import org.imgscalr.Scalr.Method;
 
 import me.stuartdouglas.lib.*;
 import me.stuartdouglas.stores.UserSession;
@@ -46,7 +43,7 @@ public class User {
     public boolean RegisterUser(String first_name, String last_name, String username, String password, String email, String location, String bio){
         //AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
     	
-        String EncodedPassword=null;
+        String EncodedPassword;
         try {
             EncodedPassword= AeSimpleSHA1.SHA1(password);
         }catch (UnsupportedEncodingException | NoSuchAlgorithmException et){
@@ -54,7 +51,7 @@ public class User {
             return false;
         }
         
-        Set<String> Email = new HashSet<String>();
+        Set<String> Email = new HashSet<>();
 		Email.add(email);
 		
         Session session = cluster.connect("instashutter");
@@ -73,7 +70,7 @@ public class User {
     
     
     public boolean IsValidUser(String username, String Password){
-        String EncodedPassword=null;
+        String EncodedPassword;
         try {
             EncodedPassword= AeSimpleSHA1.SHA1(Password);
         }catch (UnsupportedEncodingException | NoSuchAlgorithmException et){
@@ -82,7 +79,7 @@ public class User {
         }
         Session session = cluster.connect("instashutter");
         PreparedStatement ps = session.prepare("select password from userprofiles where login =?");
-        ResultSet rs = null;
+        ResultSet rs;
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute( // this is where the query is executed
                 boundStatement.bind( // here you are binding the 'boundStatement'
@@ -105,11 +102,11 @@ public class User {
 
    
    public LinkedList<UserSession> getUserInfo(String user) {
-   	LinkedList<UserSession> userList = new LinkedList<UserSession>();
+   	LinkedList<UserSession> userList = new LinkedList<>();
    	Session session = cluster.connect("instashutter");
    	System.out.println("sarah needs to speak");
    	PreparedStatement ps = session.prepare("SELECT * from userprofiles where login =?");
-    ResultSet rs = null;
+    ResultSet rs;
     BoundStatement boundStatement = new BoundStatement(ps);
     rs = session.execute( // this is where the query is executed
             boundStatement.bind( // here you are binding the 'boundStatement'
@@ -152,7 +149,7 @@ public class User {
 		System.out.println("yay");
 		Session session = cluster.connect("instashutter");
 		PreparedStatement ps = session.prepare("UPDATE userprofiles set first_name = ?, last_name = ?, location = ? where login = ?");
-		ResultSet rs = null;
+		ResultSet rs;
 		BoundStatement boundStatement = new BoundStatement(ps);
 		rs = session.execute(boundStatement.bind(fname, lname, location, username));
 		session.close();
@@ -171,7 +168,7 @@ public class User {
 		System.out.println("User " + username + " is updating there email.");
 		Session session = cluster.connect("instashutter");
 		PreparedStatement ps = session.prepare("update userprofiles set email =? where login=?");
-		ResultSet rs = null;
+		ResultSet rs;
 		BoundStatement boundStatement = new BoundStatement(ps);
 		rs = session.execute(boundStatement.bind(a, username));
 		session.close();
@@ -194,7 +191,7 @@ public class User {
         }
 		Session session = cluster.connect("instashutter");
 		PreparedStatement ps = session.prepare("UPDATE userprofiles set password = ? where login = ?");
-		ResultSet rs = null;
+		ResultSet rs;
 		BoundStatement boundStatement = new BoundStatement(ps);
 		rs = session.execute(boundStatement.bind(EncodedPassword, username));
 		session.close();
@@ -215,8 +212,8 @@ public class User {
 		Session session = cluster.connect("instashutter");
         
         try {
-            ResultSet rs = null;
-            PreparedStatement ps = null;               
+            ResultSet rs;
+            PreparedStatement ps;
             ps = session.prepare("select profileimage from userprofiles where login =?");
             BoundStatement boundStatement = new BoundStatement(ps);
             rs = session.execute(boundStatement.bind(user));
@@ -251,8 +248,8 @@ public class User {
             ByteBuffer.wrap(b);
         
             String types[]=Convertors.SplitFiletype(type);
-            (new File("/var/tmp/instagram/")).mkdirs();
-            @SuppressWarnings("resource")
+            //(new File("/var/tmp/instagram/")).mkdirs();
+           // @SuppressWarnings("resource")
 			FileOutputStream output = new FileOutputStream(new File("/var/tmp/instashutter/" + filename));
             output.write(b);
             
@@ -295,7 +292,7 @@ public class User {
 		return null;
 	}
 	
-	public static BufferedImage createImage(BufferedImage img)
+	private static BufferedImage createImage(BufferedImage img)
     {
     	img = resize(img, Method.SPEED, 300, OP_ANTIALIAS);
         return pad(img, 1);

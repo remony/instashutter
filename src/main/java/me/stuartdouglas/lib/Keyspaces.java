@@ -5,7 +5,7 @@ package me.stuartdouglas.lib;
 
 import com.datastax.driver.core.*;
 
-public final class Keyspaces {
+final class Keyspaces {
 
     public Keyspaces() {
 

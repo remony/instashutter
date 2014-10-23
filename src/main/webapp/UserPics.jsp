@@ -1,4 +1,5 @@
-<%-- 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--
     Document   : UsersPics
     Created on : Sep 24, 2014, 2:52:48 PM
     Author     : Administrator
@@ -32,7 +33,7 @@
             Iterator<Pic> iterator;
             iterator = lsPics.iterator();
             while (iterator.hasNext()) {
-            	Pic p = (Pic) iterator.next();
+            	Pic p = iterator.next();
 
         %>
         <%-- <%= p.getTitle() %>
@@ -41,7 +42,7 @@
         <a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a><br/>
         
         
-		<form name="input" action="/instashutter/Images/" method="get">
+		<form name="input" action="<c:url value="/instashutter/Images/"/>" method="get">
 		
 		<input type="text" name="user" value="<%=p.getSUUID()%>">
 		<input type="submit" value="Submit">
@@ -56,7 +57,7 @@
         </article>
         <footer>
             <ul>
-                <li class="footer"><a href="/Instagrim">Home</a></li>
+                <li class="footer"><a href="<c:url value="/Instagrim"/>">Home</a></li>
             </ul>
         </footer>
     </body>

@@ -6,9 +6,9 @@ import java.util.StringTokenizer;
 import javax.servlet.http.HttpServletRequest;
 
 public class Convertors {
-	public static int DISPLAY_IMAGE=0;
-    public static int DISPLAY_THUMB=1;
-    public static int DISPLAY_PROCESSED=2;
+	public static final int DISPLAY_IMAGE=0;
+    public static final int DISPLAY_THUMB=1;
+    public static final int DISPLAY_PROCESSED=2;
     
     public Convertors() {}
     
@@ -59,8 +59,9 @@ public class Convertors {
 
     public static void displayByteArrayAsHex(byte[] buffer) {
         int byteArrayLength = buffer.length;
-        for (int i = 0; i < byteArrayLength; i++) {
-            //int val = (int) buffer[i];
+        for (byte aBuffer : buffer) {
+            //UNDO
+            int val = (int) aBuffer;
             // System.out.print(Integer.toHexString(val)+",");
         }
 
@@ -96,8 +97,8 @@ public class Convertors {
         //Lets assume the number is the last argument
 
         int argv = 0;
-        while (st.hasMoreTokens()) {;
-            args[argv] = new String();
+        while (st.hasMoreTokens()) {
+            args[argv] = "";
             args[argv] = st.nextToken();
             argv++;
         }
@@ -119,8 +120,8 @@ public class Convertors {
 
         int argv = 0;
         try {
-        while (st.hasMoreTokens()) {;
-            args[argv] = new String();
+        while (st.hasMoreTokens()) {
+            args[argv] = "";
 
             args[argv] = st.nextToken();
             try {
@@ -150,8 +151,8 @@ public class Convertors {
 		//Lets assume the number is the last argument
 
         int argv = 0;
-        while (st.hasMoreTokens()) {;
-            args[argv] = new String();
+        while (st.hasMoreTokens()) {
+            args[argv] = "";
 
             args[argv] = st.nextToken();
             try {

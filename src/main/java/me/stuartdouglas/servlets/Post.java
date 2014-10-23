@@ -1,11 +1,6 @@
 package me.stuartdouglas.servlets;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -30,14 +25,14 @@ import me.stuartdouglas.stores.Pic;
 public class Post extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Cluster cluster;
-    private HashMap<String, Integer> CommandsMap = new HashMap<String, Integer>();
-       
+
     /**
      * @see HttpServlet#HttpServlet()
      */
     public Post() {
         super();
-        CommandsMap.put("post", 2);
+        HashMap<String, Integer> commandsMap = new HashMap<>();
+        commandsMap.put("post", 2);
         // TODO Auto-generated constructor stub
     }
     
@@ -76,7 +71,7 @@ public class Post extends HttpServlet {
         rd.forward(request, response);
     }
 	
-	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		PicModel pic = new PicModel();
 		PicModel tm = new PicModel();

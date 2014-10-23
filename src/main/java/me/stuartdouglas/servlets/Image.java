@@ -46,7 +46,7 @@ public class Image extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
     private Cluster cluster;
-    private HashMap<String, Integer> CommandsMap = new HashMap<String, Integer>();
+    private final HashMap<String, Integer> CommandsMap = new HashMap<>();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -75,9 +75,9 @@ public class Image extends HttpServlet {
 		
         int command;
         try {
-            command = (Integer) CommandsMap.get(args[1]);
+            command = CommandsMap.get(args[1]);
         } catch (Exception et) {
-            error("Bad Operator", response);
+            error(response);
             return;
         }
         switch (command) {
@@ -101,12 +101,12 @@ public class Image extends HttpServlet {
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
                 break;
             default:
-                error("Bad Operator", response);
+                error(response);
         }
 	}
 	
 	
-	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		PicModel pic = new PicModel();
 		PicModel tm = new PicModel();
@@ -137,14 +137,14 @@ public class Image extends HttpServlet {
 	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		PicModel tm = new PicModel();
         tm.setCluster(cluster);
-        java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(User);
+        java.util.LinkedList<Pic> lsPics = PicModel.getPicsForUser(User);
         RequestDispatcher rd = request.getRequestDispatcher("/UserPics.jsp");
         request.setAttribute("Pics", lsPics);
         rd.forward(request, response);
 
     }
 	
-	private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
+	private void DisplayImage(int type,String Image, HttpServletResponse response) throws IOException {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
         Pic p = tm.getPic(type,java.util.UUID.fromString(Image));
@@ -157,7 +157,7 @@ public class Image extends HttpServlet {
         InputStream is = new ByteArrayInputStream(p.getBytes());
         BufferedInputStream input = new BufferedInputStream(is);
         byte[] buffer = new byte[8192];
-        for (int length = 0; (length = input.read(buffer)) > 0;) {
+        for (int length; (length = input.read(buffer)) > 0;) {
             out.write(buffer, 0, length);
         }
         out.close();
@@ -173,17 +173,12 @@ public class Image extends HttpServlet {
 
 		try {
 			Part file = request.getPart("file");
-			
 			String description = request.getParameter("description");
 			String type = file.getContentType();
 	        String filename = file.getSubmittedFileName();
 			String filter = request.getParameter("filterChoice");
-			boolean publicPhoto = true;
-			if (request.getParameter("public").equals("yes")){
-				publicPhoto = true;
-			}	else	{
-				publicPhoto = false;
-			}
+			boolean publicPhoto;
+            publicPhoto = request.getParameter("public").equals("yes");
 			
 			System.out.println(filter);
 			
@@ -220,14 +215,13 @@ public class Image extends HttpServlet {
 		response.sendRedirect("/instashutter/dashboard");
 	}
 	
-	private void error(String mess, HttpServletResponse response) throws ServletException, IOException {
+	private void error(HttpServletResponse response) throws IOException {
 
         PrintWriter out = null;
         out = new PrintWriter(response.getOutputStream());
         out.println("<h1>You have an a error in your input</h1>");
-        out.println("<h2>" + mess + "</h2>");
+        out.println("<h2>" + "Bad Operator" + "</h2>");
         out.close();
-        return;
     }
 	
 	/**

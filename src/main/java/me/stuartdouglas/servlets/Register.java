@@ -21,7 +21,7 @@ import me.stuartdouglas.models.User;
  */
 public class Register extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	Cluster cluster = null;
+	private Cluster cluster = null;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -68,7 +68,7 @@ public class Register extends HttpServlet {
 			User user = new User();
 			user.setCluster(cluster);
 			//If the username is already taken redirect back to register form. 
-			if (user.isUserRegistered(username) != false)	{
+			if (user.isUserRegistered(username))	{
 				response.sendRedirect("register");
 			}	else 	{
 				if (password.equals(password2)){

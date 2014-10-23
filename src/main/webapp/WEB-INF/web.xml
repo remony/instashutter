@@ -13,18 +13,9 @@
   <servlet-mapping>
     <servlet-name>Index</servlet-name>
     <url-pattern>/Index</url-pattern>
-    <url-pattern></url-pattern>
+     <url-pattern></url-pattern>
   </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>Error</display-name>
-    <servlet-name>Error</servlet-name>
-    <servlet-class>me.stuartdouglas.servlets.Error</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Error</servlet-name>
-    <url-pattern>/Error</url-pattern>
-  </servlet-mapping>
+
   <servlet>
     <description></description>
     <display-name>Login</display-name>
@@ -207,17 +198,8 @@
     <error-code>404</error-code>
     <location>/404</location>
   </error-page>
-  <servlet>
-    <description>A public timeline of posts</description>
-    <display-name>Timeline</display-name>
-    <servlet-name>Timeline</servlet-name>
-    <servlet-class>me.stuartdouglas.servlets.Timeline</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Timeline</servlet-name>
-    <url-pattern>/timeline</url-pattern>
-    <url-pattern>/timeline/*</url-pattern>
-  </servlet-mapping>
+
+
   <servlet>
     <description>Lists public posts from all users</description>
     <display-name>Explore</display-name>

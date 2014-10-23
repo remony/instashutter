@@ -28,7 +28,6 @@ import com.jhlabs.image.InvertFilter;
 import com.jhlabs.image.PointillizeFilter;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,20 +40,7 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 
-
-
-
-
-
-
-
-
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
-
 import static org.imgscalr.Scalr.*;
-
-import org.imgscalr.Scalr.Method;
 
 import me.stuartdouglas.lib.*;
 import me.stuartdouglas.stores.Pic;
@@ -74,8 +60,8 @@ public class PicModel {
      */
     
     public LinkedList<Pic> getPublicPosts() {
-    	LinkedList<Pic> instaList = new LinkedList<Pic>();
-    	LinkedList<Pic> instaSortedList = new LinkedList<Pic>();
+    	LinkedList<Pic> instaList = new LinkedList<>();
+    	LinkedList<Pic> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	
     	PreparedStatement statement = session.prepare("SELECT * from pics where public = true allow filtering");
@@ -97,10 +83,11 @@ public class PicModel {
     			instaList.add(pic);
     			//Get comments from post and limit to 5 (stops endless list on dashboard)
     			PreparedStatement pss = session.prepare("SELECT * from comments where picid =? limit 5");
-    	    	ResultSet rss = null;
+    	    	ResultSet rss;
     	    	BoundStatement boundStatement2 = new BoundStatement(pss);
     	    	rss = session.execute(boundStatement2.bind(picid));
     	    	if (rss.isExhausted())	{
+                    System.out.println("No posts");
     	    	}	else	{
     	    		for (Row rows : rss)	{
     	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
@@ -118,7 +105,7 @@ public class PicModel {
     	instaList.stream()
         .sorted((e1, e2) -> e2.getPicAdded()
                 .compareTo(e1.getPicAdded()))
-        .forEach(e ->  instaSortedList.add(e));
+        .forEach(instaSortedList::add);
     	
 		return instaSortedList;
 		
@@ -129,8 +116,8 @@ public class PicModel {
      * 
      */
     public LinkedList<Pic> getPosts() {
-    	LinkedList<Pic> instaList = new LinkedList<Pic>();
-    	LinkedList<Pic> instaSortedList = new LinkedList<Pic>();
+    	LinkedList<Pic> instaList = new LinkedList<>();
+    	LinkedList<Pic> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	
     	PreparedStatement statement = session.prepare("SELECT * from pics");
@@ -152,10 +139,11 @@ public class PicModel {
     			instaList.add(pic);
     			//Get comments from post and limit to 5 (stops endless list on dashboard)
     			PreparedStatement pss = session.prepare("SELECT * from comments where picid =? limit 5");
-    	    	ResultSet rss = null;
+    	    	ResultSet rss;
     	    	BoundStatement boundStatement2 = new BoundStatement(pss);
     	    	rss = session.execute(boundStatement2.bind(picid));
     	    	if (rss.isExhausted())	{
+                    System.out.println("no posts");
     	    	}	else	{
     	    		for (Row rows : rss)	{
     	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
@@ -173,15 +161,15 @@ public class PicModel {
     	instaList.stream()
         .sorted((e1, e2) -> e2.getPicAdded()
                 .compareTo(e1.getPicAdded()))
-        .forEach(e ->  instaSortedList.add(e));
+        .forEach(instaSortedList::add);
     	
 		return instaSortedList;
 		
     }
     
     public LinkedList<Pic> getPost(String user) {
-    	LinkedList<Pic> instaList = new LinkedList<Pic>();
-    	LinkedList<Pic> instaSortedList = new LinkedList<Pic>();
+    	LinkedList<Pic> instaList = new LinkedList<>();
+    	LinkedList<Pic> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	UUID picid = UUID.fromString(user);
     	PreparedStatement statement = session.prepare("SELECT * from pics where picid =?");
@@ -201,10 +189,11 @@ public class PicModel {
     			instaList.add(ps);
     			//Get comments from posts
     			PreparedStatement pss = session.prepare("SELECT * from comments where picid =?");
-    	    	ResultSet rss = null;
+    	    	ResultSet rss;
     	    	BoundStatement boundStatement2 = new BoundStatement(pss);
     	    	rss = session.execute(boundStatement2.bind(picid));
     	    	if (rss.isExhausted())	{
+                    System.out.println("no comments");
     	    	}	else	{
     	    		for (Row rows : rss)	{
     	    			ps.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
@@ -215,7 +204,7 @@ public class PicModel {
     	instaList.stream()
         .sorted((e1, e2) -> e2.getPicAdded()
                 .compareTo(e1.getPicAdded()))
-        .forEach(e ->  instaSortedList.add(e));
+        .forEach(instaSortedList::add);
     	session.close();
 		return instaSortedList;
     }
@@ -227,7 +216,7 @@ public class PicModel {
         java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
         Session session = cluster.connect("instashutter");
         PreparedStatement ps = session.prepare("select * from userpiclist where user =?");
-        ResultSet rs = null;
+        ResultSet rs;
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute( // this is where the query is executed
                 boundStatement.bind( // here you are binding the 'boundStatement'
@@ -247,10 +236,11 @@ public class PicModel {
                 Pics.add(pic);
                 //Get comments from posts
     			PreparedStatement pss = session.prepare("SELECT * from comments where picid =?");
-    	    	ResultSet rss = null;
+    	    	ResultSet rss;
     	    	BoundStatement boundStatement2 = new BoundStatement(pss);
     	    	rss = session.execute(boundStatement2.bind(UUID));
     	    	if (rss.isExhausted())	{
+                    System.out.println("no comments");
     	    	}	else	{
     	    		for (Row rows : rss)	{
     	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
@@ -294,7 +284,7 @@ public class PicModel {
             byte []  thumbb = picresize(picid.toString(),types[1]);
             int thumblength= thumbb.length;
             ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
-            byte[] processedb = null;
+            byte[] processedb;
             System.out.println("Image type:" + type);
             if (type.equals("image/gif")){
             	processedb = b;
@@ -330,7 +320,7 @@ public class PicModel {
         }
     }
 
-    public byte[] picresize(String picid,String type) {
+    byte[] picresize(String picid, String type) {
         try {
             BufferedImage BI = ImageIO.read(new File("/var/tmp/instashutter/" + picid));
             BufferedImage thumbnail = createThumbnail(BI);
@@ -342,7 +332,8 @@ public class PicModel {
             baos.close();
             return imageInByte;
         } catch (IOException et) {
-
+            System.out.println("Error resizing");
+            et.printStackTrace();
         }
         return null;
     }
@@ -355,32 +346,38 @@ public class PicModel {
         	BufferedImage imageIn = ImageIO.read(input);
         	BufferedImage imageOut = ImageIO.read(input);
 
-        	if (filter.equals("bw"))	{
-        		GrayscaleFilter greyFilter = new GrayscaleFilter();
-            	greyFilter.filter(imageIn, imageOut);  
-            }	else if (filter.equals("invert"))	{
-            	InvertFilter invert = new InvertFilter();
-            	invert.filter(imageIn, imageOut);
-            }	else if (filter.equals("exposure"))	{
-            	ExposureFilter exposure = new ExposureFilter();
-            	exposure.filter(imageIn, imageOut);
-            }	else if (filter.equals("flare"))	{
-            	FlareFilter flare = new FlareFilter();
-            	flare.filter(imageIn, imageOut);
-            }	else if (filter.equals("pointillize"))	{
-            	PointillizeFilter pointillize = new PointillizeFilter();
-            	pointillize.filter(imageIn, imageOut);
-            }	else if (filter.equals("crystallize"))	{
-            	CrystallizeFilter crystallize = new CrystallizeFilter();
-            	crystallize.filter(imageIn, imageOut);
-            }	else if (filter.equals("chrome"))	{
-            	ChromeFilter chrome = new ChromeFilter();
-            	chrome.filter(imageIn, imageOut);
-            }
-            
-            
-            else	{
-            	
+            switch (filter) {
+                case "bw":
+                    GrayscaleFilter greyFilter = new GrayscaleFilter();
+                    greyFilter.filter(imageIn, imageOut);
+                    break;
+                case "invert":
+                    InvertFilter invert = new InvertFilter();
+                    invert.filter(imageIn, imageOut);
+                    break;
+                case "exposure":
+                    ExposureFilter exposure = new ExposureFilter();
+                    exposure.filter(imageIn, imageOut);
+                    break;
+                case "flare":
+                    FlareFilter flare = new FlareFilter();
+                    flare.filter(imageIn, imageOut);
+                    break;
+                case "pointillize":
+                    PointillizeFilter pointillize = new PointillizeFilter();
+                    pointillize.filter(imageIn, imageOut);
+                    break;
+                case "crystallize":
+                    CrystallizeFilter crystallize = new CrystallizeFilter();
+                    crystallize.filter(imageIn, imageOut);
+                    break;
+                case "chrome":
+                    ChromeFilter chrome = new ChromeFilter();
+                    chrome.filter(imageIn, imageOut);
+                    break;
+                default:
+                    System.out.println("known filter");
+                    break;
             }
             	System.out.println("not applying filter");
             
@@ -393,7 +390,7 @@ public class PicModel {
         
     }
     
-    public byte[] picdecolour(String picid,String type) {
+    byte[] picdecolour(String picid, String type) {
         try {
             BufferedImage BI = ImageIO.read(new File("/var/tmp/instashutter/" + picid));
             BufferedImage processed = createProcessed(BI);
@@ -404,17 +401,18 @@ public class PicModel {
             baos.close();
             return imageInByte;
         } catch (IOException et) {
-
+            System.out.println("Error decolour");
+            et.printStackTrace();
         }
         return null;
     }
 
-    public static BufferedImage createThumbnail(BufferedImage img) {
+    private static BufferedImage createThumbnail(BufferedImage img) {
         img = resize(img, Method.AUTOMATIC, 500, OP_ANTIALIAS);
         return img;
     }
     
-   public static BufferedImage createProcessed(BufferedImage img) {
+   private static BufferedImage createProcessed(BufferedImage img) {
         int Width=img.getWidth()-1;
         img = resize(img, Method.AUTOMATIC, Width, OP_ANTIALIAS);//, OP_GRAYSCALE);
         return img;
@@ -429,7 +427,7 @@ public class PicModel {
        
        try {
            //Convertors convertor = new Convertors();
-           ResultSet rs = null;
+           ResultSet rs;
            PreparedStatement ps = null;
            
            if (image_type == Convertors.DISPLAY_IMAGE) {

@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="me.stuartdouglas.stores.*" %>
@@ -33,10 +34,10 @@
        					Iterator<UserSession> iterator;
        					iterator = userInfo.iterator();
        					while (iterator.hasNext()) {
-       						UserSession p = (UserSession) iterator.next();
+       						UserSession p = iterator.next();
        						
        			%>
-       			<form name="input" action="/instashutter/account/editdetails" method="post">
+       			<form name="input" action="<c:url value="/instashutter/account/editdetails"/>" method="post">
 					Your username: (cannot be changed)<br>
 					First name: <input type="text" name="fname" value = "<%= p.getfname() %>"><br>
 					<input type="hidden" name="previousFname" value = "<%= p.getfname() %>">			

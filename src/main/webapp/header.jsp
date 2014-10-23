@@ -1,4 +1,4 @@
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="me.stuartdouglas.stores.*"%>
 
 
@@ -28,30 +28,30 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/instashutter/">Instashutter</a>
+      <a class="navbar-brand" href="<c:url value="/"/>">Instashutter</a>
     </div>
 	<%
 		UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
 		if (currentSession != null) {
 		  String userName = currentSession.getUsername();
-		  String background = currentSession.getBackground();
+		  //String background = currentSession.getBackground();
 		  if (currentSession.getUserSession()) {
     %>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-      <li class=""><a href="/instashutter/dashboard">Timeline</a></li>
-      <li class=""><a href="/instashutter/explore">Explore</a></li>
-        <li class=""><a href="/instashutter/upload">New Post</a></li>
+      <li class=""><a href="<c:url value="/dashboard"/>">Timeline</a></li>
+      <li class=""><a href="<c:url value="/explore"/>">Explore</a></li>
+        <li class=""><a href="<c:url value="/upload"/>">New Post</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/instashutter/profile/<%= userName%>">View profile</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= userName%> <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="/instashutter/account">Account settings</a></li>
+            <li><a href="<c:url value="/account"/>">Account settings</a></li>
             <li class="divider"></li>
-            <li><a href="/instashutter/logout">Log out</a></li>
+            <li><a href="<c:url value="/logout"/>">Log out</a></li>
           </ul>
         </li>
       </ul>
@@ -59,9 +59,9 @@
     <%}} else {%>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
-      <li><a href="/instashutter/explore">Explore</a></li>
-        <li><a href="/instashutter/login">Login</a></li>
-        <li><a href="/instashutter/register">Register</a></li>
+      <li><a href="<c:url value="/explore"/>">Explore</a></li>
+        <li><a href="<c:url value="/login"/>">Login</a></li>
+        <li><a href="<c:url value="/register"/>">Register</a></li>
         
       </ul>
     </div><!-- /.navbar-collapse -->

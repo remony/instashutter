@@ -6,12 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -20,7 +17,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 
@@ -42,7 +38,7 @@ import com.datastax.driver.core.Cluster;
 public class Profile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Cluster cluster;
-    private HashMap<String, Integer> CommandsMap = new HashMap<String, Integer>();
+    private final HashMap<String, Integer> CommandsMap = new HashMap<>();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -69,7 +65,7 @@ public class Profile extends HttpServlet {
         try {
             command = CommandsMap.get(args[1]);
         } catch (Exception et) {
-            error("Bad Operator", response);
+            error(response);
             return;
         }
         switch (command) {
@@ -88,7 +84,7 @@ public class Profile extends HttpServlet {
             	DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
                 break;
             default:
-                error("Bad Operator", response);
+                error(response);
         }
 	}
 	
@@ -103,7 +99,7 @@ public class Profile extends HttpServlet {
         if (user.isUserRegistered(Username)) {
         	request.setAttribute("UserInfo", lsUser);
     		user.getNumberOfPostsFromUser(Username);
-            java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(Username.toString());
+            java.util.LinkedList<Pic> lsPics = PicModel.getPicsForUser(Username);
             RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
             request.setAttribute("viewingUser", Username);
             request.setAttribute("Pics", lsPics);
@@ -133,14 +129,11 @@ public class Profile extends HttpServlet {
         request.setAttribute("message", json);
         try {
 			rd.forward(request, response);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (ServletException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+    }
 
 	private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
 		User user = new User();
@@ -153,20 +146,19 @@ public class Profile extends HttpServlet {
         InputStream is = new ByteArrayInputStream(p.getBytes());
         BufferedInputStream input = new BufferedInputStream(is);
         byte[] buffer = new byte[8192];
-        for (int length = 0; (length = input.read(buffer)) > 0;) {
+        for (int length; (length = input.read(buffer)) > 0;) {
             out.write(buffer, 0, length);
         }
         out.close();
     }
 	
-	private void error(String mess, HttpServletResponse response) throws ServletException, IOException {
+	private void error(HttpServletResponse response) throws ServletException, IOException {
 
-        PrintWriter out = null;
+        PrintWriter out;
         out = new PrintWriter(response.getOutputStream());
         out.println("<h1>You have an a error in your input</h1>");
-        out.println("<h2>" + mess + "</h2>");
+        out.println("<h2>" + "Bad Operator" + "</h2>");
         out.close();
-        return;
     }
 	
 

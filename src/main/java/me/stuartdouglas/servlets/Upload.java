@@ -37,7 +37,7 @@ public class Upload extends HttpServlet {
 			} else {
 				//If the user if logged in redirect them out of the register
 				
-				RequestDispatcher rd=request.getRequestDispatcher("upload.jsp");
+				RequestDispatcher rd = request.getRequestDispatcher("upload.jsp");
 			    rd.forward(request,response);
 			}
 		} catch (Exception e) {

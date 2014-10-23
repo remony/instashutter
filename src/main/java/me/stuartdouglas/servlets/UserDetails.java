@@ -37,12 +37,10 @@ public class UserDetails extends HttpServlet {
 		// TODO Auto-generated method stub
 		String username = request.getSession().getAttribute("user").toString();
 		String newFname = request.getParameter("fname");
-		String prevFname = request.getParameter("prevFname");
 		String newLname = request.getParameter("lname");
-		String prevLname = request.getParameter("prevLname");
 		String password = request.getParameter("password");
 		String location = request.getParameter("location");
-		
+		System.out.println("hey");
 		User user = new User();
 		user.setCluster(cluster);
 		

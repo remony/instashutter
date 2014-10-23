@@ -37,7 +37,6 @@ import com.datastax.driver.core.Cluster;
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
-import me.stuartdouglas.models.User;
 import me.stuartdouglas.stores.Pic;
 
 /**
@@ -46,7 +45,7 @@ import me.stuartdouglas.stores.Pic;
 public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Cluster cluster;
-	private HashMap<String, Integer> CommandsMap = new HashMap<String, Integer>();
+	private final HashMap<String, Integer> CommandsMap = new HashMap<>();
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -73,15 +72,15 @@ public class Dashboard extends HttpServlet {
 		boolean isLoggedIn = false;
 		if(session.getAttribute("LoggedIn") != null){
 			isLoggedIn = true;
-			};
-		if (isLoggedIn) {
+			}
+        if (isLoggedIn) {
 			String args[] = Convertors.SplitRequestPath(request);
 			
 	        int command;
 	        try {
-	            command = (Integer) CommandsMap.get(args[1]);
+	            command = CommandsMap.get(args[1]);
 	        } catch (Exception et) {
-	            error("Bad Operator", response);
+	            error(response);
 	            return;
 	        }
 	        switch (command) {
@@ -96,7 +95,7 @@ public class Dashboard extends HttpServlet {
 	                
 	                break;
 	            default:
-	                error("Bad Operator", response);
+	                error(response);
 	        }
 		}	else	{
 			response.sendRedirect("/instashutter/login");
@@ -109,10 +108,7 @@ public class Dashboard extends HttpServlet {
         try {
         tm.setCluster(cluster);
         LinkedList<Pic> lsPics = tm.getPosts();
-        int start = 0;
-        if (request.getParameter("count") != null)	{
-        	start =  Integer.parseInt(request.getParameter("count"));
-        }
+
         
         
         request.setAttribute("Pics", lsPics);
@@ -128,7 +124,7 @@ public class Dashboard extends HttpServlet {
 
     }
 
-	private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
+	private void DisplayImage(int type,String Image, HttpServletResponse response) throws IOException {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
 
@@ -144,7 +140,7 @@ public class Dashboard extends HttpServlet {
         InputStream is = new ByteArrayInputStream(p.getBytes());
         BufferedInputStream input = new BufferedInputStream(is);
         byte[] buffer = new byte[8192];
-        for (int length = 0; (length = input.read(buffer)) > 0;) {
+        for (int length; (length = input.read(buffer)) > 0;) {
             out.write(buffer, 0, length);
         }
         out.close();
@@ -163,7 +159,7 @@ public class Dashboard extends HttpServlet {
 		pic.setCluster(cluster);
 		
 		try {
-			
+			//something should be there?
 		}	catch (Exception e)	{
 			System.out.println("Error posting new comment: " + e);
 		}
@@ -175,13 +171,12 @@ public class Dashboard extends HttpServlet {
 	}
 
 
-	private void error(String mess, HttpServletResponse response) throws ServletException, IOException {
+	private void error(HttpServletResponse response) throws IOException {
 
-        PrintWriter out = null;
+        PrintWriter out;
         out = new PrintWriter(response.getOutputStream());
         out.println("<h1>You have an a error in your input</h1>");
-        out.println("<h2>" + mess + "</h2>");
+        out.println("<h2>" + "Bad Operator" + "</h2>");
         out.close();
-        return;
     }
 }

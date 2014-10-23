@@ -47,29 +47,16 @@
 		 -o-background-size: cover;
 		 background-size: cover;
 	}
-	
-	.wrapper {
-		width:40%;
-		padding:30px;
-		color:#fff;
-		background-color:rgba(0,0,0,0.5);
-		position:absolute;
-		bottom:20px;
-		right:20px;
-	}
-	
-	ul {
+
+    ul {
     list-style-type: none;
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 	ul li {
-	    background-image: none;
-	    background-repeat: no-repeat;
-	    background-color:none;
-	    background-position: 0px 5px; 
-	    padding-left: 14px; 
+        background: none none no-repeat 0 5px;
+        padding-left: 14px;
 	}
 	
 	input {

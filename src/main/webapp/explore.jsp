@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ page import="me.stuartdouglas.stores.*" %>
@@ -26,7 +27,7 @@
 	            Iterator<Pic> iterator;
 	            iterator = lsPics.iterator();
 	            while (iterator.hasNext()) {
-	                Pic p = (Pic) iterator.next();
+	                Pic p = iterator.next();
 					String username = p.getPostedUsername();%>
 	       			<div class = "post">
 						<div class = "post_image">
@@ -51,7 +52,7 @@
 					<p>Sharing coming soon</p>		
 				</div>
 				<div class = "post_comments">
-					<% LinkedList<CommentStore> lsComments = (LinkedList<CommentStore>) p.getCommentlist();
+					<% LinkedList<CommentStore> lsComments = p.getCommentlist();
 					int count = 0;
 					if (lsComments == null) {
 					} else { %>
@@ -60,8 +61,8 @@
 							<%Iterator<CommentStore> commentIterator;
 							commentIterator = lsComments.iterator();
 							while(commentIterator.hasNext()){
-								CommentStore c = (CommentStore) commentIterator.next();
-								String timeSinceComment = df.format(c.getPosted_time());
+								CommentStore c = commentIterator.next();
+								//String timeSinceComment = df.format(c.getPosted_time());
 								count++;%>
 								<!-- Print out comments -->
 							
@@ -89,7 +90,7 @@
 						<%} %>
 					</div>
 					<div class="post_comment_form">
-						<form name="comment_input" action="/instashutter/dashboard" method="POST">
+						<form name="comment_input" action="<c:url value="/instashutter/dashboard"/>" method="POST">
 							<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
 							Comment: <input type="text" name="comment">
 							<input type="submit" value="comment">
@@ -102,6 +103,6 @@
 		</div>
 		</div>
 	</body>
-	<script src="/instashutter/assets/js/jquery.timeago.js"></script>
-<script src="/instashutter/assets/js/app.js"></script>
+	<script src="<c:url value="/assets/js/jquery.timeago.js"/>"></script>
+<script src="<c:url value="/assets/js/app.js"/>"></script>
 </html>

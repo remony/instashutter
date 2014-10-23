@@ -24,7 +24,7 @@ public class Pic {
     java.util.Date timeAdded = new java.util.Date();
     private Date picAdded = new Date();
     private String postComment;
-    private LinkedList<CommentStore> commentlist = new LinkedList<>();
+    private final LinkedList<CommentStore> commentlist = new LinkedList<>();
     private boolean isPublic = false;
     
     
@@ -36,7 +36,7 @@ public class Pic {
     }
     
     public String getPostedUsername(){
-    	return user.toString();
+    	return user;
     }
     public void setPostedUsername(String User) {
     	this.user=User;

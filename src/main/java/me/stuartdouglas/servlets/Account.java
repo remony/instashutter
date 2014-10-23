@@ -1,7 +1,6 @@
 package me.stuartdouglas.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import me.stuartdouglas.lib.CassandraHosts;
-import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.User;
 import me.stuartdouglas.stores.UserSession;
 
@@ -27,15 +25,16 @@ import com.datastax.driver.core.Cluster;
 public class Account extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Cluster cluster;
-	private HashMap<String, Integer> CommandsMap = new HashMap<String, Integer>();
+
     /**
      * @see HttpServlet#HttpServlet()
      */
     public Account() {
         super();
-        CommandsMap.put("account", 1);
-        CommandsMap.put("editprofile", 2);
-        CommandsMap.put("editpassword", 2);
+        HashMap<String, Integer> commandsMap = new HashMap<>();
+        commandsMap.put("account", 1);
+        commandsMap.put("editprofile", 2);
+        commandsMap.put("editpassword", 2);
         
         // TODO Auto-generated constructor stub
     }
@@ -63,6 +62,11 @@ public class Account extends HttpServlet {
 		} else {
 			response.sendRedirect("/instashutter/login");
 		}
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+	
 	}
 	
 	

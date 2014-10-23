@@ -12,8 +12,8 @@
 	<%
 	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
 	if (currentSession != null) {
-		String userName = currentSession.getUsername();
-		if (currentSession.getUserSession() == false) {
+		//String userName = currentSession.getUsername();
+		if (!currentSession.getUserSession()) {
 			%>
 	<div class="alert alert-info" role="alert">
 	  <h3>You have not even logged in yet...</h3>

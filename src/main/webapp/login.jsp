@@ -13,7 +13,6 @@
 	<%
 	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
 	if (currentSession != null) {
-		String userName = currentSession.getUsername();
 		if (currentSession.getUserSession()) {
 			%>
 	response.sendRedirect("/instashutter/dashboard"); 
@@ -27,7 +26,7 @@
 		<h3>Login</h3>
 		</div>
 		<div class="post_caption">
-		<form name="login" action="login" method="POST" accept-charset="utf-8">  
+		<form name="login" action="login" method="POST" accept-charset="utf-8">
 			    <ul>  
 			        <li><label for="username">Username</label>  
 			        <input type="text" name="username" placeholder="username" required></li>  

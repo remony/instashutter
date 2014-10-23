@@ -20,7 +20,7 @@ import me.stuartdouglas.stores.UserSession;
  */
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	Cluster cluster = null;
+	private Cluster cluster = null;
     /**
      * @see HttpServlet#HttpServlet()
      */

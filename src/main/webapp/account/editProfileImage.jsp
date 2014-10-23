@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     
@@ -35,10 +36,10 @@
        					Iterator<UserSession> iterator;
        					iterator = userInfo.iterator();
        					while (iterator.hasNext()) {
-       						UserSession p = (UserSession) iterator.next();
+       						//UserSession p = (UserSession) iterator.next();
        						
        			%>
-       			<form method="POST" id="uploadform" enctype="multipart/form-data" action="/instashutter/account/editProfileImage" >
+       			<form method="POST" id="uploadform" enctype="multipart/form-data" action="<c:url value="/instashutter/account/editProfileImage"/>" >
 					<div class="post_timestamp">
 						<input type="file" name="file" value="/tmp"  onchange="readfile(this);"><br/>
 					</div>

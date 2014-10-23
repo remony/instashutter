@@ -1,7 +1,6 @@
 package me.stuartdouglas.stores;
 
 import java.nio.ByteBuffer;
-import java.util.List;
 import java.util.Set;
 
 import com.datastax.driver.core.utils.Bytes;
@@ -15,15 +14,15 @@ import com.datastax.driver.core.utils.Bytes;
 
 
 public final class UserSession {
-	boolean loggedin = false;
-    String Username = null;
-    String fname = "null";
-    String lname = "null";
-    String userBackground = null;
-    String location = null;
-    String bio = null;
-    Set<String> email = null;
-    int postCount = 0;
+	private boolean loggedin = false;
+    private String Username = null;
+    private String fname = "null";
+    private String lname = "null";
+    private String userBackground = null;
+    private String location = null;
+    private String bio = null;
+    private Set<String> email = null;
+    private int postCount = 0;
     private ByteBuffer profileImage = null;
     
     public UserSession() {
@@ -45,7 +44,7 @@ public final class UserSession {
     }
     
     public void setUserSession(Boolean flag) {
-    	loggedin = flag;
+    	loggedin = true;
     }
 
     
@@ -56,7 +55,7 @@ public final class UserSession {
     public void setfname(String name) {
     	this.fname = name;
     }
-    
+
     public String getfname() {
     	return fname;
     }

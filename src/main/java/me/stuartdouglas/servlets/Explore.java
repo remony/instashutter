@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
@@ -52,13 +51,9 @@ public class Explore extends HttpServlet {
 			pic.setCluster(cluster);
 			LinkedList<Pic> lsPics = pic.getPublicPosts();
 			
-			if (lsPics != null)	{
-				System.out.println("yay posts");
-				request.setAttribute("Pics",  lsPics);
-			}	else	{
-				System.out.println("Boo, no posts...");
-				request.setAttribute("Pics",  lsPics);
-			}
+
+            request.setAttribute("Pics",  lsPics);
+
 			RequestDispatcher rd = request.getRequestDispatcher("/explore.jsp");
 	        rd.forward(request, response);
 			
