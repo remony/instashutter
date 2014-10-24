@@ -17,7 +17,7 @@
 	        	if (lsPics == null) {%>
 	        		<p>No results</p>
 	        		<form name="search" action="/instashutter/search" method="POST">
-						<input type="text" class="form-control" name="keyword" placeholder="Search">
+						<input type="text" class="form-control" name="keyword" placeholder="Search" autofocus>
 						<input type="submit" value="comment">
 					</form>
 	        		 

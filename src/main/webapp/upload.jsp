@@ -50,7 +50,7 @@
 	
 	</div>
 	<div class="post_comments">
-	<input type="submit" value="Post">
+	<button class="btn btn-default" type="submit">Post<span class="glyphicon glyphicon-send"></button>
 	</div>
    		
 			

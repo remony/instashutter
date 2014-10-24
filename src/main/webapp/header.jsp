@@ -39,17 +39,30 @@
     %>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    
       <ul class="nav navbar-nav">
-      <li class=""><a href="<c:url value="/dashboard"/>">Timeline</a></li>
-      <li class=""><a href="<c:url value="/explore"/>">Explore</a></li>
-        <li class=""><a href="<c:url value="/upload"/>">New Post</a></li>
+      <li class=""><a href="<c:url value="/dashboard"/>"><span class="glyphicon glyphicon-home"></span> Dashboard</a></li>
+      <li class=""><a href="<c:url value="/explore"/>"><span class="glyphicon glyphicon-globe"></span> Explore</a></li>
+        <li class=""><a href="<c:url value="/upload"/>"><span class="glyphicon glyphicon-upload"></span> New Post</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/instashutter/profile/<%= userName%>">View profile</a></li>
+      
+        
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= userName%> <span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span><span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="<c:url value="/account"/>">Account settings</a></li>
+            <form class="navbar-form navbar-left"  action="/instashutter/search" role="search" method="POST">
+	        <div class="form-group">
+	        	<input type="text" class="form-control" name="keyword" placeholder="Search posts">
+	        </div>
+	      </form>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-list"></span><%= userName%> <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+          	<li><a href="/instashutter/profile/<%= userName%>">View profile</a></li>
+            <li><a href="<c:url value="/account"/>"><span class="glyphicon glyphicon-th-list"></span>Account settings</a></li>
             <li class="divider"></li>
             <li><a href="<c:url value="/logout"/>">Log out</a></li>
           </ul>
@@ -59,6 +72,11 @@
     <%}} else {%>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-right">
+      <form class="navbar-form navbar-left"  action="/instashutter/search" role="search" method="POST">
+        <div class="form-group">
+          <input type="text" class="form-control" name="keyword" placeholder="Search posts">
+        </div>
+      </form>
       <li><a href="<c:url value="/explore"/>">Explore</a></li>
         <li><a href="<c:url value="/login"/>">Login</a></li>
         <li><a href="<c:url value="/register"/>">Register</a></li>

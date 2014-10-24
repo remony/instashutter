@@ -308,18 +308,18 @@ public class PicModel {
 
             
             output.write(b);
+
             
+            applyFilter(filter, picid);
             
+            	
             byte []  thumbb = picresize(picid.toString(),types[1]);
             int thumblength= thumbb.length;
             ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
-            byte[] processedb;
-            System.out.println("Image type:" + type);
-            if (type.equals("image/gif")){
-            	processedb = b;
-            }	else	{
-            	processedb = picdecolour(picid.toString(),types[1]);
-            }
+            byte[] processedb = null;
+            System.out.println("FIlter is " + filter);
+            processedb = picdecolour(picid.toString(),types[1]);
+            
             ByteBuffer processedbuf=ByteBuffer.wrap(processedb);
             int processedlength=processedb.length;
             Session session = cluster.connect("instashutter");
@@ -369,53 +369,54 @@ public class PicModel {
     
     public void applyFilter(String filter, UUID picid)	{
     	try {
-    		File input = new File("/var/tmp/instashutter/" + picid);
-    		File output1 = new File("/var/tmp/instashutter/" + picid);
-    		
-        	BufferedImage imageIn = ImageIO.read(input);
-        	BufferedImage imageOut = ImageIO.read(input);
-
-            switch (filter) {
-                case "bw":
-                    GrayscaleFilter greyFilter = new GrayscaleFilter();
-                    greyFilter.filter(imageIn, imageOut);
-                    break;
-                case "invert":
-                    InvertFilter invert = new InvertFilter();
-                    invert.filter(imageIn, imageOut);
-                    break;
-                case "exposure":
-                    ExposureFilter exposure = new ExposureFilter();
-                    exposure.filter(imageIn, imageOut);
-                    break;
-                case "flare":
-                    FlareFilter flare = new FlareFilter();
-                    flare.filter(imageIn, imageOut);
-                    break;
-                case "pointillize":
-                    PointillizeFilter pointillize = new PointillizeFilter();
-                    pointillize.filter(imageIn, imageOut);
-                    break;
-                case "crystallize":
-                    CrystallizeFilter crystallize = new CrystallizeFilter();
-                    crystallize.filter(imageIn, imageOut);
-                    break;
-                case "chrome":
-                    ChromeFilter chrome = new ChromeFilter();
-                    chrome.filter(imageIn, imageOut);
-                    break;
-                default:
-                    System.out.println("known filter");
-                    break;
-            }
-            	System.out.println("not applying filter");
-            
-        	
-            ImageIO.write(imageOut, "gif", output1);
-        }	catch(Exception e)	{
-        	System.out.println("Error applying filter");
-        	e.printStackTrace();
-        }
+    		    		File input = new File("/var/tmp/instashutter/" + picid);
+    		    		File output1 = new File("/var/tmp/instashutter/" + picid);
+    		        	BufferedImage imageIn = ImageIO.read(input);
+    		        	BufferedImage imageOut = ImageIO.read(input);
+    		        	System.out.println("Attempting to apply filter " + filter);
+    		        	if (filter.equals("bw"))	{
+    		        		GrayscaleFilter greyFilter = new GrayscaleFilter();
+    		        		System.out.println("applied filter grey scale");
+    		            	greyFilter.filter(imageIn, imageOut);  
+    		            }	else if (filter.equals("invert"))	{
+    		            	InvertFilter invert = new InvertFilter();
+    		            	invert.filter(imageIn, imageOut);
+    		            	System.out.println("applied filter invert");
+    		            }	else if (filter.equals("exposure"))	{
+    		            	ExposureFilter exposure = new ExposureFilter();
+    		            	exposure.filter(imageIn, imageOut);
+    		            	System.out.println("applied filter explosure");
+    		           }	else if (filter.equals("flare"))	
+    		           {
+    		            	FlareFilter flare = new FlareFilter();
+    		            	flare.filter(imageIn, imageOut);
+    		            	System.out.println("applied filter flare");
+    		            }	else if (filter.equals("pointillize"))	{
+    		            	PointillizeFilter pointillize = new PointillizeFilter();
+    		            	pointillize.filter(imageIn, imageOut);
+    		            	System.out.println("applied filter point");
+    		            }	else if (filter.equals("crystallize"))	{
+    		            	CrystallizeFilter crystallize = new CrystallizeFilter();
+    		            	crystallize.filter(imageIn, imageOut);
+    		            	System.out.println("applied filter crystal");
+    		            }	else if (filter.equals("chrome"))	{
+    		            	ChromeFilter chrome = new ChromeFilter();
+    		            	chrome.filter(imageIn, imageOut);
+    		            	System.out.println("applied filter chrome");
+    		            }
+    		            
+    		            
+    		            else	{
+    		            	System.out.println("not applying filter");
+    		            }
+    		            	
+    		            
+    		        	
+    		            ImageIO.write(imageOut, "jpg", output1);
+    		        }	catch(Exception e)	{
+    		        	System.out.println("Error applying filter");
+    		        	e.printStackTrace();
+    		        }
         
     }
     
