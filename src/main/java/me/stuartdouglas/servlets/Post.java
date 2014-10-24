@@ -51,7 +51,7 @@ public class Post extends HttpServlet {
         	try {
         		if (args[3] != null && args[3].toLowerCase().equals("delete"))	{
         			deletePost(args[2], request, response);
-        			response.sendRedirect("/instashutter/dashboard");
+        			response.sendRedirect("/instashutter/");
         		}
         	}	catch(Exception e)	{
         		e.printStackTrace();

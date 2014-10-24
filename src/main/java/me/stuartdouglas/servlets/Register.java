@@ -83,7 +83,7 @@ public class Register extends HttpServlet {
 			}
 		} catch (Exception e) {
 			System.out.println("ERROR: " + e);
-			response.sendRedirect("/instashutter/dashboard");
+			response.sendRedirect("/instashutter/");
 		}
 	}
 	public void destroy()	{

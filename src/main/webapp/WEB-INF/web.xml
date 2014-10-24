@@ -34,7 +34,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Upload</servlet-name>
-    <url-pattern>/upload</url-pattern>
     <url-pattern>/Upload</url-pattern>
   </servlet-mapping>
   <servlet>
@@ -108,6 +107,7 @@
   <servlet-mapping>
     <servlet-name>Account</servlet-name>
     <url-pattern>/account</url-pattern>
+    <url-pattern>/account/*</url-pattern>
     <url-pattern>/Account</url-pattern>
   </servlet-mapping>
   <servlet>

@@ -35,7 +35,7 @@ public class Login extends HttpServlet {
 		HttpSession session = request.getSession();
 		//If the user is already logged in redirect to dashboard
 		if (session.getAttribute("LoggedIn") != null) {
-			response.sendRedirect("/instashutter/dashboard");
+			response.sendRedirect("/instashutter/");
 		}	else	{
 			//If the user is not logged in display the login view
 			UserSession usrSession = new UserSession();

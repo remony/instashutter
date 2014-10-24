@@ -34,7 +34,7 @@
 					
 	       			<div class = "post">
 						<div class = "post_image">
-							<a href="/instashutter/picture/<%=p.getSUUID()%>" ><img src="/instashutter/Image/<%=p.getSUUID()%>"></a>
+							<a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Image/<%=p.getSUUID()%>"></a>
 						</div>
 					<div class = "post_timestamp">
 						<%  //Convert date to iso 8601 format for use with jquery.timeago.js using code from http://stackoverflow.com/questions/3914404/how-to-get-current-moment-in-iso-8601-format
@@ -64,8 +64,8 @@
 			        	}
 			        </style>
 				<div class = "post_author">
-					<a href="/instashutter/profile/<%= username %>">@<%= username %></a>
-					<a href="<%=request.getContextPath()%>/Image/<%= username %>"><img src="<%=request.getContextPath()%>/picture/<%= username %>" alt="Profile image" /></a>
+					
+					<a href="/instashutter/profile/<%= username %>"><img src="<%=request.getContextPath()%>/picture/<%= username %>" alt="Profile image" />@<%= username %></a>
 				</div>
 				<div class = "post_caption">
 					<div class="post_desc"><%= p.getCaption() %></div>
@@ -112,7 +112,7 @@
 						<%} %>
 					</div>
 					<div class="post_comment_form">
-						<form name="comment_input" action="<c:url value="/instashutter/dashboard"/>" method="POST">
+						<form name="comment_input" action="/instashutter/" method="POST">
 							<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
 							Comment: <input type="text" name="comment">
 							<input type="submit" value="comment">

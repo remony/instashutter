@@ -73,7 +73,7 @@
        			
        				</div>
        				<div id="password">
-	       				<form name="input" action="<c:url value="/account/editpassword"/>" method="post">
+	       				<form name="input" action="<c:url value="/account/password"/>" method="post">
 		       				Current password: <input type="password" name="currentPassword" value = ""><br>
 							Enter your new password:<input type="password" name="newPassword" value = ""><br>
 							Enter your new password again: <input type="password" name="newPasswordVerify" value = ""><br>
@@ -81,7 +81,7 @@
 		       			</form>
        				</div>
        				<div id="profileimage">
-	       				<form method="POST" id="uploadform" enctype="multipart/form-data" action="<c:url value="/account/editProfileImage"/>" >
+	       				<form method="POST" id="uploadform" enctype="multipart/form-data" action="<c:url value="/account/avatar"/>" >
 							<div class="post_timestamp">
 								<input type="file" name="file" value="/tmp"  onchange="readfile(this);"><br/>
 							</div>
@@ -94,19 +94,19 @@
        				</div>
        				<div id="bio">
        				
-       					<form name="input" id="updatebio" action="<c:url value="/account/editbio"/>" method="post">
+       					<form name="input" id="updatebio" action="/instashutter/account/bio" method="post">
 		       				Bio: <textarea rows="4" cols="50" name="bio" form="updatebio"><%= p.getBio() %></textarea><br>
-							<input type="submit" value="Update background">
+							<input type="submit" value="Update bio">
 		       			</form>
        				</div>
        				<div id="profileBackground">
-       					<form name="input" action="<c:url value="/account/profilePersonalization"/>" method="post">
+       					<form name="input" action="<c:url value="/account/profile"/>" method="post">
 		       				Background URL: <input type="text" name="url" value = "<%= p.getBackground() %>"><br>
 							<input type="submit" value="Update background">
 		       			</form>
        				</div>
        				<div id="profileEmail">
-       					<form name="emailInput" action="<c:url value="/account/editEmail"/>" method="post">
+       					<form name="emailInput" action="<c:url value="/account/email"/>" method="post">
 		       				Email: <input type="text" name="email" value = "<%= p.getEmail() %>"><br>
 							Enter your password:<input type="password" name="password" value = ""><br>
 							<input type="submit" value="Update email">

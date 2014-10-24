@@ -15,7 +15,7 @@
 	if (currentSession != null) {
 		if (currentSession.getUserSession()) {
 			%>
-	response.sendRedirect("/instashutter/dashboard"); 
+	response.sendRedirect("/instashutter/"); 
 	<%}
 	} else {
 			%>

@@ -437,25 +437,27 @@ public class User {
                 System.out.println("Invalid username");
 				return false;
             } else {
-            	for (Row row : rs)	{
-	    			if (row.getString("friend").equals(followingUser))	{
-	    				System.out.println("user " + username + " is following user " + followingUser);
-	    				return true;
-	    			}	else 	{
-	    				System.out.println("user " + username + " is not following user " + followingUser);
-	    				return false;
-	    			}
-	    		}
+	            	for (Row row : rs)	{
+	                    if (row.getString("friend").equals(followingUser))	{
+	                        System.out.println("user " + username + " is following user " + followingUser);
+	                        return true;
+	                    }	else {
+	                        System.out.println("user " + username + " is not following user " + followingUser);
+	                        return false;
+	                    }
+		    		}
+            	}
             	return true;
-            }
-		}	catch(Exception e)	{
-			System.out.println("Error following user" + e);
-		}
+            }	catch(Exception e)	{
+    			System.out.println("Error following user" + e);
+    		}
+	
+		
 		
 		return false;
 	}
 	
-	public static LinkedList<FollowingStore> getFollowers(String username) {
+	public static LinkedList<FollowingStore> getFollowing(String username) {
     	LinkedList<FollowingStore> followingList = new LinkedList<>();
     	LinkedList<FollowingStore> sortedFollowingList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
@@ -472,6 +474,38 @@ public class User {
     		for (Row row : rs) {
     			FollowingStore fs = new FollowingStore();
     			fs.setFollowing(row.getString("friend"));
+    			fs.setFollowedSince(row.getDate("since"));
+    			followingList.add(fs);
+    		}
+    		session.close();
+    	}
+    	//Sorting posts by most recent followed first
+    	followingList.stream()
+        .sorted((e1, e2) -> e2.getFollowedSince()
+                .compareTo(e1.getFollowedSince()))
+        .forEach(sortedFollowingList::add);
+    	
+		return sortedFollowingList;
+		
+    }
+	
+	public static LinkedList<FollowingStore> getFollowers(String username) {
+    	LinkedList<FollowingStore> followingList = new LinkedList<>();
+    	LinkedList<FollowingStore> sortedFollowingList = new LinkedList<>();
+    	Session session = cluster.connect("instashutter");
+    	
+    	PreparedStatement statement = session.prepare("SELECT * from friends where friend =? allow filtering");
+    	
+    	BoundStatement bs = new BoundStatement(statement);
+    	
+    	ResultSet rs = session.execute(bs.bind(username));
+    	if (rs.isExhausted()){
+    		System.out.println("No followers returned");
+    		return followingList;
+    	} else {
+    		for (Row row : rs) {
+    			FollowingStore fs = new FollowingStore();
+    			fs.setFollowing(row.getString("username"));
     			fs.setFollowedSince(row.getDate("since"));
     			followingList.add(fs);
     		}

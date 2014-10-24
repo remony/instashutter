@@ -38,13 +38,14 @@
 					
 					<div class="post">
 						<div class="post_image">
-							<a href="/instashutter/post/<%= username %>"><img src="/instashutter/Thumb/<%= uuid %>"></a>
+							<a href="/instashutter/post/<%= uuid %>"><img src="/instashutter/Thumb/<%= uuid %>"></a>
 						</div>
 						<div class="post_timestamp">
-							<%= timeAdded %> 
+							<div class="timeConvertsince" title="<%= timeAdded %>"><%= timeAdded %></div> 
 						</div>
 						<div class="post_author">
-							<%= username %>
+							<a href="/instashutter/profile/<%= username %>">@<%= username %></a>
+							<a href="<%=request.getContextPath()%>/picture/<%= username %>"><img src="<%=request.getContextPath()%>/picture/<%= username %>" alt="Profile image" /></a>
 						</div>
 						<div class="post_caption">
 							<%= caption %>
@@ -99,7 +100,7 @@
 								<% } %>
 							</div>
 							<div class="post_comment_form">
-								<form name="comment_input" action="/instashutter/dashboard" method="POST">
+								<form name="comment_input" action="/instashutter/" method="POST">
 									<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
 									Comment: <input type="text" name="comment">
 									<input type="submit" value="comment">

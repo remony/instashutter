@@ -37,7 +37,8 @@ import com.datastax.driver.core.Cluster;
 	    "/Image/*",
 	    "/Thumb/*",
 	    "/Images",
-	    "/Images/*"
+	    "/Images/*",
+	    "/upload"
 	})
 @MultipartConfig
 public class Image extends HttpServlet {
@@ -56,7 +57,7 @@ public class Image extends HttpServlet {
         CommandsMap.put("Image", 1);
         CommandsMap.put("Images", 2);
         CommandsMap.put("Thumb", 3);
-        CommandsMap.put("delete", 4);
+        CommandsMap.put("upload", 4);
     }
     
     public void init(ServletConfig config) throws ServletException {
@@ -75,7 +76,7 @@ public class Image extends HttpServlet {
         try {
             command = CommandsMap.get(args[1]);
         } catch (Exception et) {
-            error(response);
+            //error(response);
             return;
         }
         switch (command) {
@@ -98,12 +99,32 @@ public class Image extends HttpServlet {
             case 3:
                 DisplayImage(Convertors.DISPLAY_THUMB,args[2],  response);
                 break;
+            case 4:
+        		DisplayUpload(request, response);
             default:
-                error(response);
+                //error(response);
         }
 	}
 	
 	
+	private void DisplayUpload(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			HttpSession session = request.getSession();
+			if (session.getAttribute("LoggedIn") == null) {
+				//If the user is not logged in or new display the register page
+				response.sendRedirect("/instashutter/login");
+			} else {
+				//If the user if logged in redirect them out of the register
+				
+				RequestDispatcher rd = request.getRequestDispatcher("upload.jsp");
+			    rd.forward(request,response);
+			}
+		} catch (Exception e) {
+			System.out.println("Error: " + e);
+		}
+		
+	}
+
 	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		PicModel pic = new PicModel();
@@ -209,17 +230,9 @@ public class Image extends HttpServlet {
 			System.out.println("Error processing upload request: " + e);
 		}
 		//response.setStatus(HttpServletResponse.SC_CREATED);
-		response.sendRedirect("/instashutter/dashboard");
+		response.sendRedirect("/instashutter/");
 	}
-	
-	private void error(HttpServletResponse response) throws IOException {
 
-        PrintWriter out = null;
-        out = new PrintWriter(response.getOutputStream());
-        out.println("<h1>You have an a error in your input</h1>");
-        out.println("<h2>" + "Bad Operator" + "</h2>");
-        out.close();
-    }
 	
 	/**
 	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)

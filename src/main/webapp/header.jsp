@@ -41,7 +41,7 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     
       <ul class="nav navbar-nav">
-      <li class=""><a href="<c:url value="/dashboard"/>"><span class="glyphicon glyphicon-home"></span> Dashboard</a></li>
+      <li class=""><a href="<c:url value="/"/>"><span class="glyphicon glyphicon-home"></span> Dashboard</a></li>
       <li class=""><a href="<c:url value="/explore"/>"><span class="glyphicon glyphicon-globe"></span> Explore</a></li>
         <li class=""><a href="<c:url value="/upload"/>"><span class="glyphicon glyphicon-upload"></span> New Post</a></li>
       </ul>

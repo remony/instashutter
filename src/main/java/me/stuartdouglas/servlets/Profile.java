@@ -17,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 
@@ -78,8 +79,13 @@ public class Profile extends HttpServlet {
             	if(args.length != 3){
             		if (args[3] != null && args[3].toLowerCase().equals("following"))	{
             			DisplayFollowing(args[2], request, response);
-            			//response.sendRedirect("/instashutter/dashboard");
-            		}
+            		}	else if (args[3] != null && args[3].toLowerCase().equals("followers")){
+            			DisplayFollowers(args[2], request, response);
+            		}	else if (args[3] != null && args[3].toLowerCase().equals("follow")){
+            			followUser(args[2], request, response);
+            		}	else if (args[3] != null && args[3].toLowerCase().equals("unfollow")){
+            			unFollowUser(args[2], request, response);
+            		}	
             	}	else	{
             		DisplayProfile(args[2], request, response); 
             	}
@@ -104,19 +110,34 @@ public class Profile extends HttpServlet {
 			User user = new User();
 			user.setCluster(cluster);
 			
-			LinkedList<FollowingStore> lsFollowing = User.getFollowers(username);
+			LinkedList<FollowingStore> lsFollowing = User.getFollowing(username);
 			request.setAttribute("following", lsFollowing);
 			RequestDispatcher rd = request.getRequestDispatcher("/following.jsp");
 			rd.forward(request, response);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (ServletException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-	}
+
+    }
+	
+	private void DisplayFollowers(String username, HttpServletRequest request,
+			HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		try {
+			User user = new User();
+			user.setCluster(cluster);
+			
+			LinkedList<FollowingStore> lsFollowing = User.getFollowers(username);
+			request.setAttribute("followers", lsFollowing);
+			RequestDispatcher rd = request.getRequestDispatcher("/followers.jsp");
+			rd.forward(request, response);
+		} catch (ServletException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    }
 
 	private void DisplayProfile(String Username, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
@@ -196,7 +217,119 @@ public class Profile extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
+		String args[] = Convertors.SplitRequestPath(request);
+        int command;
+        try {
+            command = CommandsMap.get(args[1]);
+        } catch (Exception et) {
+            error(response);
+            return;
+        }
+        switch (command) {
+            case 1:
+                DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
+                break;
+            case 2:
+            	try {
+	            	if(args.length != 3){
+	            		if (args[3] != null && args[3].toLowerCase().equals("follow"))	{
+	            			followUser(args[2], request, response);
+	            		}	else if (args[3] != null && args[3].toLowerCase().equals("unfollow")){
+	            			unFollowUser(args[2], request, response);
+		            	}	else	{
+		            		DisplayProfile(args[2], request, response); 
+		            	}
+	            	}
+            	}	catch(Exception e)	{
+	            		System.out.println("Error: " + e);
+	            		userDoesntexist(" ", request, response);
+	            		
+	            	}
+                break;
+            case 3:
+            	DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
+                break;
+            default:
+                error(response);
+        }
+		
+		
 	}
+		
+	
+	
+	private void unFollowUser(String followingUser, HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		//If the user is not logged in display index
+		boolean isLoggedIn = false;
+		if(session.getAttribute("LoggedIn") != null){
+			isLoggedIn = true;
+			}
+        if (isLoggedIn) {
+			String username = request.getSession().getAttribute("user").toString();
+			User user = new User();
+			user.setCluster(cluster);
+			if (!username.equals(followingUser))	{
+					user.unFollowUser(username, followingUser);
+			}	else 	{
+				errorMessage("Unabled to unfollow user.", "You (" + username + ") attempted to follow " + followingUser, request, response);
+			}
+			try {
+				response.sendRedirect("/instashutter/profile/" + followingUser);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}	else	{
+			try {
+				response.sendRedirect("/instashutter/login");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void followUser(String followingUser, HttpServletRequest request,
+			HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		//If the user is not logged in display index
+		boolean isLoggedIn = false;
+		if(session.getAttribute("LoggedIn") != null){
+			isLoggedIn = true;
+			}
+        if (isLoggedIn) {
+			//String followingUser = request.getParameter("followingUser");
+			//String method = request.getParameter("method");
+			String username = request.getSession().getAttribute("user").toString();
+			User user = new User();
+			user.setCluster(cluster);
+			if (!username.equals(followingUser))	{
+					user.followUser(username, followingUser);
+			}	else 	{
+				errorMessage("Unabled to follow user.", "You (" + username + ") attempted to follow " + followingUser, request, response);
+			}
+			try {
+				response.sendRedirect("/instashutter/profile/" + followingUser);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+	                
+		}	else	{
+			try {
+				response.sendRedirect("/instashutter/login");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
 	public void destroy()	{
 		try {
 			if(cluster != null) cluster.close();
@@ -205,4 +338,25 @@ public class Profile extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
+	
+	private void errorMessage (String title, String message, HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
+		JSONObject json = new JSONObject();
+    	Date date = new Date();
+    	String dates = date.toString();
+    	json.put("title", title);
+    	json.put("time_issued", dates);
+    	json.put("message", message);
+
+    	//String message = "The user " + Username + " does not exist";
+    	response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        request.setAttribute("message", json);
+        try {
+			rd.forward(request, response);
+		} catch (ServletException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 }

@@ -90,7 +90,7 @@
 						<%} %>
 					</div>
 					<div class="post_comment_form">
-						<form name="comment_input" action="<c:url value="/instashutter/dashboard"/>" method="POST">
+						<form name="comment_input" action="/instashutter/" method="POST">
 							<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
 							Comment: <input type="text" name="comment">
 							<input type="submit" value="comment">
