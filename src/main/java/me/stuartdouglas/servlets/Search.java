@@ -90,6 +90,7 @@ public class Search extends HttpServlet {
         User user = new User();
         tm.setCluster(cluster);
         user.setCluster(cluster);
+        keyword = keyword.toLowerCase();
         try {
         
             LinkedList<Pic> lsPics = PicModel.getPostsContaining(keyword);

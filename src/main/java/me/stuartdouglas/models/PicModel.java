@@ -211,7 +211,7 @@ public class PicModel {
 			instaList.stream()
 			.sorted((e1, e2) -> e2.getPicAdded()
 			        .compareTo(e1.getPicAdded()))
-			        .filter(e1 -> e1.getCaption().contains(keyword))
+			        .filter(e1 -> e1.getCaption().toLowerCase().contains(keyword))
 			.forEach(instaSortedList::add);
 			if (!instaSortedList.isEmpty())	{
 				System.out.println("got results");
