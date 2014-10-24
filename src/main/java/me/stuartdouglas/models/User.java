@@ -25,7 +25,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.imgscalr.Scalr.*;
-
 import me.stuartdouglas.lib.*;
 import me.stuartdouglas.stores.UserSession;
 
@@ -104,7 +103,6 @@ public class User {
    public LinkedList<UserSession> getUserInfo(String user) {
    	LinkedList<UserSession> userList = new LinkedList<>();
    	Session session = cluster.connect("instashutter");
-   	System.out.println("sarah needs to speak");
    	PreparedStatement ps = session.prepare("SELECT * from userprofiles where login =?");
     ResultSet rs;
     BoundStatement boundStatement = new BoundStatement(ps);
@@ -262,7 +260,7 @@ public class User {
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
 
             session.execute(bsInsertPic.bind(picbuf,filename));
-
+            output.close();
             session.close();
 			
 			
@@ -370,6 +368,14 @@ public class User {
         
 	}
 
-
+	public void destroy()	{
+		try {
+			if(cluster != null) cluster.close();
+			System.out.println("cluster in User closed");
+		}	catch(Exception e)	{
+			System.out.println("error closing cassandra connection " + e);
+			e.printStackTrace();
+		}
+	}
 
 }

@@ -2,6 +2,7 @@ package me.stuartdouglas.servlets;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -68,5 +69,12 @@ public class EditProfileImage extends HttpServlet {
 		}
 		
 	}
-
+	public void destroy()	{
+		try {
+			if(cluster != null) cluster.close();
+		}	catch(Exception e)	{
+			System.out.println("error closing cassandra connection " + e);
+			e.printStackTrace();
+		}
+	}
 }

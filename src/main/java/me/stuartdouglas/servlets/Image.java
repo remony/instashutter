@@ -1,16 +1,8 @@
 package me.stuartdouglas.servlets;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.datastax.driver.core.Cluster;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -19,16 +11,22 @@ import java.util.UUID;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
-import me.stuartdouglas.stores.UserSession;
 import me.stuartdouglas.stores.Pic;
+import me.stuartdouglas.stores.UserSession;
+
+import com.datastax.driver.core.Cluster;
 
 /**
  * Servlet implementation class Image
@@ -231,5 +229,12 @@ public class Image extends HttpServlet {
 		// TODO Auto-generated method stub
 		System.out.println("Attempted Delete");
 	}
-
+	public void destroy()	{
+		try {
+			if(cluster != null) cluster.close();
+		}	catch(Exception e)	{
+			System.out.println("error closing cassandra connection " + e);
+			e.printStackTrace();
+		}
+	}
 }

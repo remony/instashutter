@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import com.datastax.driver.core.Cluster;
 
 
+
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.models.User;
 
@@ -85,5 +86,12 @@ public class Register extends HttpServlet {
 			response.sendRedirect("/instashutter/dashboard");
 		}
 	}
-
+	public void destroy()	{
+		try {
+			if(cluster != null) cluster.close();
+		}	catch(Exception e)	{
+			System.out.println("error closing cassandra connection " + e);
+			e.printStackTrace();
+		}
+	}
 }

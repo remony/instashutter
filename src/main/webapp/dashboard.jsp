@@ -6,103 +6,108 @@
 <%@ page import = "java.text.DateFormat" %>
 <%@ page import = "java.text.SimpleDateFormat" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<title>Dashboard</title>
-		
-	</head>
+  <head>
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <jsp:include page="header.jsp" />
+    <%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
 
-	<body>	
-		<jsp:include page="header.jsp" />
-	
-		<div class="container">
-			<div class="row">
-				<%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
-				
 	        	if (lsPics == null) {%>
-	        		<p>No Pictures found</p>
+	        		<p>No results</p>
+	        		<form name="search" action="/instashutter/search" method="POST">
+						<input type="text" class="form-control" name="keyword" placeholder="Search">
+						<input type="submit" value="comment">
+					</form>
+	        		 
 	       		<%} else {
 	            Iterator<Pic> iterator;
 	            iterator = lsPics.iterator();
 	            while (iterator.hasNext()) {
-	                Pic p = iterator.next();
-					String username = p.getPostedUsername();%>
-	       			<div class = "post">
-						<div class = "post_image">
-							<a href="/instashutter/post/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
+	            	Pic p = iterator.next();
+					String username = p.getPostedUsername();
+					String uuid = p.getSUUID();
+					String caption = p.getCaption();
+					//Convert date to iso 8601 format for use with jquery.timeago.js using code from http://stackoverflow.com/questions/3914404/how-to-get-current-moment-in-iso-8601-format
+					TimeZone timeZone = TimeZone.getTimeZone("UTC");
+	    			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+		    		df.setTimeZone(timeZone);
+					String timeAdded = df.format(p.getPicAdded());
+					%>
+					
+					<div class="post">
+						<div class="post_image">
+							<a href="/instashutter/profile/<%= username %>"><img src="/instashutter/Thumb/<%= uuid %>"></a>
 						</div>
-					<div class = "post_timestamp">
-						<%  //Convert date to iso 8601 format for use with jquery.timeago.js using code from http://stackoverflow.com/questions/3914404/how-to-get-current-moment-in-iso-8601-format
-						TimeZone timeZone = TimeZone.getTimeZone("UTC");
-		    			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-			    		df.setTimeZone(timeZone);
-			    		String timeSince = df.format(p.getPicAdded()); %>
-						<div class="timeConvertsince" title="<%= timeSince %>"><%= timeSince %></div>
-					</div>
-				<div class = "post_author">
-					<a href="/instashutter/profile/<%= username %>">@<%= username %></a>
-					<a href="<%=request.getContextPath()%>/picture/<%= username %>"><img src="<%=request.getContextPath()%>/picture/<%= username %>" alt="Profile image" /></a>
-				</div>
-				<div class = "post_caption">
-					<div class="post_desc"><%= p.getCaption() %></div>
-				</div>
-				<div class = "post_share">
-					<p>Sharing coming soon</p>		
-				</div>
-				<div class = "post_comments">
-					<% LinkedList<CommentStore> lsComments = p.getCommentlist();
-					int count = 0;
-					if (lsComments == null) {
-					} else { %>
-					<div class="comment_container">
-						<table>
-							<%Iterator<CommentStore> commentIterator;
+						<div class="post_timestamp">
+							<%= timeAdded %> 
+						</div>
+						<div class="post_author">
+							<%= username %>
+						</div>
+						<div class="post_caption">
+							<%= caption %>
+						</div>
+						<div class="post_comments">
+							<%
+								LinkedList<CommentStore> lsComments = p.getCommentlist();
+								int count = 0;
+								if (lsComments == null) {
+									%>
+									
+									<p> No comments </p>
+									
+									
+									<%
+								} else { %>
+								
+								<div class="comment_container">
+								<table>
+								
+								<%
+							Iterator<CommentStore> commentIterator;
 							commentIterator = lsComments.iterator();
 							while(commentIterator.hasNext()){
 								CommentStore c = commentIterator.next();
-								//String timeSinceComment = df.format(c.getPosted_time());
-								count++;%>
-								<!-- Print out comments -->
-							
-								<tr>
+								String cUsername = c.getUsername();
+								String comment = c.getCommentMessage();
+								count++;
+								%>
+									<tr>
 									<td>
 										<div class="comment_user">
-											<a href="/instashutter/profile/<%=c.getUsername()%>"><%= c.getUsername() %></a>
+											<a href="/instashutter/profile/<%= cUsername%>"><%= cUsername %></a>
 										</div>
-									</td> 									
+									</td>
 									<td>
 										<div class="comment_message">
-											<%= c.getCommentMessage() %>
+											<%= comment %>
 										</div>
-										
+
 									</td>
 								</tr>
-							<%}}%>
-						</table>
-						<% if (count == 5) { %>
-							<div class="comment_readmore">
-								<p>
-									<a href="/instashutter/profile/<%= username %>">More comments</a>
-								</p>
+								<%}} %>
+								</table>
+								<% if (count == 5)	{ %>
+									<div class="comment_readmore">
+										<a href="/instashutter/post/<%= uuid %>">More comments</a>
+									</div>
+								<% } %>
 							</div>
-						<%} %>
+							<div class="post_comment_form">
+								<form name="comment_input" action="/instashutter/dashboard" method="POST">
+									<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
+									Comment: <input type="text" name="comment">
+									<input type="submit" value="comment">
+								</form>
+							</div>
+						</div>
 					</div>
-					<div class="post_comment_form">
-						<form name="comment_input" action="<c:url value="/instashutter/dashboard"/>" method="POST">
-							<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
-							Comment: <input type="text" name="comment">
-							<input type="submit" value="comment">
-						</form>
-					</div>
-				</div>
-			</div>
-	        <%}} %> 
+					
 
-		</div>
-		</div>
-	</body>
-	<script src="<c:url value="/assets/js/jquery.timeago.js"/>"></script>
-<script src="<c:url value="/assets/js/app.js"/>"></script>
+	            <%}} %>
+  </body>
+  <script src="<c:url value="/assets/js/jquery.timeago.js"/>"></script>
+	<script src="<c:url value="/assets/js/app.js"/>"></script>
 </html>

@@ -13,9 +13,8 @@
   <servlet-mapping>
     <servlet-name>Index</servlet-name>
     <url-pattern>/Index</url-pattern>
-     <url-pattern></url-pattern>
+    <url-pattern></url-pattern>
   </servlet-mapping>
-
   <servlet>
     <description></description>
     <display-name>Login</display-name>
@@ -192,14 +191,12 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>ErrorDetect</servlet-name>
-    <url-pattern>/404</url-pattern>
+    <url-pattern>/404.jsp</url-pattern>
   </servlet-mapping>
   <error-page>
     <error-code>404</error-code>
     <location>/404</location>
   </error-page>
-
-
   <servlet>
     <description>Lists public posts from all users</description>
     <display-name>Explore</display-name>
@@ -209,5 +206,16 @@
   <servlet-mapping>
     <servlet-name>Explore</servlet-name>
     <url-pattern>/explore</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Search</display-name>
+    <servlet-name>Search</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.Search</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Search</servlet-name>
+    <url-pattern>/search</url-pattern>
+    <url-pattern>/search/*</url-pattern>
   </servlet-mapping>
 </web-app>

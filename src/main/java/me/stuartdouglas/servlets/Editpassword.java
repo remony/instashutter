@@ -72,5 +72,12 @@ public class Editpassword extends HttpServlet {
 		
 		
 	}
-
+	public void destroy()	{
+		try {
+			if(cluster != null) cluster.close();
+		}	catch(Exception e)	{
+			System.out.println("error closing cassandra connection " + e);
+			e.printStackTrace();
+		}
+	}
 }

@@ -1,185 +1,155 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-    <%@ page import="me.stuartdouglas.stores.*" %>
-    <%@page import="java.util.*"%>
-    <%@ page import = "java.text.DateFormat" %>
+	pageEncoding="ISO-8859-1"%>
+<%@ page import="me.stuartdouglas.stores.*" %>
+<%@page import="java.util.*"%>
+<%@ page import = "java.text.DateFormat" %>
 <%@ page import = "java.text.SimpleDateFormat" %>
-    <%
-    String user = request.getAttribute("viewingUser").toString();
-    String background = null;
-    %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<% String user = request.getAttribute("viewingUser").toString();
+	String background = null;
+%>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title><%= user %>'s Profile</title>
-</head>
-<body>
-
-
-<jsp:include page="header.jsp" />
-<%
-	//UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
-	//Object message = request.getAttribute("message");
-		
-	%>
-			<div class="profile_header">
-				<div class="profile_background">
-					<div class="profile_content">
-						<div class="profile_image">
-							<a href="<%=request.getContextPath()%>/picture/<%= user %>"><img src="<%=request.getContextPath()%>/picture/<%= user %>" alt="Profile image" /></a>					
-						</div>
-						
-
-	<%
-       				LinkedList<UserSession> userInfo = (LinkedList<UserSession>) request.getAttribute("UserInfo");
-       				if (userInfo == null) {
-       			%>
-       				<h4>No access: you are not logged in.</h4>
-   				<%
-       				}	else	{
-       					Iterator<UserSession> iterator;
-       					iterator = userInfo.iterator();
-       					while (iterator.hasNext()) {
-       						UserSession p = iterator.next();
-       						background = p.getBackground();
-       			%>
-       			<div class="profile_info">
-	       			<ul>  
-	       				<li><h1>@<%= p.getUsername() %></h1></li>
-				        <li>First name: <%= p.getfname() %></li>  
-				        <li>Last name: <%= p.getlname() %></li>  
-				        <li>Location: <%= p.getLocation() %>  </li>
-				        <li>About: <%= p.getBio() %></li>
-				        <li>Post count: <%= p.getPostCount() %></li>
-				    </ul> 
-			    </div>
-
-       			
-       			<%       			
-       					}
-       				}
-   				%>
-
-
-
-
-
-
-						<a href="/instashutter/follow/<%= user %>">Follow</a>
-						<div class="profile_follow">
-							<a href="<c:url value="/instashutter/account/editdetails"/>">Edit your profile</a>
-						</div>
-					</div>		
-				</div>
+  <head>
+    <title>Profile</title>
+  </head>
+  <body>
+  <jsp:include page="header.jsp" />
+	<div class="profile_header">
+		<div class="profile_content">
+			<div class="profile_image">
+				<a href="/instashutter/picture/<%= user %>">
+					<img src="/instashutter/picture/<%= user  %>" alt="profile image"/>
+				</a>
 			</div>
-			
-			
-			
-			
-			
-		<div class="container">
-			<div class="row">
-				<%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
+			<%
+				LinkedList<UserSession> userInfo = (LinkedList<UserSession>) request.getAttribute("UserInfo");
+				if (userInfo == null)	{%>
+					<p>User has no profile information</p>
+				<%}	else	{
+					Iterator<UserSession> iterator;
+					iterator = userInfo.iterator();
+						UserSession profile = iterator.next();
+						background = profile.getBackground();
+						String fname = profile.getfname();
+						String lname = profile.getlname();
+						String location = profile.getLocation();
+						String bio = profile.getBio();
+						%>
+						<div class="profile_info">
+							<table>
+								<tr>
+									<td>Name: </td>
+									<td><%= fname %> </td>
+									<td><%= lname %></td>
+								</tr>
+								<tr>
+									<td>location: </td>
+									<td><%= location %></td>
+								</tr>
+								<tr>
+									<td>Bio: </td>
+									<td><%= bio %></td>
+								</tr>
+							</table>
+						</div>	
+					<%
+				}%>
+		</div>
+	</div>
+	
+
+
+    <%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
+
 	        	if (lsPics == null) {%>
 	        		<p>No Pictures found</p>
 	       		<%} else {
 	            Iterator<Pic> iterator;
 	            iterator = lsPics.iterator();
 	            while (iterator.hasNext()) {
-	                Pic p = iterator.next();
-					String username = p.getPostedUsername();%>
-	       			<div class = "post">
-						<div class = "post_image">
-							<a href="/instashutter/post/<%=p.getSUUID()%>" ><img src="/instashutter/Thumb/<%=p.getSUUID()%>"></a>
+	            	Pic p = iterator.next();
+					String username = p.getPostedUsername();
+					String uuid = p.getSUUID();
+					String caption = p.getCaption();
+					//Convert date to iso 8601 format for use with jquery.timeago.js using code from http://stackoverflow.com/questions/3914404/how-to-get-current-moment-in-iso-8601-format
+					TimeZone timeZone = TimeZone.getTimeZone("UTC");
+	    			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+		    		df.setTimeZone(timeZone);
+					String timeAdded = df.format(p.getPicAdded());
+					%>
+					
+					<div class="post">
+						<div class="post_image">
+							<a href="/instashutter/profile/<%= username %>"><img src="/instashutter/Thumb/<%= uuid %>"></a>
 						</div>
-					<div class = "post_timestamp">
-						<%  //Convert date to iso 8601 format for use with jquery.timeago.js using code from http://stackoverflow.com/questions/3914404/how-to-get-current-moment-in-iso-8601-format
-						TimeZone timeZone = TimeZone.getTimeZone("UTC");
-		    			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-			    		df.setTimeZone(timeZone);
-			    		String timeSince = df.format(p.getPicAdded()); %>
-						<div class="timeConvertsince" title="<%= timeSince %>"><%= timeSince %></div>
-					</div>
-				<div class = "post_author">
-					<a href="/instashutter/profile/<%= username %>">@<%= username %></a>
-					<a href="<%=request.getContextPath()%>/picture/<%= username %>"><img src="<%=request.getContextPath()%>/picture/<%= username %>" alt="Profile image" /></a>
-				</div>
-				<div class = "post_caption">
-					<div class="post_desc"><%= p.getCaption() %></div>
-				</div>
-				<div class = "post_share">
-					<p>Sharing coming soon</p>		
-				</div>
-				<div class = "post_comments">
-					<% LinkedList<CommentStore> lsComments = p.getCommentlist();
-					int count = 0;
-					if (lsComments == null) {
-					} else { %>
-					<div class="comment_container">
-						<table>
-							<%Iterator<CommentStore> commentIterator;
+						<div class="post_timestamp">
+							<%= timeAdded %> 
+						</div>
+						<div class="post_author">
+							<%= username %>
+						</div>
+						<div class="post_caption">
+							<%= caption %>
+						</div>
+						<div class="post_comments">
+							<%
+								LinkedList<CommentStore> lsComments = p.getCommentlist();
+								int count = 0;
+								if (lsComments == null) {
+									%>
+									
+									<p> No comments </p>
+									
+									
+									<%
+								} else { %>
+								
+								<div class="comment_container">
+								<table>
+								
+								<%
+							Iterator<CommentStore> commentIterator;
 							commentIterator = lsComments.iterator();
 							while(commentIterator.hasNext()){
 								CommentStore c = commentIterator.next();
-								// timeSinceComment = df.format(c.getPosted_time());
-								count++;%>
-								<!-- Print out comments -->
-							
-								<tr>
+								String cUsername = c.getUsername();
+								String comment = c.getCommentMessage();
+								count++;
+								%>
+									<tr>
 									<td>
 										<div class="comment_user">
-											<a href="/instashutter/profile/<%=c.getUsername()%>"><%= c.getUsername() %></a>
+											<a href="/instashutter/profile/<%= cUsername%>"><%= cUsername %></a>
 										</div>
-									</td> 									
+									</td>
 									<td>
 										<div class="comment_message">
-											<%= c.getCommentMessage() %>
+											<%= comment %>
 										</div>
-										
+
 									</td>
 								</tr>
-							<%}}%>
-						</table>
-						<% if (count == 5) { %>
-							<div class="comment_readmore">
-								<p>
-									<a href="/instashutter/profile/<%= username %>">More comments</a>
-								</p>
+								<%}} %>
+								</table>
+								<% if (count == 5)	{ %>
+									<div class="comment_readmore">
+										<a href="/instashutter/post/<%= uuid %>">More comments</a>
+									</div>
+								<% } %>
 							</div>
-						<%} %>
+							<div class="post_comment_form">
+								<form name="comment_input" action="/instashutter/dashboard" method="POST">
+									<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
+									Comment: <input type="text" name="comment">
+									<input type="submit" value="comment">
+								</form>
+							</div>
+						</div>
 					</div>
-					<div class="post_comment_form">
-						<form name="comment_input" action="<c:url value="/instashutter/dashboard"/>" method="POST">
-							<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
-							Comment: <input type="text" name="comment">
-							<input type="submit" value="comment">
-						</form>
-					</div>
-				</div>
-			</div>
-	        <%}} %>   
-		</div>
-		</div>
-		
+					
 
-
-
-
-</body>
-<style>
-	body {
-	background: url("<%= background %>") no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-	}
-
-</style>
-
-<script src="<c:url value="/assets/js/jquery.timeago.js"/>"></script>
-<script src="<c:url value="/assets/js/app.js"/>"></script>
-
+	            <%}} %>
+  </body>
+  <script src="<c:url value="/assets/js/jquery.timeago.js"/>"></script>
+	<script src="<c:url value="/assets/js/app.js"/>"></script>
 </html>

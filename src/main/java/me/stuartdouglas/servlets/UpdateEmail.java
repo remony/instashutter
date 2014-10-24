@@ -63,5 +63,12 @@ public class UpdateEmail extends HttpServlet {
 			System.out.println("User with incorrect credentials attempted to edit email, nothing was changed.");
 		}
 	}
-
+	public void destroy()	{
+		try {
+			if(cluster != null) cluster.close();
+		}	catch(Exception e)	{
+			System.out.println("error closing cassandra connection " + e);
+			e.printStackTrace();
+		}
+	}
 }

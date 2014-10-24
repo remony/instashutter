@@ -34,7 +34,7 @@
 					
 	       			<div class = "post">
 						<div class = "post_image">
-							<a href="/instashutter/Image/<%=p.getSUUID()%>" ><img src="/instashutter/Image/<%=p.getSUUID()%>"></a>
+							<a href="/instashutter/picture/<%=p.getSUUID()%>" ><img src="/instashutter/Image/<%=p.getSUUID()%>"></a>
 						</div>
 					<div class = "post_timestamp">
 						<%  //Convert date to iso 8601 format for use with jquery.timeago.js using code from http://stackoverflow.com/questions/3914404/how-to-get-current-moment-in-iso-8601-format
@@ -44,11 +44,25 @@
 			    		String timeSince = df.format(p.getPicAdded()); %>
 						<div class="timeConvertsince" title="<%= timeSince %>"><%= timeSince %></div>
 					</div>
-					<style>
-        	.post {
-        		z-index:0;
-        	}
-        </style>
+					<style>	
+					.profile_background {
+		        		position:absolute;
+		       		width:100%;
+		        		height:100%;
+		        		opacity:0.2;
+				      	background: url("/instashutter/Image/<%=p.getSUUID()%>") no-repeat center center fixed; 
+							-webkit-background-size: cover;
+							-moz-background-size: cover;
+							-o-background-size: cover;
+							background-size: cover;
+							z-index:-1;
+						display:block;
+		        		}	
+								
+			        	.post {
+			        		z-index:0;
+			        	}
+			        </style>
 				<div class = "post_author">
 					<a href="/instashutter/profile/<%= username %>">@<%= username %></a>
 					<a href="<%=request.getContextPath()%>/Image/<%= username %>"><img src="<%=request.getContextPath()%>/picture/<%= username %>" alt="Profile image" /></a>
@@ -93,7 +107,7 @@
 							<div class="comment_readmore">
 								<p>
 									<a href="/instashutter/profile/<%= username %>">More comments</a>
-								</p>
+								</
 							</div>
 						<%} %>
 					</div>

@@ -52,5 +52,12 @@ public class UserBio extends HttpServlet {
 			System.out.println("Error editing user background: " + e);
 		}
 	}
-
+	public void destroy()	{
+		try {
+			if(cluster != null) cluster.close();
+		}	catch(Exception e)	{
+			System.out.println("error closing cassandra connection " + e);
+			e.printStackTrace();
+		}
+	}
 }

@@ -40,15 +40,15 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 
-import static org.imgscalr.Scalr.*;
 
+import static org.imgscalr.Scalr.*;
 import me.stuartdouglas.lib.*;
 import me.stuartdouglas.stores.Pic;
 
 public class PicModel {
 	private static Cluster cluster;
 	int width;
-	   int height;
+	int height;
 
     public PicModel() {
     	
@@ -59,7 +59,7 @@ public class PicModel {
      * Gets all public posts from all users
      */
     
-    public LinkedList<Pic> getPublicPosts() {
+    public static LinkedList<Pic> getPublicPosts() {
     	LinkedList<Pic> instaList = new LinkedList<>();
     	LinkedList<Pic> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
@@ -96,11 +96,6 @@ public class PicModel {
     		}
     		session.close();
     	}
-    	
-    	
-    	
-    	
-    	
     	//Sorting posts by pic_added
     	instaList.stream()
         .sorted((e1, e2) -> e2.getPicAdded()
@@ -115,7 +110,7 @@ public class PicModel {
      * Gets all posts public and private from all users
      * 
      */
-    public LinkedList<Pic> getPosts() {
+    public static LinkedList<Pic> getPosts() {
     	LinkedList<Pic> instaList = new LinkedList<>();
     	LinkedList<Pic> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
@@ -138,7 +133,7 @@ public class PicModel {
     			pic.setPicAdded(row.getDate("interaction_time"));
     			instaList.add(pic);
     			//Get comments from post and limit to 5 (stops endless list on dashboard)
-    			PreparedStatement pss = session.prepare("SELECT * from comments where picid =? limit 5");
+    			PreparedStatement pss = session.prepare("SELECT * from comments where picid = ? limit 10");
     	    	ResultSet rss;
     	    	BoundStatement boundStatement2 = new BoundStatement(pss);
     	    	rss = session.execute(boundStatement2.bind(picid));
@@ -209,47 +204,81 @@ public class PicModel {
 		return instaSortedList;
     }
     
-    
+    public static LinkedList<Pic> getPostsContaining(String keyword)	{
+    	try {
+			LinkedList<Pic> instaList = getPublicPosts();
+			LinkedList<Pic> instaSortedList = new LinkedList<>();
+			instaList.stream()
+			.sorted((e1, e2) -> e2.getPicAdded()
+			        .compareTo(e1.getPicAdded()))
+			        .filter(e1 -> e1.getCaption().contains(keyword))
+			.forEach(instaSortedList::add);
+			if (!instaSortedList.isEmpty())	{
+				System.out.println("got results");
+				
+				
+				return instaSortedList;
+			}	else	{
+				System.out.println("no results");
+				return null;
+			}
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error getting posts filtered: " + e);
+		}
+		return null;
+    	
+    	//return null;
+    	
+    }
     
     
     public static java.util.LinkedList<Pic> getPicsForUser(String User) {
-        java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
-        Session session = cluster.connect("instashutter");
-        PreparedStatement ps = session.prepare("select * from userpiclist where user =?");
-        ResultSet rs;
-        BoundStatement boundStatement = new BoundStatement(ps);
-        rs = session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                        User));
-        if (rs.isExhausted()) {
-            System.out.println("No Images returned");
-            return null;
-        } else {
-            for (Row row : rs) {
-                Pic pic = new Pic();
-                java.util.UUID UUID = row.getUUID("picid");
-                pic.setCaption(row.getString("caption"));
-                pic.setPostedUsername(row.getString("user"));
-                pic.setPicAdded(row.getDate("pic_added"));
-                System.out.println("UUID" + UUID.toString());
-                pic.setUUID(UUID);
-                Pics.add(pic);
-                //Get comments from posts
-    			PreparedStatement pss = session.prepare("SELECT * from comments where picid =?");
+    	LinkedList<Pic> instaList = new LinkedList<>();
+    	LinkedList<Pic> instaSortedList = new LinkedList<>();
+    	Session session = cluster.connect("instashutter");
+    	
+    	PreparedStatement statement = session.prepare("SELECT * from userpiclist where user =?");
+    	
+    	BoundStatement boundStatement = new BoundStatement(statement);
+    	
+    	ResultSet rs = session.execute(boundStatement.bind(User));
+    	if (rs.isExhausted()){
+    		System.out.println("No posts returned");
+    		return null;
+    	} else {
+    		for (Row row : rs) {
+    			Pic pic = new Pic();
+    			UUID picid = row.getUUID("picid");
+    			pic.setUUID(row.getUUID("picid"));
+    			pic.setCaption(row.getString("caption"));
+    			pic.setPostedUsername(row.getString("user"));
+    			pic.setPicAdded(row.getDate("pic_added"));
+    			instaList.add(pic);
+    			//Get comments from post and limit to 5 (stops endless list on dashboard)
+    			PreparedStatement pss = session.prepare("SELECT * from comments where picid = ? limit 10");
     	    	ResultSet rss;
     	    	BoundStatement boundStatement2 = new BoundStatement(pss);
-    	    	rss = session.execute(boundStatement2.bind(UUID));
+    	    	rss = session.execute(boundStatement2.bind(picid));
     	    	if (rss.isExhausted())	{
-                    System.out.println("no comments");
+                    System.out.println("no posts");
     	    	}	else	{
     	    		for (Row rows : rss)	{
     	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
     	    		}
     	    	}
-            }
-        }
-        session.close();
-        return Pics;
+    		}
+    		session.close();
+    	}
+    	//Sorting posts by pic_added
+    	instaList.stream()
+        .sorted((e1, e2) -> e2.getPicAdded()
+                .compareTo(e1.getPicAdded()))
+        .forEach(instaSortedList::add);
+    	
+		return instaSortedList;
     }
     
     
@@ -538,4 +567,12 @@ public class PicModel {
 		
 	}
 	
+	public void destroy()	{
+		try {
+			if(cluster != null) cluster.close();
+		}	catch(Exception e)	{
+			System.out.println("error closing cassandra connection " + e);
+			e.printStackTrace();
+		}
+	}
 }

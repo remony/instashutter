@@ -73,7 +73,15 @@ import java.util.Set;
 	    public void close() {
 	        cluster.close();
 	    }
+	    
+	    public void destroy()	{
+			try {
+				if(cluster != null) cluster.close();
+			}	catch(Exception e)	{
+				System.out.println("error closing cassandra connection " + e);
+				e.printStackTrace();
+			}
+		}
 
 	}
 	
-

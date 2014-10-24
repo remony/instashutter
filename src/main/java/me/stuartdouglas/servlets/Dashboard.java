@@ -32,12 +32,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.datastax.driver.core.Cluster;
-
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
 import me.stuartdouglas.stores.Pic;
+
+import com.datastax.driver.core.Cluster;
 
 /**
  * Servlet implementation class Dashboard
@@ -45,16 +45,13 @@ import me.stuartdouglas.stores.Pic;
 public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Cluster cluster;
-	private final HashMap<String, Integer> CommandsMap = new HashMap<>();
+
     /**
      * @see HttpServlet#HttpServlet()
      */
     public Dashboard() {
         super();
-        CommandsMap.put("Image", 1);
-        CommandsMap.put("dashboard", 2);
-        CommandsMap.put("Thumb", 3);
-        // TODO Auto-generated constructor stub
+
     }
 
     public void init(ServletConfig config) throws ServletException {
@@ -76,27 +73,9 @@ public class Dashboard extends HttpServlet {
         if (isLoggedIn) {
 			String args[] = Convertors.SplitRequestPath(request);
 			
-	        int command;
-	        try {
-	            command = CommandsMap.get(args[1]);
-	        } catch (Exception et) {
-	            error(response);
-	            return;
-	        }
-	        switch (command) {
-	            case 1:
-	                DisplayImage(Convertors.DISPLAY_IMAGE,args[1], response);
-	                break;
-	            case 2:
+	        
 	                DisplayImageList(Convertors.DISPLAY_IMAGE, args[1], request, response);
-	                break;
-	            case 3:
-	                DisplayImage(Convertors.DISPLAY_THUMB,args[1],  response);
 	                
-	                break;
-	            default:
-	                error(response);
-	        }
 		}	else	{
 			response.sendRedirect("/instashutter/login");
 		}
@@ -106,45 +85,17 @@ public class Dashboard extends HttpServlet {
 	private void DisplayImageList(int type, String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
         try {
-        tm.setCluster(cluster);
-        LinkedList<Pic> lsPics = tm.getPosts();
-
-        
-        
-        request.setAttribute("Pics", lsPics);
-        
+	        tm.setCluster(cluster);
+	        LinkedList<Pic> lsPics = tm.getPosts();
+	        request.setAttribute("Pics", lsPics);  
         } catch (Exception e) {
         	System.out.println("error: " + e);
-        }
-
-        
+        } 
         RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
         rd.forward(request, response);
-        
-
     }
 
-	private void DisplayImage(int type,String Image, HttpServletResponse response) throws IOException {
-        PicModel tm = new PicModel();
-        tm.setCluster(cluster);
-
-
-        Pic p = tm.getPic(type,java.util.UUID.fromString(Image));
-
-        OutputStream out = response.getOutputStream();
-
-        response.setContentType(p.getType());
-        response.setContentLength(p.getLength());
-
-        //out.write(Image);
-        InputStream is = new ByteArrayInputStream(p.getBytes());
-        BufferedInputStream input = new BufferedInputStream(is);
-        byte[] buffer = new byte[8192];
-        for (int length; (length = input.read(buffer)) > 0;) {
-            out.write(buffer, 0, length);
-        }
-        out.close();
-    }
+	
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -179,4 +130,12 @@ public class Dashboard extends HttpServlet {
         out.println("<h2>" + "Bad Operator" + "</h2>");
         out.close();
     }
+	public void destroy()	{
+		try {
+			if(cluster != null) cluster.close();
+		}	catch(Exception e)	{
+			System.out.println("error closing cassandra connection " + e);
+			e.printStackTrace();
+		}
+	}
 }

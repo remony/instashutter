@@ -32,10 +32,7 @@ import com.datastax.driver.core.Cluster;
 /**
  * Servlet implementation class Profile
  */
-@WebServlet(urlPatterns = {
-			"/picture/*"
-	})
-public class Profile extends HttpServlet {
+public class Search extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Cluster cluster;
     private final HashMap<String, Integer> CommandsMap = new HashMap<>();
@@ -43,10 +40,10 @@ public class Profile extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Profile() {
+    public Search() {
         super();
         //CommandsMap.put("Image", 1);
-        CommandsMap.put("profile", 2);
+        CommandsMap.put("search", 2);
         CommandsMap.put("picture", 3);
         // TODO Auto-generated constructor stub
     }
@@ -77,7 +74,7 @@ public class Profile extends HttpServlet {
         			DisplayProfile(args[2], request, response);         		
             	}	catch(Exception e)	{
             		System.out.println("Error: " + e);
-            		userDoesntexist(" ", request, response);
+            		noResults(" ", request, response);
             	}
                 break;
             case 3:
@@ -88,40 +85,32 @@ public class Profile extends HttpServlet {
         }
 	}
 	
-	private void DisplayProfile(String Username, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void DisplayProfile(String keyword, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
         User user = new User();
         tm.setCluster(cluster);
         user.setCluster(cluster);
         try {
-        LinkedList<UserSession> lsUser = user.getUserInfo(Username);
-        if (user.isUserRegistered(Username)) {
-        	request.setAttribute("UserInfo", lsUser);
-    		user.getNumberOfPostsFromUser(Username);
-            java.util.LinkedList<Pic> lsPics = PicModel.getPicsForUser(Username);
-            request.setAttribute("viewingUser", Username);
+        
+            LinkedList<Pic> lsPics = PicModel.getPostsContaining(keyword);
             request.setAttribute("Pics", lsPics);
-            RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
             rd.forward(request, response);
-        }	else	{
-        	userDoesntexist(Username, request, response);
-        }
-		
         }	catch (Exception e)	{
-        	System.out.println("Error " + e);
+        	System.out.println("Error getting posts from model " + e);
         }
 
     }
 	
-	private void userDoesntexist(String username, HttpServletRequest request, HttpServletResponse response) {
+	private void noResults(String keyword, HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
 		JSONObject json = new JSONObject();
     	Date date = new Date();
     	String dates = date.toString();
-    	json.put("title", "Invalid username");
+    	json.put("title", "No results");
     	json.put("time_issued", dates);
-    	json.put("message", "The user " + username + " does not exist");
+    	json.put("message", "No results for " + keyword + ".");
 
     	//String message = "The user " + Username + " does not exist";
     	response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -166,6 +155,9 @@ public class Profile extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String keyword = request.getParameter("keyword");
+		response.sendRedirect("/instashutter/search/" + keyword);
+		
 	}
 	public void destroy()	{
 		try {

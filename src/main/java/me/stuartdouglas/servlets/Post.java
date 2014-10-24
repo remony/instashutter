@@ -97,4 +97,13 @@ public class Post extends HttpServlet {
 			System.out.println("User is not logged in");
 		}	
 	}
+	
+	public void destroy()	{
+		try {
+			if(cluster != null) cluster.close();
+		}	catch(Exception e)	{
+			System.out.println("error closing cassandra connection " + e);
+			e.printStackTrace();
+		}
+	}
 }
