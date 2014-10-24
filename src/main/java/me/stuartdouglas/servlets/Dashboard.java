@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -35,6 +36,8 @@ import javax.servlet.http.HttpSession;
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
+import me.stuartdouglas.models.User;
+import me.stuartdouglas.stores.FollowingStore;
 import me.stuartdouglas.stores.Pic;
 
 import com.datastax.driver.core.Cluster;
@@ -84,15 +87,42 @@ public class Dashboard extends HttpServlet {
 
 	private void DisplayImageList(int type, String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
+        me.stuartdouglas.models.User user = new User();
+        String username = request.getSession().getAttribute("user").toString();
         try {
 	        tm.setCluster(cluster);
-	        LinkedList<Pic> lsPics = tm.getPosts();
-	        request.setAttribute("Pics", lsPics);  
+	        user.setCluster(cluster);
+	        LinkedList<FollowingStore> lsFollowing = me.stuartdouglas.models.User.getFollowers(username);
+	        LinkedList<Pic> lsPics = PicModel.getPicsForUser(username);
+	        try {
+	        	ListIterator<FollowingStore> listIterator = lsFollowing.listIterator();
+	        	if (listIterator != null){
+			        while (listIterator.hasNext()) {
+			            FollowingStore fs = listIterator.next();
+			            LinkedList<Pic> lsUserPosts = PicModel.getPicsForUser(fs.getFollowing());
+			            lsPics.addAll(lsUserPosts);
+			        }
+			        
+			        LinkedList<Pic> lsPicsSorted = new LinkedList<>();
+			        lsPics.stream()
+			        .sorted((e1, e2) -> e2.getPicAdded()
+			                .compareTo(e1.getPicAdded()))
+			        .forEach(lsPicsSorted::add);
+			        request.setAttribute("Pics", lsPicsSorted);  
+	        	}	else	{
+	        		request.setAttribute("Pics", lsPics); 
+	        	}
+	        	 
+	        }	catch (Exception e)	{
+	        	System.out.println("Error processing following users posts: " + e);
+	        	e.printStackTrace();
+	        }
+	        RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
+	        rd.forward(request, response); 
+	         
         } catch (Exception e) {
-        	System.out.println("error: " + e);
+        	System.out.println("Error getting user dashboard: " + e);
         } 
-        RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
-        rd.forward(request, response);
     }
 
 	

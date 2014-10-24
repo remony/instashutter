@@ -17,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONObject;
 
@@ -24,7 +25,6 @@ import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
 import me.stuartdouglas.models.User;
-import me.stuartdouglas.stores.FollowingStore;
 import me.stuartdouglas.stores.Pic;
 import me.stuartdouglas.stores.UserSession;
 
@@ -33,10 +33,7 @@ import com.datastax.driver.core.Cluster;
 /**
  * Servlet implementation class Profile
  */
-@WebServlet(urlPatterns = {
-			"/picture/*"
-	})
-public class Profile extends HttpServlet {
+public class FollowUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Cluster cluster;
     private final HashMap<String, Integer> CommandsMap = new HashMap<>();
@@ -44,11 +41,11 @@ public class Profile extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Profile() {
+    public FollowUser() {
         super();
         //CommandsMap.put("Image", 1);
-        CommandsMap.put("profile", 2);
-        CommandsMap.put("picture", 3);
+        CommandsMap.put("follow", 2);
+        //CommandsMap.put("picture", 3);
         // TODO Auto-generated constructor stub
     }
     
@@ -61,97 +58,54 @@ public class Profile extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String args[] = Convertors.SplitRequestPath(request);
-        int command;
-        try {
-            command = CommandsMap.get(args[1]);
-        } catch (Exception et) {
-            error(response);
-            return;
-        }
-        switch (command) {
-            case 1:
-                DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
-                break;
-            case 2:
-            	try {
-            	if(args.length != 3){
-            		if (args[3] != null && args[3].toLowerCase().equals("following"))	{
-            			DisplayFollowing(args[2], request, response);
-            			//response.sendRedirect("/instashutter/dashboard");
-            		}
-            	}	else	{
-            		DisplayProfile(args[2], request, response); 
-            	}
- 		
-            	}	catch(Exception e)	{
-            		System.out.println("Error: " + e);
-            		userDoesntexist(" ", request, response);
-            	}
-                break;
-            case 3:
-            	DisplayImage(Convertors.DISPLAY_PROCESSED,args[2], response);
-                break;
-            default:
-                error(response);
-        }
+		HttpSession session = request.getSession();
+		//If the user is not logged in display index
+		boolean isLoggedIn = false;
+		if(session.getAttribute("LoggedIn") != null){
+			isLoggedIn = true;
+			}
+        if (isLoggedIn) {
+			//String args[] = Convertors.SplitRequestPath(request);
+			
+			response.sendRedirect("/instashutter/");
+				//DisplayProfile(Convertors.DISPLAY_IMAGE, args[1], request, response);
+	                
+		}	else	{
+			response.sendRedirect("/instashutter/login");
+		}
 	}
 	
-	private void DisplayFollowing(String username, HttpServletRequest request,
-			HttpServletResponse response) {
-		// TODO Auto-generated method stub
-		try {
-			User user = new User();
-			user.setCluster(cluster);
-			
-			LinkedList<FollowingStore> lsFollowing = User.getFollowers(username);
-			request.setAttribute("following", lsFollowing);
-			RequestDispatcher rd = request.getRequestDispatcher("/following.jsp");
-			rd.forward(request, response);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-	}
-
-	private void DisplayProfile(String Username, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void DisplayProfile(String keyword, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		/*
         PicModel tm = new PicModel();
         User user = new User();
         tm.setCluster(cluster);
         user.setCluster(cluster);
+        keyword = keyword.toLowerCase();
         try {
-        LinkedList<UserSession> lsUser = user.getUserInfo(Username);
-        if (user.isUserRegistered(Username)) {
-        	request.setAttribute("UserInfo", lsUser);
-    		user.getNumberOfPostsFromUser(Username);
-            java.util.LinkedList<Pic> lsPics = PicModel.getPicsForUser(Username);
-            request.setAttribute("viewingUser", Username);
+        
+            LinkedList<Pic> lsPics = PicModel.getPostsContaining(keyword);
             request.setAttribute("Pics", lsPics);
-            RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
             rd.forward(request, response);
-        }	else	{
-        	userDoesntexist(Username, request, response);
-        }
-		
         }	catch (Exception e)	{
-        	System.out.println("Error " + e);
-        }
+        	System.out.println("Error getting posts from model " + e);
+        }*/
+		
+		
 
     }
 	
-	private void userDoesntexist(String username, HttpServletRequest request, HttpServletResponse response) {
+	private void noResults(String keyword, HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
+		/*
 		RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
 		JSONObject json = new JSONObject();
     	Date date = new Date();
     	String dates = date.toString();
-    	json.put("title", "Invalid username");
+    	json.put("title", "No results");
     	json.put("time_issued", dates);
-    	json.put("message", "The user " + username + " does not exist");
+    	json.put("message", "No results for " + keyword + ".");
 
     	//String message = "The user " + Username + " does not exist";
     	response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -161,7 +115,7 @@ public class Profile extends HttpServlet {
 		} catch (ServletException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
     }
 
 	private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
@@ -196,7 +150,61 @@ public class Profile extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+		//If the user is not logged in display index
+		boolean isLoggedIn = false;
+		if(session.getAttribute("LoggedIn") != null){
+			isLoggedIn = true;
+			}
+        if (isLoggedIn) {
+			String followingUser = request.getParameter("followingUser");
+			String method = request.getParameter("method");
+			String username = request.getSession().getAttribute("user").toString();
+			User user = new User();
+			user.setCluster(cluster);
+			if (!username.equals(followingUser))	{
+				if (method.equals("follow"))	{
+					user.followUser(username, followingUser);
+					response.sendRedirect("/instashutter/profile/"+ followingUser);
+				}	else if (method.equals("unfollow"))	{
+					user.unFollowUser(username, followingUser);
+					response.sendRedirect("/instashutter/profile/"+ followingUser);
+				}
+			}	else 	{
+				errorMessage("Unabled to follow user.", "You (" + username + ") attempted to follow " + followingUser, request, response);
+			}
+			
+			
+	                
+		}	else	{
+			response.sendRedirect("/instashutter/login");
+		}
+		
+		
 	}
+	
+	private void errorMessage (String title, String message, HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
+		JSONObject json = new JSONObject();
+    	Date date = new Date();
+    	String dates = date.toString();
+    	json.put("title", title);
+    	json.put("time_issued", dates);
+    	json.put("message", message);
+
+    	//String message = "The user " + Username + " does not exist";
+    	response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        request.setAttribute("message", json);
+        try {
+			rd.forward(request, response);
+		} catch (ServletException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+	
+	
 	public void destroy()	{
 		try {
 			if(cluster != null) cluster.close();

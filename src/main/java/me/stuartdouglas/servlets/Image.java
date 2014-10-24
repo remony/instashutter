@@ -107,9 +107,8 @@ public class Image extends HttpServlet {
 	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
 		PicModel pic = new PicModel();
-		PicModel tm = new PicModel();
 		String username = request.getSession().getAttribute("user").toString();
-		tm.setCluster(cluster);
+		pic.setCluster(cluster);
 		
 		System.out.println("user wants to delete image " + picid);
 		
@@ -119,7 +118,7 @@ public class Image extends HttpServlet {
 			String username2 = pic.getUserPosted(UUID.fromString(picid));
 			
 			if (username.equals(username2))	{
-				tm.deletePost(username, UUID.fromString(picid));
+				pic.deletePost(username, UUID.fromString(picid));
 				System.out.println("User " + username + "has successfully delete own post " + picid);
 				
 			}	else	{

@@ -50,6 +50,22 @@
 									<td>Bio: </td>
 									<td><%= bio %></td>
 								</tr>
+								<tr>
+									<td>
+										<form name="myform" action="/instashutter/follow" method="POST">
+											<input type="hidden" name="method" value="follow">
+											<input type="hidden" name="followingUser" value="<%= user%>">
+											<input type="submit" value="Follow"><br>
+										</form>
+									</td>
+									<td>
+										<form name="myform" action="/instashutter/follow" method="POST">
+											<input type="hidden" name="method" value="unfollow">
+											<input type="hidden" name="followingUser" value="<%= user%>">
+											<input type="submit" value="Unfollow"><br>
+										</form>
+									</td>
+								</tr>
 							</table>
 						</div>	
 					<%

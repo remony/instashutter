@@ -218,4 +218,15 @@
     <url-pattern>/search</url-pattern>
     <url-pattern>/search/*</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>FollowUser</display-name>
+    <servlet-name>FollowUser</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.FollowUser</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FollowUser</servlet-name>
+    <url-pattern>/follow</url-pattern>
+    <url-pattern>/follow/*</url-pattern>
+  </servlet-mapping>
 </web-app>

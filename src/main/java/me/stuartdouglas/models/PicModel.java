@@ -35,9 +35,11 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+
 
 
 
@@ -161,6 +163,14 @@ public class PicModel {
 		return instaSortedList;
 		
     }
+    
+    public LinkedList<Pic> getDashboard(String username)	{
+    	LinkedList<Pic> dashboard = new LinkedList<>();
+		System.out.println(username);
+    	return dashboard;
+    	
+    }
+    
     
     public LinkedList<Pic> getPost(String user) {
     	LinkedList<Pic> instaList = new LinkedList<>();

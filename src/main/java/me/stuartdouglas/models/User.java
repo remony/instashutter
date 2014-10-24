@@ -17,15 +17,19 @@ import java.security.NoSuchAlgorithmException;
 
 
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.imgscalr.Scalr.*;
 import me.stuartdouglas.lib.*;
+import me.stuartdouglas.stores.FollowingStore;
+import me.stuartdouglas.stores.Pic;
 import me.stuartdouglas.stores.UserSession;
 
 /**
@@ -33,7 +37,7 @@ import me.stuartdouglas.stores.UserSession;
  * @author Administrator
  */
 public class User {
-    private Cluster cluster;
+    private static Cluster cluster;
     
     public User(){
         
@@ -377,5 +381,110 @@ public class User {
 			e.printStackTrace();
 		}
 	}
+
+	public void followUser(String username, String followingUser) {
+		// TODO Auto-generated method stub
+		try {
+			if (!isFollowing(username, followingUser))	{
+				Session session = cluster.connect("instashutter");
+				Date dateFollowed = new Date();
+				PreparedStatement ps = session.prepare("insert into friends (username, friend, since) Values(?,?,?)");
+				BoundStatement bs = new BoundStatement(ps);
+				ResultSet rs = session.execute(bs.bind(username, followingUser, dateFollowed));
+				session.close();
+				if (rs.isExhausted()) {
+	                System.out.println("User has not followed");
+	            } else {
+	            	System.out.println("User has followed");
+	            }
+			}	else	{
+				System.out.println("Not executing following");
+			}
+			
+		}	catch(Exception e)	{
+			System.out.println("Error following user" + e);
+		}
+	}
+	
+	public void unFollowUser(String username, String followingUser) {
+		// TODO Auto-generated method stub
+		try {
+			if (!isFollowing(username, followingUser))	{
+				System.out.println("Not executing unfollow");
+			}	else	{
+				Session session = cluster.connect("instashutter");
+				Date dateFollowed = new Date();
+				PreparedStatement ps = session.prepare("delete from friends where username = ? and friend = ?");
+				BoundStatement bs = new BoundStatement(ps);
+				ResultSet rs = session.execute(bs.bind(username, followingUser));
+				session.close();
+			}
+			
+		}	catch(Exception e)	{
+			System.out.println("Error following user" + e);
+		}
+	}
+	
+	public boolean isFollowing(String username, String followingUser)	{
+		try {
+			Session session = cluster.connect("instashutter");
+			//Date dateFollowed = new Date();
+			PreparedStatement ps = session.prepare("select friend from friends where username =?");
+			BoundStatement bs = new BoundStatement(ps);
+			ResultSet rs = session.execute(bs.bind(username));
+			session.close();
+			if (rs.isExhausted()) {
+                System.out.println("Invalid username");
+				return false;
+            } else {
+            	for (Row row : rs)	{
+	    			if (row.getString("friend").equals(followingUser))	{
+	    				System.out.println("user " + username + " is following user " + followingUser);
+	    				return true;
+	    			}	else 	{
+	    				System.out.println("user " + username + " is not following user " + followingUser);
+	    				return false;
+	    			}
+	    		}
+            	return true;
+            }
+		}	catch(Exception e)	{
+			System.out.println("Error following user" + e);
+		}
+		
+		return false;
+	}
+	
+	public static LinkedList<FollowingStore> getFollowers(String username) {
+    	LinkedList<FollowingStore> followingList = new LinkedList<>();
+    	LinkedList<FollowingStore> sortedFollowingList = new LinkedList<>();
+    	Session session = cluster.connect("instashutter");
+    	
+    	PreparedStatement statement = session.prepare("SELECT * from friends where username =?");
+    	
+    	BoundStatement bs = new BoundStatement(statement);
+    	
+    	ResultSet rs = session.execute(bs.bind(username));
+    	if (rs.isExhausted()){
+    		System.out.println("No followers returned");
+    		return followingList;
+    	} else {
+    		for (Row row : rs) {
+    			FollowingStore fs = new FollowingStore();
+    			fs.setFollowing(row.getString("friend"));
+    			fs.setFollowedSince(row.getDate("since"));
+    			followingList.add(fs);
+    		}
+    		session.close();
+    	}
+    	//Sorting posts by most recent followed first
+    	followingList.stream()
+        .sorted((e1, e2) -> e2.getFollowedSince()
+                .compareTo(e1.getFollowedSince()))
+        .forEach(sortedFollowingList::add);
+    	
+		return sortedFollowingList;
+		
+    }
 
 }

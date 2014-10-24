@@ -38,7 +38,7 @@
 					
 					<div class="post">
 						<div class="post_image">
-							<a href="/instashutter/profile/<%= username %>"><img src="/instashutter/Thumb/<%= uuid %>"></a>
+							<a href="/instashutter/post/<%= username %>"><img src="/instashutter/Thumb/<%= uuid %>"></a>
 						</div>
 						<div class="post_timestamp">
 							<%= timeAdded %> 
@@ -48,6 +48,9 @@
 						</div>
 						<div class="post_caption">
 							<%= caption %>
+						</div>
+						<div class="post_share">
+							
 						</div>
 						<div class="post_comments">
 							<%
