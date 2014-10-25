@@ -12,7 +12,6 @@
   </head>
   <body>
     <jsp:include page="header.jsp" />
-    <h1>Your following</h1>
     <%LinkedList<FollowingStore> lsFollowing = (LinkedList<FollowingStore>) request.getAttribute("following");
 
 	        	if (lsFollowing == null) {%>
@@ -21,8 +20,13 @@
 						<input type="text" class="form-control" name="keyword" placeholder="Search" autofocus>
 						<input type="submit" value="comment">
 					</form>
-	        		 
-	       		<%} else {
+	        	<%} else {%>
+	       		<div class="post">
+						<div class="post_timestamp">
+							<h2>Your Following</h2>
+						</div>
+						<div class="post_caption">
+						<% 
 	            Iterator<FollowingStore> iterator;
 	            iterator = lsFollowing.iterator();
 	            while (iterator.hasNext()) {
@@ -31,17 +35,14 @@
 
 					%>
 					
-					<div class="post">
-						<div class="post_timestamp">
-							<h2>Your following</h2>
-						</div>
-						<div class="post_caption">
-							<%= username %>
+						
+							<a href="/instashutter/profile/<%= username %>"><%= username %></a><br><br>
+							<%}%>
 						</div>
 					</div>
 					
 
-	            <%}} %>
+	            <%} %>
   </body>
   <script src="<c:url value="/assets/js/jquery.timeago.js"/>"></script>
 	<script src="<c:url value="/assets/js/app.js"/>"></script>

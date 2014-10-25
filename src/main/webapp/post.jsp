@@ -47,13 +47,11 @@
 					<style>	
 					.profile_background {
 		        		position:absolute;
-		       		width:100%;
-		        		height:100%;
 		        		opacity:0.2;
+		       			width:100%;
+		        		height:100%;
+		        		
 				      	background: url("/instashutter/Image/<%=p.getSUUID()%>") no-repeat center center fixed; 
-							-webkit-background-size: cover;
-							-moz-background-size: cover;
-							-o-background-size: cover;
 							background-size: cover;
 							z-index:-1;
 						display:block;

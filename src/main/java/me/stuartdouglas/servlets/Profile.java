@@ -148,7 +148,6 @@ public class Profile extends HttpServlet {
         LinkedList<UserSession> lsUser = user.getUserInfo(Username);
         if (user.isUserRegistered(Username)) {
         	request.setAttribute("UserInfo", lsUser);
-    		user.getNumberOfPostsFromUser(Username);
             java.util.LinkedList<Pic> lsPics = PicModel.getPicsForUser(Username);
             request.setAttribute("viewingUser", Username);
             request.setAttribute("Pics", lsPics);

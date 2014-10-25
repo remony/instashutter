@@ -40,7 +40,7 @@
 
 </body>
 <style>
-	body {
+	html {
 		background: url('/instashutter/assets/images/new-york-14480.jpg') no-repeat center center fixed; 
 		 -webkit-background-size: cover;
 		 -moz-background-size: cover;
@@ -61,6 +61,21 @@
 	
 	input {
     	border: none; 
+	}
+	
+	.wrapper {
+		width:80%;
+		padding:30px;
+		background-color:rgba(50,50,50,0.4);
+		margin:0 auto;
+		text-align:center;
+	}
+	.wrapper h1, p, label	{
+		color:#fff;
+	}
+	label {
+		font-size:1.3em;
+		padding-right:10px;
 	}
 </style>
 </html>

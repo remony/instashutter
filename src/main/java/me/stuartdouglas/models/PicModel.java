@@ -303,10 +303,6 @@ public class PicModel {
     public void insertPic(byte[] b, String type, String name, String user, String caption, String filter, boolean publicPhoto) {
     	
     	try {
-        	
-        	
-            //Convertors convertor = new Convertors();
-
             String types[]=Convertors.SplitFiletype(type);
             ByteBuffer buffer = ByteBuffer.wrap(b);
             int length = b.length;
@@ -328,9 +324,16 @@ public class PicModel {
             ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
             byte[] processedb = null;
             System.out.println("FIlter is " + filter);
-            processedb = picdecolour(picid.toString(),types[1]);
             
-            ByteBuffer processedbuf=ByteBuffer.wrap(processedb);
+            
+            
+            
+            if (type.equals("image/gif"))	{
+            	processedb = b;
+            }	else {
+            	processedb = picdecolour(picid.toString(),types[1]);
+            }
+            ByteBuffer processedbuf= ByteBuffer.wrap(processedb);
             int processedlength=processedb.length;
             Session session = cluster.connect("instashutter");
 

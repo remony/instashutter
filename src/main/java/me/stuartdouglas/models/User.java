@@ -116,13 +116,16 @@ public class User {
     if (rs.isExhausted()) {
         System.out.println("No Images returned");
     } else {
+    	UserSession ps1 = new UserSession();
         for (Row row : rs) {
-        	UserSession ps1 = new UserSession();
    			ps1.setAll(row.getString("login"), row.getString("first_name"), row.getString("last_name"));
    			ps1.setBackground(row.getString("background"));
    			ps1.setLocation(row.getString("location"));
    			ps1.setBio(row.getString("bio"));
-   			ps1.setEmail(row.getSet("email", String.class)); 
+   			ps1.setEmail(row.getSet("email", String.class));
+   			ps1.setFollowerCount(getFollowerCount(user));
+   			ps1.setFollowingCount(getFollowingCount(user));
+   			ps1.setPostCount(getPostCount(user));
    			userList.add(ps1);
         }
     }
@@ -130,6 +133,76 @@ public class User {
    	session.close();
 		return userList;
    }
+   
+   public int getFollowerCount(String username)	{
+	   int count = 0;
+		try {
+			Session session = cluster.connect("instashutter");
+			PreparedStatement ps = session.prepare("select friend from friends where friend=? allow filtering");
+			BoundStatement bs = new BoundStatement(ps);
+			ResultSet rs = session.execute(bs.bind(username));
+			session.close();
+			if (rs.isExhausted()) {
+              System.out.println("User has posted no posts");
+              
+          } else {
+       	   for (Row row : rs)	{
+       		   count++;
+       	   }
+          }
+			System.out.println(count);
+		}	catch(Exception e)	{
+			System.out.println("Error deleting post" + e);
+		}
+		return count;
+   }
+   
+   public int getFollowingCount(String username)	{
+	   int count = 0;
+		try {
+			Session session = cluster.connect("instashutter");
+			PreparedStatement ps = session.prepare("select friend from friends where username=? allow filtering");
+			BoundStatement bs = new BoundStatement(ps);
+			ResultSet rs = session.execute(bs.bind(username));
+			session.close();
+			if (rs.isExhausted()) {
+              System.out.println("User has posted no posts");
+              
+          } else {
+       	   for (Row row : rs)	{
+       		   count++;
+       	   }
+          }
+			System.out.println(count);
+		}	catch(Exception e)	{
+			System.out.println("Error deleting post" + e);
+		}
+		return count;
+   }
+   
+   public int getPostCount(String username)	{
+		int count = 0;
+		try {
+			Session session = cluster.connect("instashutter");
+			PreparedStatement ps = session.prepare("select user from userpiclist where user=? allow filtering");
+			BoundStatement bs = new BoundStatement(ps);
+			ResultSet rs = session.execute(bs.bind(username));
+			session.close();
+			if (rs.isExhausted()) {
+               System.out.println("User has posted no posts");
+               
+           } else {
+        	   for (Row row : rs)	{
+        		   count++;
+        	   }
+           }
+			System.out.println(count);
+		}	catch(Exception e)	{
+			System.out.println("Error counting posts" + e);
+		}
+		return count;
+       
+	}
     
     
    public void setCluster(Cluster cluster) {
@@ -352,25 +425,7 @@ public class User {
 		return false;
 	}
 	
-	public int getNumberOfPostsFromUser(String username)	{
-		int count = 0;
-		try {
-			Session session = cluster.connect("instashutter");
-			PreparedStatement ps = session.prepare("select count(*) from userpiclist where user=?");
-			BoundStatement bs = new BoundStatement(ps);
-			ResultSet rs = session.execute(bs.bind(username));
-			session.close();
-			if (rs.isExhausted()) {
-                System.out.println("User has posted no posts");
-            } else {
-            	count++;
-            }
-		}	catch(Exception e)	{
-			System.out.println("Error deleting post" + e);
-		}
-		return count;
-        
-	}
+	
 
 	public void destroy()	{
 		try {

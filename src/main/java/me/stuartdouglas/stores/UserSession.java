@@ -23,6 +23,8 @@ public final class UserSession {
     private String bio = null;
     private Set<String> email = null;
     private int postCount = 0;
+    private int followerCount = 0;
+    private int followingCount = 0;
     private ByteBuffer profileImage = null;
     
     public UserSession() {
@@ -124,6 +126,22 @@ public final class UserSession {
 	
 	public int getPostCount()	{
 		return postCount;
+	}
+
+	public int getFollowerCount() {
+		return followerCount;
+	}
+
+	public void setFollowerCount(int followerCount) {
+		this.followerCount = followerCount;
+	}
+
+	public int getFollowingCount() {
+		return followingCount;
+	}
+
+	public void setFollowingCount(int followingCount) {
+		this.followingCount = followingCount;
 	}
 
 

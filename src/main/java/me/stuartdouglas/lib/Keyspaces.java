@@ -62,12 +62,15 @@ final class Keyspaces {
             	    +"since timestamp,"
             	    +"PRIMARY KEY (username, friend)"
             	+");";
-            String CreateFollowerList = "CREATE TABLE if not exists instashutter.followers ("
-            	    +"username text,"
-            	   + "follower text,"
-            	   + "since timestamp,"
-            	  +  "PRIMARY KEY (username, follower)"
-            	+");";
+            String CreateMessagingTable = "CREATE TABLE if not exists instashutter.messaging ("
+            	    + "sender text,"
+            	    + "recipient text,"
+            	   	+ "message text,"
+            	   	+ "date_sent timestamp,"
+            	   	+  "PRIMARY KEY (sender, date_sent)"
+            	+"); ";
+            String CreateMessagingSendIndex = "CREATE INDEX if not exists ON instashutter.messaging(sender);";
+            String CreateMessagingRecipientIndex = "CREATE INDEX if not exists ON instashutter.messaging(recipient);";
         	String CreateCommentsTable ="CREATE TABLE if not exists instashutter.comments ("
         			+ "username text,"
         			+ "picid uuid,"
@@ -128,11 +131,18 @@ final class Keyspaces {
                 System.out.println("Can't create Friend List " + et);
             }
             try {
-                SimpleStatement cqlQuery = new SimpleStatement(CreateFollowerList);
+                SimpleStatement cqlQuery = new SimpleStatement(CreateMessagingTable);
                 session.execute(cqlQuery);
             } catch (Exception et) {
-                System.out.println("Can't create Follower List " + et);
+                System.out.println("Can't create Messaging Table " + et);
             }
+            try {
+                SimpleStatement cqlQuery = new SimpleStatement(CreateMessagingRecipientIndex);
+                session.execute(cqlQuery);
+            } catch (Exception et) {
+                System.out.println("Can't create Messaging Table " + et);
+            }
+            
             try {
                 SimpleStatement cqlQuery = new SimpleStatement(CreateCommentsTable);
                 session.execute(cqlQuery);

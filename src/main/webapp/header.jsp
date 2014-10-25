@@ -43,6 +43,7 @@
       <ul class="nav navbar-nav">
       <li class=""><a href="<c:url value="/"/>"><span class="glyphicon glyphicon-home"></span> Dashboard</a></li>
       <li class=""><a href="<c:url value="/explore"/>"><span class="glyphicon glyphicon-globe"></span> Explore</a></li>
+      <li class=""><a href="<c:url value="/message"/>"><span class="glyphicon glyphicon-globe"></span> Messages</a></li>
         <li class=""><a href="<c:url value="/upload"/>"><span class="glyphicon glyphicon-upload"></span> New Post</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">

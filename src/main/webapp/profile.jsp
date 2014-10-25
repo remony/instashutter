@@ -34,9 +34,16 @@
 						String lname = profile.getlname();
 						String location = profile.getLocation();
 						String bio = profile.getBio();
+						int postCount = profile.getPostCount();
+						int followingCount = profile.getFollowingCount();
+						int followerCount = profile.getFollowerCount();
 						%>
 						<div class="profile_info">
 							<table>
+								<tr>
+									<td>@ </td>
+									<td><%= user %></td>
+								</tr>
 								<tr>
 									<td>Name: </td>
 									<td><%= fname %> </td>
@@ -50,6 +57,16 @@
 									<td>Bio: </td>
 									<td><%= bio %></td>
 								</tr>
+									<td>Post count: </td>
+									<td><%= postCount %></td>
+								<tr>
+								</tr>
+									<td>Follower count: </td>
+									<td><a href="/instashutter/profile/<%= user %>/followers"><%= followerCount %></a></td>
+								<tr>
+								</tr>
+									<td>Following count: </td>
+									<td><a href="/instashutter/profile/<%= user %>/following"><%= followingCount %></a></td>
 								<tr>
 									<td>
 										<form name="follow" action="/instashutter/profile/<%= user %>/follow" method="POST">
@@ -168,6 +185,18 @@
 
 	            <%}} %>
   </body>
+  <style>
+  html {
+		background: url('<%= background %>') no-repeat center center fixed; 
+		 -webkit-background-size: cover;
+		 -moz-background-size: cover;
+		 -o-background-size: cover;
+		 background-size: cover;
+	}
+  </style>
+  
+  
+  
   <script src="<c:url value="/assets/js/jquery.timeago.js"/>"></script>
 	<script src="<c:url value="/assets/js/app.js"/>"></script>
 </html>

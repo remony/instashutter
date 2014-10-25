@@ -191,7 +191,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>ErrorDetect</servlet-name>
-    <url-pattern>/404.jsp</url-pattern>
+    <url-pattern>/404</url-pattern>
   </servlet-mapping>
   <error-page>
     <error-code>404</error-code>
@@ -228,5 +228,16 @@
     <servlet-name>FollowUser</servlet-name>
     <url-pattern>/follow</url-pattern>
     <url-pattern>/follow/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>Messaging</display-name>
+    <servlet-name>Messaging</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.Messaging</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Messaging</servlet-name>
+    <url-pattern>/message</url-pattern>
+    <url-pattern>/message/*</url-pattern>
   </servlet-mapping>
 </web-app>
