@@ -9,26 +9,15 @@
 </head>
 <body>
 	<jsp:include page="header.jsp" />
-	<%
-	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
-	if (currentSession != null) {
-		//String userName = currentSession.getUsername();
-		if (!currentSession.getUserSession()) {
-			%>
-	<div class="alert alert-info" role="alert">
-	  <h3>You have not even logged in yet...</h3>
+	<div class="post">
+		<div class="post_timestamp">
+			<h2>You have logged out!</h2>
+		</div>
+		<div class="post_caption">
+			<h4>We miss you!</h4>
+			<a href="/instashutter/login">Click here to log back in</a>
+		</div>
 	</div>
-	<%}
-	} else {
-			%>
-	<div class="alert alert-info" role="alert">
-	  <h3>You have logged out.</h3>
-	</div>
-	
-	<a href="login">Come back!</a>
-	<%
-		}
-			%>
 	
 </body>
 </html>

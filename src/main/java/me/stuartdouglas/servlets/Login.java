@@ -1,6 +1,9 @@
 package me.stuartdouglas.servlets;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -8,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.simple.JSONObject;
 
 import com.datastax.driver.core.Cluster;
 
@@ -54,37 +59,39 @@ public class Login extends HttpServlet {
 		try {	
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
-			User user = new User();
-			user.setCluster(cluster);
-			boolean isValidUser = user.IsValidUser(username, password);
-			System.out.println("Session established: " + session);
-			if (isValidUser){
-				System.out.println("Valid user has connected");
-				 session = request.getSession(true);
-				 request.getSession().setAttribute("user", username);
-				 userSession.setUserSession(true);
-				 userSession.setUsername(username);
-				 session.setAttribute("LoggedIn", userSession);
-				 response.sendRedirect("/instashutter/");
-			} else {
-				System.out.println("Invalid user attempted to connected");
-				response.sendRedirect("/instashutter/login");
+			if (username != null || password != null)	{
+				User user = new User();
+				user.setCluster(cluster);
+				boolean isValidUser = false;
+				try {
+					isValidUser = user.IsValidUser(username, password);
+				} catch (Exception e)	{
+					System.out.println("Error processing check if valid user: "+ e);
+				}
+				if (isValidUser){
+					System.out.println("Session established: " + session);	
+					 session = request.getSession(true);
+					 request.getSession().setAttribute("user", username);
+					 userSession.setUserSession(true);
+					 userSession.setUsername(username);
+					 
+					 session.setAttribute("LoggedIn", userSession);
+					 response.sendRedirect("/instashutter/");
+				} else {
+					request.setAttribute("message", "Incorrect username/password");
+					RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+					rd.forward(request, response);
+				}
+			}	else	{
+				request.setAttribute("message", "Please enter login details");
+				RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+				rd.forward(request, response);
 			}
 		} catch (Throwable e) {
-			System.out.println("ERROR: " + e);
-			response.sendRedirect("/instashutter/login");
+			System.out.println("Error processing login: " + e);
 		}
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    public String getServletInfo() {
-        return "Login servlet: handles login requests and posts";
-    }
-
+	
     public void destroy()	{
 		try {
 			if(cluster != null) cluster.close();

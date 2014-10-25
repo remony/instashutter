@@ -23,7 +23,7 @@
 	</div>
 	<form method="POST" id="uploadform" enctype="multipart/form-data" action="Image" >
 	<div class="post_timestamp">
-		<input type="file" id="file" name="file" value="/tmp"  onchange="readfile(this);"><br/>
+		<input type="file" id="file" name="file" value="/image"  onchange="readfile(this);" required><br/>
 	</div>
 
 	<div class="post_caption">

@@ -10,21 +10,23 @@
 </head>
 <body>
 <jsp:include page="header.jsp" /> 
-	<%
-	UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
-	if (currentSession != null) {
-		if (currentSession.getUserSession()) {
-			%>
-	response.sendRedirect("/instashutter/"); 
-	<%}
-	} else {
-			%>
+	
 	<div class="post">
 		
 			
 		<div class="post_timestamp">
 		<h3>Login</h3>
 		</div>
+		<%
+              String message = (String) request.getAttribute("message");
+              if (message != null){
+            	  %>
+	           	  	<div class="error">
+	            	  	<%= message %>
+	           	  	</div>
+            	  <%
+              }
+            %>
 		<div class="post_caption">
 		<form name="login" action="login" method="POST" accept-charset="utf-8">
 			    <ul>  
@@ -37,9 +39,7 @@
 			    </ul>  
 			</form> 
 		</div>
-	<%
-		}
-			%>
+
 
 
 

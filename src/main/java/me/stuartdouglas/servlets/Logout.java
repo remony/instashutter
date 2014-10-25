@@ -32,7 +32,6 @@ public class Logout extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		try {
-
 			HttpSession session = request.getSession();
 			if (session.getAttribute("LoggedIn") == null) {
 				//If the session is not active redirect to homepage
@@ -41,15 +40,11 @@ public class Logout extends HttpServlet {
 			    //Display logout jsp and terminate session.
 				session.invalidate();
 				RequestDispatcher rd=request.getRequestDispatcher("/logout.jsp");
-		    rd.forward(request,response);
-
+				rd.forward(request,response);
 			}
-
-
 		} catch (Exception e) {
-			System.out.println("Error: " + e);
+			System.out.println("Error processing logout: " + e);
 		}
-
 	}
 
 	/**
@@ -57,6 +52,7 @@ public class Logout extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		response.sendRedirect("/instashutter/404");
 	}
 
 

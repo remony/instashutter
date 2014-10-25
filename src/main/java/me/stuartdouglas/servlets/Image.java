@@ -76,7 +76,7 @@ public class Image extends HttpServlet {
         try {
             command = CommandsMap.get(args[1]);
         } catch (Exception et) {
-            //error(response);
+        	response.sendRedirect("/instashutter/404");
             return;
         }
         switch (command) {
@@ -89,7 +89,7 @@ public class Image extends HttpServlet {
 	            			deletePost(args[2], request, response);
 	            		}
 	            	}	catch(Exception e)	{
-	            		e.printStackTrace();
+	            		System.out.println("Error processing post level image and comments delete: " + e);
 	            	}
             	}
             	break;
@@ -102,7 +102,7 @@ public class Image extends HttpServlet {
             case 4:
         		DisplayUpload(request, response);
             default:
-                //error(response);
+            	//response.sendRedirect("/instashutter/404");
         }
 	}
 	
@@ -115,12 +115,11 @@ public class Image extends HttpServlet {
 				response.sendRedirect("/instashutter/login");
 			} else {
 				//If the user if logged in redirect them out of the register
-				
 				RequestDispatcher rd = request.getRequestDispatcher("upload.jsp");
 			    rd.forward(request,response);
 			}
 		} catch (Exception e) {
-			System.out.println("Error: " + e);
+			System.out.println("Error uploading image: " + e);
 		}
 		
 	}
@@ -136,37 +135,33 @@ public class Image extends HttpServlet {
 		if (session.getAttribute("LoggedIn")!= null)	{
 			System.out.println("User is logged in");
 			
-			String username2 = pic.getUserPosted(UUID.fromString(picid));
+			String postedusername = pic.getUserPosted(UUID.fromString(picid));
 			
-			if (username.equals(username2))	{
+			if (username.equals(postedusername))	{
 				pic.deletePost(username, UUID.fromString(picid));
 				System.out.println("User " + username + "has successfully delete own post " + picid);
-				
 			}	else	{
 				System.out.println("User " + username + " has attempted to ilegally delete post " + picid);
 			}
 		}	else	{
 			System.out.println("User is not logged in");
 		}
-		
-		
 	}
 
 	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		PicModel tm = new PicModel();
         tm.setCluster(cluster);
+        
         java.util.LinkedList<Pic> lsPics = PicModel.getPicsForUser(User);
         RequestDispatcher rd = request.getRequestDispatcher("/UserPics.jsp");
         request.setAttribute("Pics", lsPics);
         rd.forward(request, response);
-
     }
 	
 	private void DisplayImage(int type,String Image, HttpServletResponse response) throws IOException {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
-        Pic p = tm.getPic(type,java.util.UUID.fromString(Image));
-        
+        Pic p = tm.getPic(type, java.util.UUID.fromString(Image));
         OutputStream out = response.getOutputStream();
 
         response.setContentType(p.getType());
@@ -174,10 +169,12 @@ public class Image extends HttpServlet {
         //out.write(Image);
         InputStream is = new ByteArrayInputStream(p.getBytes());
         BufferedInputStream input = new BufferedInputStream(is);
+        
         byte[] buffer = new byte[8192];
         for (int length; (length = input.read(buffer)) > 0;) {
             out.write(buffer, 0, length);
         }
+        
         out.close();
         
     }
@@ -197,40 +194,40 @@ public class Image extends HttpServlet {
 			String filter = request.getParameter("filterChoice");
 			boolean publicPhoto;
             publicPhoto = request.getParameter("public").equals("yes");
-			
-			System.out.println(filter);
-			
-			InputStream is = request.getPart(file.getName()).getInputStream();
-	        int i = is.available();
-	        HttpSession session=request.getSession();
-	        UserSession lg= (UserSession)session.getAttribute("LoggedIn");
-	        String username="null";
-	        if (lg.getUserSession()){
-	            username=lg.getUsername();
-	        }
-	        if (i > 0) {
-	            byte[] b = new byte[i + 1];
-	            is.read(b);
-	            System.out.println("Length: " + b.length);
-	            System.out.println("Title: " + description);
-	            PicModel tm = new PicModel();
-	            tm.setCluster(cluster);
-	
-	            try {
-	            	tm.insertPic(b, type, filename, username, description, filter, publicPhoto);
-	            } catch (Exception e) {
-	    			System.out.println("Error with uploading file: ");
-	    			e.printStackTrace();
-	    		}
-	
-	            is.close();
-	        }
-	         System.out.println("ended");
+            
+            
+            if (filename != null){
+				InputStream is = request.getPart(file.getName()).getInputStream();
+		        int i = is.available();
+		        HttpSession session=request.getSession();
+		        UserSession lg= (UserSession)session.getAttribute("LoggedIn");
+		        String username="null";
+		        if (lg.getUserSession()){
+		            username=lg.getUsername();
+		        }
+		        if (i > 0) {
+		            byte[] b = new byte[i + 1];
+		            is.read(b);
+		            System.out.println("Length: " + b.length);
+		            System.out.println("Title: " + description);
+		            PicModel tm = new PicModel();
+		            tm.setCluster(cluster);
+		
+		            try {
+		            	tm.insertPic(b, type, filename, username, description, filter, publicPhoto);
+		            } catch (Exception e) {
+		    			System.out.println("Error with uploading file: " + e);
+		    		}
+		            is.close();
+		        }
+		        response.sendRedirect("/instashutter/");
+            }	else	{
+            	response.sendRedirect("/instashutter/upload");
+            }
 		} catch (Exception e) {
 			System.out.println("Error processing upload request: " + e);
 		}
-		//response.setStatus(HttpServletResponse.SC_CREATED);
-		response.sendRedirect("/instashutter/");
+		
 	}
 
 	
@@ -238,7 +235,6 @@ public class Image extends HttpServlet {
 	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		System.out.println("Attempted Delete");
 	}
 	public void destroy()	{
