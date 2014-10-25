@@ -14,14 +14,14 @@
     <jsp:include page="header.jsp" />
     <div class="post">
     <%LinkedList<MessageStore> lsPics = (LinkedList<MessageStore>) request.getAttribute("MessageList");
-
+    String otherUsername = request.getAttribute("otherUsername").toString();
 	        	if (lsPics == null) {%>
 	        		<p>No results</p>
 	        		<form name="search" action="/instashutter/search" method="POST">
 						<input type="text" class="form-control" name="keyword" placeholder="Search" autofocus>
 						<input type="submit" value="comment">
 					</form>
-	        		 
+	        		 <table style="width:100%">
 	       		<%} else {
 	            Iterator<MessageStore> iterator;
 	            iterator = lsPics.iterator();
@@ -35,22 +35,22 @@
 		    		df.setTimeZone(timeZone);
 					String timeAdded = df.format(p.getDate_sent());
 					%>
-					
-					
-							<div class="timeConvertsince" title="<%= timeAdded %>"><%= timeAdded %></div> 
 
-							<a href="/instashutter/message/<%= username %>">@<%= username %></a>
-
-							<%= caption %>
-					
-							<form name="message_input" action="<%= username %>/send" method="POST">
-									<input type="text" name="message">
-									<input type="submit" value="comment">
-								</form>
-	            </div>
+					<td>
+						<tr><div class="timeConvertsince" title="<%= timeAdded %>"><%= timeAdded %></div> </tr>
+						<tr><a href="/instashutter/message/<%= username %>">@<%= username %></a></tr>
+						<tr><%= caption %></tr>
+					</td>
 
 	            <%}} %>
-	            
+	            </table>
+	            <div class="comment_form">
+	            	<form name="message_input" action="<%= otherUsername %>/send" method="POST">
+						<input type="text" name="message">
+						<input type="submit" value="comment">
+					</form>
+	            </div>
+            </div>
   </body>
   <script src="<c:url value="/assets/js/jquery.timeago.js"/>"></script>
 	<script src="<c:url value="/assets/js/app.js"/>"></script>

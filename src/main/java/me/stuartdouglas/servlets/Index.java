@@ -1,27 +1,5 @@
 package me.stuartdouglas.servlets;
-/*
-							TO DO
-				- Display only to logged in users
-				- If implemented only show followed users
-					- Move code into Discovery (global public posts)
-				- If implemented display only public posts
-				- Display comments (limit to 3 with link to full image and comments page)
-				- Display owner and posters profile pictures
-				- If got time convert output to be in JSON
-				- Make UI use bootstrap instead of writing css from scratch
-				- Add like button or favorite or heart
-				- Give a more twitter approach (since twitter does it better with the dashboard)
-				- Add in searching?
-
-
-*/
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -34,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import me.stuartdouglas.lib.CassandraHosts;
-import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
 import me.stuartdouglas.models.User;
 import me.stuartdouglas.stores.FollowingStore;
@@ -58,7 +35,6 @@ public class Index extends HttpServlet {
     }
 
     public void init(ServletConfig config) throws ServletException {
-        // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
     }
 
@@ -66,26 +42,21 @@ public class Index extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		//If the user is not logged in display index
 		boolean isLoggedIn = false;
 		if(session.getAttribute("LoggedIn") != null){
 			isLoggedIn = true;
-			}
+		}
         if (isLoggedIn) {
-			String args[] = Convertors.SplitRequestPath(request);
-			
-	        DisplayImageList(Convertors.DISPLAY_IMAGE, request, response);
-	                
+	        DisplayImageList(request, response);    
 		}	else	{
 			RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
 	        rd.forward(request, response); 
 		}
-		
 	}
 
-	private void DisplayImageList(int type, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void DisplayImageList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
         me.stuartdouglas.models.User user = new User();
         String username = request.getSession().getAttribute("user").toString();
@@ -101,21 +72,17 @@ public class Index extends HttpServlet {
                     LinkedList<Pic> lsUserPosts = PicModel.getPicsForUser(fs.getFollowing());
                     lsPics.addAll(lsUserPosts);
                 }
-
                 LinkedList<Pic> lsPicsSorted = new LinkedList<>();
                 lsPics.stream()
                 .sorted((e1, e2) -> e2.getPicAdded()
                         .compareTo(e1.getPicAdded()))
                 .forEach(lsPicsSorted::add);
                 request.setAttribute("Pics", lsPicsSorted);
-
             }	catch (Exception e)	{
 	        	System.out.println("Error processing following users posts: " + e);
-	        	e.printStackTrace();
 	        }
 	        RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
 	        rd.forward(request, response); 
-	         
         } catch (Exception e) {
         	System.out.println("Error getting user dashboard: " + e);
         } 
@@ -127,24 +94,23 @@ public class Index extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		HttpSession session = request.getSession();
+		//If the user is already logged in redirect to dashboard
+		if (session.getAttribute("LoggedIn") != null) {
 		String username = request.getSession().getAttribute("user").toString();
 		String comment = request.getParameter("comment");
 		String picid = request.getParameter("uuid");
-		System.out.println(comment + " " + picid);
 		
 		PicModel pic = new PicModel();
 		pic.setCluster(cluster);
-		
-		try {
-			//something should be there?
-		}	catch (Exception e)	{
-			System.out.println("Error posting new comment: " + e);
-		}
 		pic.postComment(username, picid, comment);
-
-		
-		
 		response.sendRedirect("/instashutter/post/" + picid);
+		}	else	{
+			request.setAttribute("message", "You must be logged in to comment");
+			RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
+			rd.forward(request, response);
+		}
 	}
 
 	public void destroy()	{

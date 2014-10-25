@@ -15,13 +15,31 @@
     <%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
 
 	        	if (lsPics == null) {%>
-	        		<p>No results</p>
-	        		<form name="search" action="/instashutter/search" method="POST">
-						<input type="text" class="form-control" name="keyword" placeholder="Search" autofocus>
-						<input type="submit" value="comment">
-					</form>
-	        		 
-	       		<%} else {
+	        		<div class="post">
+	        			<div class="post_timestamp">
+	        				<p>No results</p>
+	        			</div>
+	        			<div class="post_content">
+	        			<form name="search" action="/instashutter/search" method="POST">
+							<input type="text" class="form-control" name="keyword" placeholder="Search for posts" autofocus>
+							<input type="submit" value="Search">
+						</form>
+	        			</div>
+	        		</div>
+	       		<%} else {%>
+	       		<%
+              String message = (String) request.getAttribute("message");
+              if (message != null){
+            	  %>
+	           	  	<div class="message_banner">
+	            	  	<%= message %>
+	           	  	</div>
+            	  <%
+              }
+            %>
+	       		
+	       		
+	       		<%
 	            Iterator<Pic> iterator;
 	            iterator = lsPics.iterator();
 	            while (iterator.hasNext()) {

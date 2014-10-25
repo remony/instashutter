@@ -25,7 +25,10 @@ header {
 	color:#fff;
 }
 
-
+.comment_form form	{
+	width:100%;
+	
+}
 .error	{
 	background-color:#e00032;
 	color:#ffffff;
@@ -34,6 +37,19 @@ header {
 	font-size:1.2em;
 	text-align:center;
 }
+
+.message_banner	{
+	margin-top:-20px;
+	margin-bottom:30px;
+	background-color:#4e6cef;
+	color:#ffffff;
+	width:100%;
+	padding:10px;
+	font-size:1.2em;
+	text-align:center;
+}
+
+
 
 body {
 	width:100%;

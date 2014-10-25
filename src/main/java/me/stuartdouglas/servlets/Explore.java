@@ -9,9 +9,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import me.stuartdouglas.lib.CassandraHosts;
-import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
 import me.stuartdouglas.stores.Pic;
 
@@ -28,11 +28,9 @@ public class Explore extends HttpServlet {
      */
     public Explore() {
         super();
-        // TODO Auto-generated constructor stub
     }
     
     public void init(ServletConfig config) throws ServletException {
-        // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
     }
     
@@ -40,27 +38,25 @@ public class Explore extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String args[] = Convertors.SplitRequestPath(request);
-		DisplayTimeline(Convertors.DISPLAY_IMAGE, args[1], request, response);
+		DisplayTimeline(request, response);
 	}
 
-	private void DisplayTimeline(int dISPLAY_IMAGE, String string, HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
+	private void DisplayTimeline(HttpServletRequest request, HttpServletResponse response) {
 		PicModel pic = new PicModel();
 		try {
 			pic.setCluster(cluster);
-			LinkedList<Pic> lsPics = pic.getPublicPosts();
-			
-
+			LinkedList<Pic> lsPics = PicModel.getPublicPosts();
             request.setAttribute("Pics",  lsPics);
 
-			RequestDispatcher rd = request.getRequestDispatcher("/explore.jsp");
-	        rd.forward(request, response);
-			
-			
+			RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
+			HttpSession session = request.getSession();
+			//Displays a message to users that are not logged in.
+			if (session.getAttribute("LoggedIn") == null) {
+				request.setAttribute("message", "You must be logged in to post and comment.");
+			}
+			rd.forward(request, response);
 		}	catch(Exception e)	{
-			System.out.println("Error getting timeline");
-			e.printStackTrace();
+			System.out.println("Error getting timeline " + e);
 		}
 	}
 
@@ -68,7 +64,7 @@ public class Explore extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		response.sendRedirect("/instashutter/404");
 	}
 	
 	public void destroy()	{

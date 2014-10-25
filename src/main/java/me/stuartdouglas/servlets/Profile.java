@@ -163,6 +163,7 @@ public class Profile extends HttpServlet {
 
     }
 	
+	@SuppressWarnings("unchecked")
 	private void userDoesntexist(String username, HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
@@ -338,6 +339,7 @@ public class Profile extends HttpServlet {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void errorMessage (String title, String message, HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");

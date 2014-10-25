@@ -12,8 +12,7 @@
   </head>
   <body>
     <jsp:include page="header.jsp" />
-    <%LinkedList<MessageStore> lsPics = (LinkedList<MessageStore>) request.getAttribute("MessageList");
-
+    <%LinkedList<FollowingStore> lsPics = (LinkedList<FollowingStore>) request.getAttribute("userList");
 	        	if (lsPics == null) {%>
 	        		<p>No results</p>
 	        		<form name="search" action="/instashutter/search" method="POST">
@@ -21,40 +20,31 @@
 						<input type="submit" value="comment">
 					</form>
 	        		 
-	       		<%} else {
-	            Iterator<MessageStore> iterator;
+	       		<%} else {%>
+	       		<div class="post">
+						<div class="post_timestamp">
+							<h2>Select a follower to message</h2>
+						</div>
+	       		
+	       		<%
+	            Iterator<FollowingStore> iterator;
 	            iterator = lsPics.iterator();
 	            while (iterator.hasNext()) {
-	            	MessageStore p = iterator.next();
-					String username = p.getSender();
-					String caption = p.getMessage();
-					//Convert date to iso 8601 format for use with jquery.timeago.js using code from http://stackoverflow.com/questions/3914404/how-to-get-current-moment-in-iso-8601-format
-					TimeZone timeZone = TimeZone.getTimeZone("UTC");
-	    			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-		    		df.setTimeZone(timeZone);
-					String timeAdded = df.format(p.getDate_sent());
+	            	FollowingStore p = iterator.next();
+					String username = p.getFollowing();
 					%>
 					
-					<div class="post">
-						<div class="post_image">
-						</div>
-						<div class="post_timestamp">
-							<div class="timeConvertsince" title="<%= timeAdded %>"><%= timeAdded %></div> 
-						</div>
+					
 						<div class="post_author">
 							<a href="/instashutter/message/<%= username %>">@<%= username %></a>
 							
 						</div>
-						<div class="post_caption">
-							<%= caption %>
-						</div>
-						<div class="post_share">
-							
-						</div>
-					</div>
+						
+					
 					
 
 	            <%}} %>
+	            </div>
   </body>
   <script src="<c:url value="/assets/js/jquery.timeago.js"/>"></script>
 	<script src="<c:url value="/assets/js/app.js"/>"></script>

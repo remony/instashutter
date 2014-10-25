@@ -58,42 +58,34 @@
        					Profile email: <%= p.getEmail() %><br>
        				</div>
        				<div id="details">
-       				
-       			<form name="input" action="<c:url value="/account/editdetails"/>" method="post">
-					Your username: (cannot be changed)<br>
-					First name: <input type="text" name="fname" value = "<%= p.getfname() %>"><br>
-					<input type="hidden" name="previousFname" value = "<%= p.getfname() %>">			
-					Last name: <input type="text" name="lname" value = "<%= p.getlname() %>"><br>
-					<input type="hidden" name="previousLname" value = "<%= p.getlname() %>">
-					Location: <input type="text" name="location" value = "<%= p.getLocation() %>"><br>
-					Password: <input type="password" name="password" ><br>
-					<input type="submit" value="Submit">
-				</form>
-       			
-       			
+		       			<form name="input" action="<c:url value="/account/details"/>" method="post">
+							Your username: (cannot be changed)<br>
+							First name: <input type="text" name="fname" value="<%= p.getfname() %>"><br>
+							Last name: <input type="text" name="lname" value="<%= p.getlname() %>"><br>
+							Location: <input type="text" name="location" value="<%= p.getLocation() %>"><br>
+							Password: <input type="password" name="password" required><br>
+							<input type="submit" value="Submit">
+						</form>
        				</div>
        				<div id="password">
 	       				<form name="input" action="<c:url value="/account/password"/>" method="post">
-		       				Current password: <input type="password" name="currentPassword" value = ""><br>
-							Enter your new password:<input type="password" name="newPassword" value = ""><br>
-							Enter your new password again: <input type="password" name="newPasswordVerify" value = ""><br>
+		       				Current password: <input type="password" name="currentPassword" required><br>
+							Enter your new password:<input type="password" name="newPassword" required><br>
+							Enter your new password again: <input type="password" name="newPasswordVerify" required><br>
 							<input type="submit" value="Update password">
 		       			</form>
        				</div>
        				<div id="profileimage">
 	       				<form method="POST" id="uploadform" enctype="multipart/form-data" action="<c:url value="/account/avatar"/>" >
 							<div class="post_timestamp">
-								<input type="file" name="file" value="/tmp"  onchange="readfile(this);"><br/>
+								<input type="file" name="file" value="/tmp"  onchange="readfile(this);" required><br/>
 							</div>
 							<div class="post_comments">
 								<input type="submit" value="Post">
 							</div>
-					   		
-								
 						</form>
        				</div>
        				<div id="bio">
-       				
        					<form name="input" id="updatebio" action="/instashutter/account/bio" method="post">
 		       				Bio: <textarea rows="4" cols="50" name="bio" form="updatebio"><%= p.getBio() %></textarea><br>
 							<input type="submit" value="Update bio">
@@ -108,7 +100,7 @@
        				<div id="profileEmail">
        					<form name="emailInput" action="<c:url value="/account/email"/>" method="post">
 		       				Email: <input type="text" name="email" value = "<%= p.getEmail() %>"><br>
-							Enter your password:<input type="password" name="password" value = ""><br>
+							Enter your password:<input type="password" name="password" required><br>
 							<input type="submit" value="Update email">
 		       			</form>
        				</div>

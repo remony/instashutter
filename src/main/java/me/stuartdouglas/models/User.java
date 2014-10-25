@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import static org.imgscalr.Scalr.*;
 import me.stuartdouglas.lib.*;
 import me.stuartdouglas.stores.FollowingStore;
-import me.stuartdouglas.stores.Pic;
 import me.stuartdouglas.stores.UserSession;
 
 /**
@@ -146,7 +144,7 @@ public class User {
               System.out.println("User has posted no posts");
               
           } else {
-       	   for (Row row : rs)	{
+       	   for (@SuppressWarnings("unused") Row row : rs)	{
        		   count++;
        	   }
           }
@@ -169,7 +167,7 @@ public class User {
               System.out.println("User has posted no posts");
               
           } else {
-       	   for (Row row : rs)	{
+       	   for (@SuppressWarnings("Used as counting me") Row row : rs)	{
        		   count++;
        	   }
           }

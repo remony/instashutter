@@ -4,8 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.stores.MessageStore;
@@ -21,10 +24,10 @@ public class MessageModel {
 	private static Cluster cluster;
 	
 	public void setCluster(Cluster cluster) {
-        this.cluster = cluster;
+        MessageModel.cluster = cluster;
     }
 	
-	public static LinkedList<MessageStore> getComments(String username, String otherUsername) {
+	public static LinkedList<MessageStore> getMessages(String username, String otherUsername) {
     	LinkedList<MessageStore> commentList = new LinkedList<>();
     	LinkedList<MessageStore> sortedCommentList = new LinkedList<>();
     	
@@ -79,12 +82,11 @@ public class MessageModel {
 	 */
 	
 	public LinkedList<MessageStore> getMessageList(String username) {
-		// TODO Auto-generated method stub
 		LinkedList<MessageStore> messageList = new LinkedList<>();
-		
-    	Session session = cluster.connect("instashutter");
+		LinkedList<MessageStore> sortedMessageList = new LinkedList<>();
+		Session session = cluster.connect("instashutter");
     	
-    	PreparedStatement statement = session.prepare("select * from messaging where recipient =?");
+    	PreparedStatement statement = session.prepare("select sender from messaging where recipient =?");
     	
     	BoundStatement boundStatement = new BoundStatement(statement);
     	
@@ -96,14 +98,20 @@ public class MessageModel {
     		for (Row row : rs) {
     			MessageStore ms = new MessageStore();
     			ms.setSender(row.getString("sender"));
-    			ms.setRecipient(row.getString("recipient"));
-    			ms.setDate_sent(row.getDate("date_sent"));
-    			ms.setMessage(row.getString("message"));
     			messageList.add(ms);
     		}
     		session.close();
     	}
-    	return messageList;
+    	
+    	messageList.stream()
+        .sorted((message1, message2) -> message1.getSender()
+                .compareTo(message2.getSender()))
+        .forEach(sortedMessageList::add);
+    	
+    	
+    	
+    	
+    	return sortedMessageList;
 	}
 
 	public void sendMessage(String username, String otherUsername, String message) {

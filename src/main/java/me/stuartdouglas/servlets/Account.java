@@ -39,14 +39,9 @@ public class Account extends HttpServlet {
     public Account() {
         super();
         CommandsMap.put("account", 1);
-        CommandsMap.put("editprofile", 2);
-        CommandsMap.put("editpassword", 3);
-        
-        // TODO Auto-generated constructor stub
     }
     
     public void init(ServletConfig config) throws ServletException {
-        // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
     }
 
@@ -102,13 +97,11 @@ public class Account extends HttpServlet {
 		            	}
 	            	}
             	}	catch(Exception e)	{
-	            		System.out.println("Error: " + e);
-	            		//userDoesntexist(" ", request, response);
-	            		
-	            	}
+            		System.out.println("Error: " + e);
+        		}
                 break;
             default:
-                //error(response);
+            	System.out.println("invalid");
         }
 	}
 	
@@ -129,13 +122,10 @@ public class Account extends HttpServlet {
 			}	catch (Exception e)	{
 				System.out.println("Error changing user email: " + e);
 			}
-			
-			
 			try {
 				response.sendRedirect("/instashutter/account");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("error sending redirect" + e);
 			}
 		} else {
 			System.out.println("User with incorrect credentials attempted to edit email, nothing was changed.");
@@ -146,12 +136,8 @@ public class Account extends HttpServlet {
 		System.out.println("Changing user background");
 		String username = request.getSession().getAttribute("user").toString();
 		String url = request.getParameter("url");
-
-		
 		User user = new User();
 		user.setCluster(cluster);
-
-
 		try {
 			user.updateBackground(username, url);
 			response.sendRedirect("/instashutter/account");
@@ -164,17 +150,14 @@ public class Account extends HttpServlet {
 		// TODO Auto-generated method stub
 		String username = request.getSession().getAttribute("user").toString();
 		String bio = request.getParameter("bio");
-
 		User user = new User();
 		user.setCluster(cluster);
-
 		try {
 			user.updateBio(username, bio);
 			response.sendRedirect("/instashutter/account");
 		} catch (Exception e) {
 			System.out.println("Error editing user background: " + e);
-		}
-		
+		}		
 	}
 
 	private void editAvatar(String string, HttpServletRequest request, HttpServletResponse response) {
@@ -201,7 +184,6 @@ public class Account extends HttpServlet {
 		} catch (Exception e)	{
 			System.out.println("Error uploading new profile image: " + e);
 		}
-		
 	}
 
 	private void editPassword(String string, HttpServletRequest request, HttpServletResponse response) {
@@ -209,9 +191,6 @@ public class Account extends HttpServlet {
 		String previousPassword = request.getParameter("currentPassword");
 		String newPassword = request.getParameter("newPassword");
 		String newPasswordVerify = request.getParameter("newPasswordVerify");
-		
-		System.out.println("Previous password: " + previousPassword + "\nNew password: " + newPassword + "\nNew password verify: " + newPasswordVerify);
-		
 		User user = new User();
 		user.setCluster(cluster);
 		
@@ -219,28 +198,23 @@ public class Account extends HttpServlet {
 		
 		if (isValid){
 			if (newPassword.equals(previousPassword)) {
-				System.out.println("Passwords are the same");
 			} else {
 				if (newPassword.equals(newPasswordVerify)){
-					System.out.println("UPDATING PASSWORD");
 					user.updateUserPassword(username, newPassword);
 					try {
 						response.sendRedirect("/instashutter/account");
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("Error redirecting "+ e);
 					}
 				} else {
 					System.out.println("Both passwords are not the same");
 					try {
 						response.sendRedirect("/instashutter/account");
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						System.out.println("Error redirecting "+ e);
 					}
 				}
 			}
-			
 		}
 	}
 
@@ -267,7 +241,6 @@ public class Account extends HttpServlet {
 		} catch (Exception e) {
 			System.out.println("Error changing user information: " + e);
 		}
-		
 	}
 
 	public void destroy()	{
@@ -278,8 +251,4 @@ public class Account extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
-
-
-	
-
 }

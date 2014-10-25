@@ -23,6 +23,17 @@
 	        	if (lsPics == null) {%>
 	        		<p>No Pictures found</p>
 	       		<%} else {
+	       		 
+	           	  	String message = (String) request.getAttribute("message");
+              if (message != null){
+            	  %>
+	           	  	<div class="message_banner">
+	            	  	<%= message %>
+	           	  	</div>
+            	  <%
+              }
+            	  
+	       		
 	            Iterator<Pic> iterator;
 	            iterator = lsPics.iterator();
 	            while (iterator.hasNext()) {
@@ -69,7 +80,9 @@
 					<div class="post_desc"><%= p.getCaption() %></div>
 				</div>
 				<div class = "post_share">
-					<p>Sharing coming soon</p>		
+					<form name="delete" action="/instashutter/post/<%= p.getSUUID() %>/delete" method="post" accept-charset="utf-8">
+				        <input type="submit" value="delete"></li>  
+					</form> 	
 				</div>
 				<div class = "post_comments">
 					<% LinkedList<CommentStore> lsComments = p.getCommentlist();

@@ -28,17 +28,17 @@
               }
             %>
 		<div class="post_caption">
-		<form name="login" action="login" method="POST" accept-charset="utf-8">
-			    <ul>  
-			        <li><label for="username">Username</label>  
-			        <input type="text" name="username" placeholder="username" required></li>  
-			        <li><label for="password">Password</label>  
-			        <input type="password" name="password" placeholder="password" required></li>  
-			        <li>  
-			        <input type="submit" value="Login"></li>  
-			    </ul>  
-			</form> 
-		</div>
+		<form name="login" action="/instashutter/login" method="POST" accept-charset="utf-8">
+		    <ul>  
+		        <li><label for="username">Username</label>  
+		        <input type="text" name="username" placeholder="username" required autofocus></li>  
+		        <li><label for="password">Password</label>  
+		        <input type="password" name="password" placeholder="password" required></li>  
+		        <li>  
+		        <input type="submit" value="Login"></li>  
+		    </ul>  
+		</form> 
+	</div>
 
 
 
