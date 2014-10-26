@@ -29,6 +29,10 @@ import com.datastax.driver.core.Cluster;
 
 /**
  * Servlet implementation class Image
+ * 
+ * 
+ * Handles image uri's
+ * 
  */
 
 @WebServlet(urlPatterns = {
@@ -100,12 +104,15 @@ public class Image extends HttpServlet {
                 break;
             case 4:
         		DisplayUpload(request, response);
-            default:
-            	//response.sendRedirect("/instashutter/404");
+
         }
 	}
 	
-	
+	/*
+	 * Displays the upload page or redirect to login if the user is not logged in
+	 * 
+	 * 
+	 */
 	private void DisplayUpload(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			HttpSession session = request.getSession();
@@ -122,6 +129,10 @@ public class Image extends HttpServlet {
 		}
 		
 	}
+	
+	/*
+	 * handles deleting of posts
+	 */
 
 	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
@@ -146,6 +157,11 @@ public class Image extends HttpServlet {
 			System.out.println("User is not logged in");
 		}
 	}
+	
+	/*
+	 * Displays list of images
+	 * 
+	 */
 
 	private void DisplayImageList(String User, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
 		PicModel tm = new PicModel();
@@ -190,6 +206,9 @@ public class Image extends HttpServlet {
 	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * 
+	 * Handles the uploading of images
+	 * 
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 

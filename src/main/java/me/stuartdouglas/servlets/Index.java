@@ -64,12 +64,9 @@ public class Index extends HttpServlet {
 
 	private void DisplayImageList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
-        UserModel UserModel = new UserModel();
         String username = request.getSession().getAttribute("user").toString();
-        System.out.println("THE USRNAME IS" + username);
         try {
 	        tm.setCluster(cluster);
-	        UserModel.setCluster(cluster);
 	        LinkedList<FollowingStore> lsFollowing = me.stuartdouglas.models.UserModel.getFollowing(username);
 	        LinkedList<PicStore> lsPics = new LinkedList<PicStore>();
 	        LinkedList<PicStore> lsUserPics = new LinkedList<PicStore>();
@@ -95,11 +92,11 @@ public class Index extends HttpServlet {
                 }
 	        	
                 LinkedList<PicStore> lsPicsSorted = new LinkedList<>();
-
+            	//sorts the list in order
                 if (!lsPics.isEmpty())	{
                 lsPics.stream()
-                .sorted((e1, e2) -> e2.getPicAdded()
-                        .compareTo(e1.getPicAdded()))
+                .sorted((pic1, pic2) -> pic2.getPicAdded()
+                        .compareTo(pic1.getPicAdded()))
                 .forEach(lsPicsSorted::add);
                 
                 request.setAttribute("Pics", lsPicsSorted);
@@ -110,12 +107,10 @@ public class Index extends HttpServlet {
 	        	e.printStackTrace();
 	        }
 	        
-	        
-	        
 	        RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
 	        rd.forward(request, response); 
         } catch (Exception e) {
-        	System.out.println("Error getting UserModel dashboard: " + e);
+        	System.out.println("Error getting user dashboard: " + e);
         } 
     }
 
@@ -123,11 +118,13 @@ public class Index extends HttpServlet {
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * 
+	 * Handles commenting
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		//If the UserModel is already logged in redirect to dashboard
+		//If the user is already logged in redirect to dashboard
 		if (session.getAttribute("LoggedIn") != null) {
 		String username = request.getSession().getAttribute("user").toString();
 		String comment = request.getParameter("comment");
@@ -135,6 +132,7 @@ public class Index extends HttpServlet {
 		
 		PicModel pic = new PicModel();
 		pic.setCluster(cluster);
+		//sets the comment to the post
 		pic.postComment(username, picid, comment);
 		response.sendRedirect("/instashutter/post/" + picid);
 		}	else	{

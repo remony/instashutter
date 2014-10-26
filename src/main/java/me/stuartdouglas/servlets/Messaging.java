@@ -86,6 +86,7 @@ public class Messaging extends HttpServlet {
 		}
 	}
 	
+	//Displays the chat messages between two users
 	private void DisplayChat(String otherUsername, HttpServletRequest request, HttpServletResponse response) {
 		MessageModel mm = new MessageModel();
         String username = request.getSession().getAttribute("user").toString();
@@ -112,6 +113,7 @@ public class Messaging extends HttpServlet {
 		
 	}
 
+	//Displays the list of users that the user is following, this allows the user to then message them
 	public void DisplayMessagingList(HttpServletRequest request, HttpServletResponse response){
 		UserModel mm = new UserModel();
         String username = request.getSession().getAttribute("user").toString();
@@ -149,6 +151,8 @@ public class Messaging extends HttpServlet {
         
 	}
 	
+	
+	//sends the message to the database
 	private void sendMessage(String otherUsername, HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		System.out.println("sending message with args: " + otherUsername);

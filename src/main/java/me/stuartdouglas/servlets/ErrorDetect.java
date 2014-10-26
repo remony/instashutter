@@ -25,8 +25,12 @@ public class ErrorDetect extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		/*
+		 * 		Used to handle 404 errors
+		 * 
+		 * 
+		 * 
+		 */
 		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 		RequestDispatcher rd=request.getRequestDispatcher("/404.jsp");
 	    rd.forward(request,response);

@@ -50,18 +50,19 @@ public class Account extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		
+		//if the user is logged in display account details
 		if (session.getAttribute("LoggedIn") != null) {
-		UserModel tm = new UserModel();
-        tm.setCluster(cluster); 
-        String Username = request.getSession().getAttribute("user").toString();
-        
-        LinkedList<UserStore> lsUser = tm.getUserInfo(Username);
-		request.setAttribute("UserInfo", lsUser);
-		RequestDispatcher rd = request.getRequestDispatcher("/account.jsp");
-        
-        rd.forward(request, response);
+			UserModel tm = new UserModel();
+	        tm.setCluster(cluster); 
+	        String Username = request.getSession().getAttribute("user").toString();
+	        //get user information
+	        LinkedList<UserStore> lsUser = tm.getUserInfo(Username);
+			request.setAttribute("UserInfo", lsUser);
+			RequestDispatcher rd = request.getRequestDispatcher("/account.jsp");
+	        //display the account jsp
+	        rd.forward(request, response);
 		} else {
+			//display login if the user is not logged in
 			response.sendRedirect("/instashutter/login");
 		}
 	}
