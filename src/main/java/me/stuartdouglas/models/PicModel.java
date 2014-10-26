@@ -1,18 +1,5 @@
 package me.stuartdouglas.models;
 
-
-/*
- * Expects a cassandra columnfamily defined as
- * use keyspace2;
- CREATE TABLE Tweets (
- user varchar,
- interaction_time timeuuid,
- tweet varchar,
- PRIMARY KEY (user,interaction_time)
- ) WITH CLUSTERING ORDER BY (interaction_time DESC);
- * To manually generate a UUID use:
- * http://www.famkruithof.net/uuid/uuidgen
- */
 import com.datastax.driver.core.BoundStatement;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.PreparedStatement;
@@ -42,18 +29,22 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 
-
-
-
-
-
 import static org.imgscalr.Scalr.*;
 import me.stuartdouglas.lib.*;
-import me.stuartdouglas.stores.FollowingStore;
 import me.stuartdouglas.stores.PicStore;
+
+/*
+ * 				PicModel	
+ * 	
+ * 		Handles all db transactions regarding images
+ * 
+ * 
+ */
+
 
 public class PicModel {
 	private static Cluster cluster;
+	//Defines values for use for filters. 
 	int width;
 	int height;
 
@@ -63,7 +54,8 @@ public class PicModel {
     
     /*
      * getPublicPosts()
-     * Gets all public posts from all users
+     * Gets all public posts from all users along with 5 comments
+     * This is for use on pages with multiple images showing. 
      */
     
     public static LinkedList<PicStore> getPublicPosts() {
@@ -81,13 +73,14 @@ public class PicModel {
     		return null;
     	} else {
     		for (Row row : rs) {
-    			PicStore PicStore = new PicStore();
+    			//Gets the posts
+    			PicStore pic = new PicStore();
     			UUID picid = row.getUUID("picid");
-    			PicStore.setUUID(row.getUUID("picid"));
-    			PicStore.setCaption(row.getString("caption"));
-    			PicStore.setPostedUsername(row.getString("user"));
-    			PicStore.setPicAdded(row.getDate("interaction_time"));
-    			instaList.add(PicStore);
+    			pic.setUUID(row.getUUID("picid"));
+    			pic.setCaption(row.getString("caption"));
+    			pic.setPostedUsername(row.getString("user"));
+    			pic.setPicAdded(row.getDate("interaction_time"));
+    			instaList.add(pic);
     			//Get comments from post and limit to 5 (stops endless list on dashboard)
     			PreparedStatement pss = session.prepare("SELECT * from comments where picid =? limit 5");
     	    	ResultSet rss;
@@ -97,21 +90,22 @@ public class PicModel {
                     System.out.println("No posts");
     	    	}	else	{
     	    		for (Row rows : rss)	{
-    	    			PicStore.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
     	    		}
     	    	}
     		}
     		session.close();
     	}
-    	//Sorting posts by pic_added
+    	//Sorting posts by pic_added, this is to ensure that the results are in order.
     	instaList.stream()
-        .sorted((e1, e2) -> e2.getPicAdded()
-                .compareTo(e1.getPicAdded()))
+        .sorted((image1, image2) -> image2.getPicAdded()
+                .compareTo(image1.getPicAdded()))
         .forEach(instaSortedList::add);
-    	
+    	//Returns the images with comments sorted.
 		return instaSortedList;
 		
     }
+    
     /*
      * GetPosts()
      * Gets all posts public and private from all users
@@ -132,54 +126,51 @@ public class PicModel {
     		return null;
     	} else {
     		for (Row row : rs) {
-    			PicStore PicStore = new PicStore();
+    			PicStore pic = new PicStore();
     			UUID picid = row.getUUID("picid");
-    			PicStore.setUUID(row.getUUID("picid"));
-    			PicStore.setCaption(row.getString("caption"));
-    			PicStore.setPostedUsername(row.getString("user"));
-    			PicStore.setPicAdded(row.getDate("interaction_time"));
-    			instaList.add(PicStore);
+    			pic.setUUID(row.getUUID("picid"));
+    			pic.setCaption(row.getString("caption"));
+    			pic.setPostedUsername(row.getString("user"));
+    			pic.setPicAdded(row.getDate("interaction_time"));
+    			instaList.add(pic);
     			//Get comments from post and limit to 5 (stops endless list on dashboard)
     			PreparedStatement pss = session.prepare("SELECT * from comments where picid = ? limit 10");
     	    	ResultSet rss;
     	    	BoundStatement boundStatement2 = new BoundStatement(pss);
     	    	rss = session.execute(boundStatement2.bind(picid));
+    	    	
+    	    	//gets the comments
     	    	if (rss.isExhausted())	{
-                    System.out.println("no posts");
+                    System.out.println("no comments");
     	    	}	else	{
     	    		for (Row rows : rss)	{
-    	    			PicStore.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
     	    		}
     	    	}
     		}
     		session.close();
     	}
-    	
-    	
-    	
-    	
-    	
+
     	//Sorting posts by pic_added
     	instaList.stream()
-        .sorted((e1, e2) -> e2.getPicAdded()
-                .compareTo(e1.getPicAdded()))
+        .sorted((image1, image2) -> image2.getPicAdded()
+                .compareTo(image1.getPicAdded()))
         .forEach(instaSortedList::add);
     	
 		return instaSortedList;
 		
     }
     
-    public LinkedList<PicStore> getDashboard(String username)	{
-    	LinkedList<PicStore> dashboard = new LinkedList<>();
-		System.out.println(username);
-    	return dashboard;
-    	
-    }
     
-    
+
+    /*
+     * 	getPost()
+     * 
+     * 	Gets a single post and returns with full comment listing
+     * 	This is mainly used by the post servlet
+     */
     public LinkedList<PicStore> getPost(String user) {
     	LinkedList<PicStore> instaList = new LinkedList<>();
-    	LinkedList<PicStore> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	UUID picid = UUID.fromString(user);
     	PreparedStatement statement = session.prepare("SELECT * from pics where picid =?");
@@ -190,6 +181,7 @@ public class PicModel {
     	if (rs.isExhausted()){
     		System.out.println("No posts returned");
     	} else {
+    		//sets the posts
     		for (Row row : rs) {
     			PicStore ps = new PicStore();
     			ps.setUUID(row.getUUID("picid"));
@@ -197,7 +189,7 @@ public class PicModel {
     			ps.setPostedUsername(row.getString("user"));
     			ps.setPicAdded(row.getDate("interaction_time"));
     			instaList.add(ps);
-    			//Get comments from posts
+    			//Get comments for the posts
     			PreparedStatement pss = session.prepare("SELECT * from comments where picid =?");
     	    	ResultSet rss;
     	    	BoundStatement boundStatement2 = new BoundStatement(pss);
@@ -211,45 +203,49 @@ public class PicModel {
     	    	}
     		}
     	}
-    	instaList.stream()
-        .sorted((e1, e2) -> e2.getPicAdded()
-                .compareTo(e1.getPicAdded()))
-        .forEach(instaSortedList::add);
-    	session.close();
-		return instaSortedList;
+    	//returns the image data 
+		return instaList;
     }
+    
+    /*
+     * 	GetPostsContaining()
+     * 
+     * 	This method gets posts which the caption contains a keyword or string 
+     */
     
     public static LinkedList<PicStore> getPostsContaining(String keyword)	{
     	try {
+    		//gets the public posts
 			LinkedList<PicStore> instaList = getPublicPosts();
 			LinkedList<PicStore> instaSortedList = new LinkedList<>();
+			
+			//Sorts the posts in order and filtering out posts which do not contain the defined keyword
 			instaList.stream()
-			.sorted((e1, e2) -> e2.getPicAdded()
-			        .compareTo(e1.getPicAdded()))
-			        .filter(e1 -> e1.getCaption().toLowerCase().contains(keyword))
+			.sorted((post1, post2) -> post2.getPicAdded()
+			        .compareTo(post1.getPicAdded()))
+			        .filter(post1 -> post1.getCaption().toLowerCase().contains(keyword.toLowerCase())) //Changes strings to lowercase to improve results
 			.forEach(instaSortedList::add);
+			//If the list is not empty return the list
 			if (!instaSortedList.isEmpty())	{
 				System.out.println("got results");
-				
-				
 				return instaSortedList;
+			//List is empty so return null
 			}	else	{
 				System.out.println("no results");
 				return null;
 			}
-			
-			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println("Error getting posts filtered: " + e);
 		}
 		return null;
     	
-    	//return null;
-    	
     }
     
-    
+    /*
+     * 	getPicsForUser()
+     * 
+     * 	Gets posts made by defined user
+     */
     public static LinkedList<PicStore> getPicsForUser(String User) {
     	LinkedList<PicStore> instaList = new LinkedList<>();
     	LinkedList<PicStore> instaSortedList = new LinkedList<>();
@@ -290,8 +286,8 @@ public class PicModel {
     	
     	//Sorting posts by pic_added
     	instaList.stream()
-        .sorted((e1, e2) -> e2.getPicAdded()
-                .compareTo(e1.getPicAdded()))
+        .sorted((post1, post2) -> post2.getPicAdded()
+                .compareTo(post1.getPicAdded()))
         .forEach(instaSortedList::add);
     	
     	
@@ -299,14 +295,19 @@ public class PicModel {
     }
     
     
-    
+    //sets the cluster
     public void setCluster(Cluster cluster) {
         PicModel.cluster = cluster;
     }
     
     
     
-    
+    /*
+     * insertPic()
+     * 
+     * Processes and uploads the image to the database
+     * 
+     */
     public void insertPic(byte[] b, String type, String name, String user, String caption, String filter, boolean publicPhoto) {
     	
     	try {
@@ -315,46 +316,49 @@ public class PicModel {
             int length = b.length;
             java.util.UUID picid = Convertors.getTimeUUID();
             
-            //The following is a quick and dirty way of doing this, will fill the disk quickly !
+            
             @SuppressWarnings("unused")
 			Boolean success = (new File("/var/tmp/instashutter/")).mkdirs();
             FileOutputStream output = new FileOutputStream(new File("/var/tmp/instashutter/" + picid));
 
-            
+            //Writes the file to the filesystem
             output.write(b);
 
-            
+            //Apply the filter to the image
             applyFilter(filter, picid);
             
-            	
+            //Processing a thumbnail version of the image	
             byte []  thumbb = picresize(picid.toString(),types[1]);
             int thumblength= thumbb.length;
             ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
             byte[] processedb = null;
-            System.out.println("FIlter is " + filter);
+
             
             
             
-            
+            //If the uploaded image is a gif then upload direct file to db
             if (type.equals("image/gif"))	{
             	processedb = b;
             }	else {
+            	//else process
             	processedb = picdecolour(picid.toString(),types[1]);
             }
             ByteBuffer processedbuf= ByteBuffer.wrap(processedb);
             int processedlength=processedb.length;
             Session session = cluster.connect("instashutter");
-
+            //Prepare query to insert the image in the pics and userpiclist tables
             PreparedStatement psInsertPic = session.prepare("insert into pics ( picid, image,thumb,processed, user, interaction_time,imagelength,thumblength,processedlength,type,name, caption, public) values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
             PreparedStatement psInsertPicToUser = session.prepare("insert into userpiclist ( picid, user, pic_added, caption, public) values(?,?,?,?,?)");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
             BoundStatement bsInsertPicToUser = new BoundStatement(psInsertPicToUser);
-
+            //creates a established date
             Date DateAdded = new Date();
             session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, caption, publicPhoto));
             session.execute(bsInsertPicToUser.bind(picid, user, DateAdded, caption, publicPhoto));
-            
+            //Executes the queries and closes the connection
             output.close();
+            //Checks if the file exists, if the file does exist. Delete it.
+            //Since the file is stored in the database as a blob a physical copy is not required.
             try {
             	File location = new File("/var/tmp/instashutter/" + picid);
                 if (location.exists()) {
@@ -365,18 +369,20 @@ public class PicModel {
             	System.out.println("Error deleting file: " + e);
             }
             
-        	
+        	//closes session
         	session.close();
-       
-            
-            	
-            
-            
 
         } catch (IOException ex) {
             System.out.println("Error --> " + ex);
         }
     }
+    
+    /*
+     * 
+     * 	Processes image
+     * 
+     * 
+     */
 
     byte[] picresize(String picid, String type) {
         try {
@@ -396,59 +402,68 @@ public class PicModel {
         return null;
     }
     
+    /*
+     * 	Applies an effect to an image
+     * 
+     */
+    
     public void applyFilter(String filter, UUID picid)	{
     	try {
-    		    		File input = new File("/var/tmp/instashutter/" + picid);
-    		    		File output1 = new File("/var/tmp/instashutter/" + picid);
-    		        	BufferedImage imageIn = ImageIO.read(input);
-    		        	BufferedImage imageOut = ImageIO.read(input);
-    		        	System.out.println("Attempting to apply filter " + filter);
-    		        	if (filter.equals("bw"))	{
-    		        		GrayscaleFilter greyFilter = new GrayscaleFilter();
-    		        		System.out.println("applied filter grey scale");
-    		            	greyFilter.filter(imageIn, imageOut);  
-    		            }	else if (filter.equals("invert"))	{
-    		            	InvertFilter invert = new InvertFilter();
-    		            	invert.filter(imageIn, imageOut);
-    		            	System.out.println("applied filter invert");
-    		            }	else if (filter.equals("exposure"))	{
-    		            	ExposureFilter exposure = new ExposureFilter();
-    		            	exposure.filter(imageIn, imageOut);
-    		            	System.out.println("applied filter explosure");
-    		           }	else if (filter.equals("flare"))	
-    		           {
-    		            	FlareFilter flare = new FlareFilter();
-    		            	flare.filter(imageIn, imageOut);
-    		            	System.out.println("applied filter flare");
-    		            }	else if (filter.equals("pointillize"))	{
-    		            	PointillizeFilter pointillize = new PointillizeFilter();
-    		            	pointillize.filter(imageIn, imageOut);
-    		            	System.out.println("applied filter point");
-    		            }	else if (filter.equals("crystallize"))	{
-    		            	CrystallizeFilter crystallize = new CrystallizeFilter();
-    		            	crystallize.filter(imageIn, imageOut);
-    		            	System.out.println("applied filter crystal");
-    		            }	else if (filter.equals("chrome"))	{
-    		            	ChromeFilter chrome = new ChromeFilter();
-    		            	chrome.filter(imageIn, imageOut);
-    		            	System.out.println("applied filter chrome");
-    		            }
-    		            
-    		            
-    		            else	{
-    		            	System.out.println("not applying filter");
-    		            }
-    		            	
-    		            
-    		        	
-    		            ImageIO.write(imageOut, "jpg", output1);
-    		        }	catch(Exception e)	{
-    		        	System.out.println("Error applying filter");
-    		        	e.printStackTrace();
-    		        }
-        
+    		//Get file location of the file
+    		File input = new File("/var/tmp/instashutter/" + picid);
+    		File output1 = new File("/var/tmp/instashutter/" + picid);
+    		//Read in the iamge as a buffered image
+        	BufferedImage imageIn = ImageIO.read(input);
+        	BufferedImage imageOut = ImageIO.read(input);
+
+        	//select which filter to apply to the image
+        	if (filter.equals("bw"))	{
+        		//Applies a greyscale effect on th eimage
+        		GrayscaleFilter greyFilter = new GrayscaleFilter();
+        		System.out.println("applied filter grey scale");
+            	greyFilter.filter(imageIn, imageOut);  
+            }	else if (filter.equals("invert"))	{
+            	InvertFilter invert = new InvertFilter();
+            	invert.filter(imageIn, imageOut);
+            	System.out.println("applied filter invert");
+            }	else if (filter.equals("exposure"))	{
+            	ExposureFilter exposure = new ExposureFilter();
+            	exposure.filter(imageIn, imageOut);
+            	System.out.println("applied filter explosure");
+           }	else if (filter.equals("flare"))	
+           {
+            	FlareFilter flare = new FlareFilter();
+            	flare.filter(imageIn, imageOut);
+            	System.out.println("applied filter flare");
+            }	else if (filter.equals("pointillize"))	{
+            	PointillizeFilter pointillize = new PointillizeFilter();
+            	pointillize.filter(imageIn, imageOut);
+            	System.out.println("applied filter point");
+            }	else if (filter.equals("crystallize"))	{
+            	CrystallizeFilter crystallize = new CrystallizeFilter();
+            	crystallize.filter(imageIn, imageOut);
+            	System.out.println("applied filter crystal");
+            }	else if (filter.equals("chrome"))	{
+            	ChromeFilter chrome = new ChromeFilter();
+            	chrome.filter(imageIn, imageOut);
+            	System.out.println("applied filter chrome");
+            }
+            
+            
+            else	{
+            	System.out.println("not applying filter");
+            }
+            	
+            
+        	//Writes the new image
+            ImageIO.write(imageOut, "jpg", output1);
+        }	catch(Exception e)	{
+        	System.out.println("Error applying filter");
+        }
+
     }
     
+    //Processes the image
     byte[] picdecolour(String picid, String type) {
         try {
             BufferedImage BI = ImageIO.read(new File("/var/tmp/instashutter/" + picid));
@@ -466,17 +481,22 @@ public class PicModel {
         return null;
     }
 
+    
+	//Created a thumbnail of the image
     private static BufferedImage createThumbnail(BufferedImage img) {
+    	//Resizes the image to 500 width, with automatic quality.
         img = resize(img, Method.AUTOMATIC, 500, OP_ANTIALIAS);
         return img;
     }
     
+   //Creates the processed version of the images, The full image
    private static BufferedImage createProcessed(BufferedImage img) {
         int Width=img.getWidth()-1;
-        img = resize(img, Method.AUTOMATIC, Width, OP_ANTIALIAS);//, OP_GRAYSCALE);
+        img = resize(img, Method.AUTOMATIC, Width, OP_ANTIALIAS);
         return img;
     }
    
+   //Gets the post image
    public PicStore getPic(int image_type, java.util.UUID picid) {
        Session session = cluster.connect("instashutter");
        ByteBuffer bImage = null;
@@ -485,7 +505,6 @@ public class PicModel {
        boolean privacy = false;
        
        try {
-           //Convertors convertor = new Convertors();
            ResultSet rs;
            PreparedStatement ps = null;
            
@@ -497,11 +516,11 @@ public class PicModel {
                ps = session.prepare("select processed,processedlength,type,public from pics where picid =?");
            }
            BoundStatement boundStatement = new BoundStatement(ps);
-           rs = session.execute( // this is where the query is executed
-                   boundStatement.bind( // here you are binding the 'boundStatement'
-                           picid));
+           //executes the query
+           rs = session.execute(boundStatement.bind(picid));
 
            if (rs.isExhausted()) {
+        	   //No images was found
                System.out.println("No Images returned");
                return null;
            } else {
@@ -530,15 +549,13 @@ public class PicModel {
        session.close();
        PicStore p = new PicStore();
        p.setPic(bImage, length, type);
-         
-       
        p.setIsPublic(privacy);
        return p;
 
    }
+
    
-
-
+   	//Inserts a new comment to a post
 	public void postComment(String username, String picid, String comment) {
 		try {
 			Session session = cluster.connect("instashutter");
@@ -556,6 +573,7 @@ public class PicModel {
 		
 	}
 
+	//returns the username of the user which posted the image
 	public String getUserPosted(UUID picid)	{
 		try {
 			Session session = cluster.connect("instashutter");
@@ -564,7 +582,7 @@ public class PicModel {
 			BoundStatement bs = new BoundStatement(ps);
 			ResultSet rs = session.execute(bs.bind(picid));
 			if (rs.isExhausted()) {
-                System.out.println("No Images returned");
+                System.out.println("No user returned");
                 return null;
             } else {
                 for (Row row : rs) {
@@ -578,16 +596,18 @@ public class PicModel {
 		return null;
 	}
 
+	//deletes the post from the database
 	public void deletePost(String username, UUID picid) {
-		// TODO Auto-generated method stub
 		try {
 			Session session = cluster.connect("instashutter");
+			//prepares the queries to delete the image from the tables including there comments
 			PreparedStatement psPicList = session.prepare("delete from pics where picid =?");
 			PreparedStatement psUserPicList = session.prepare("delete from userpiclist where user = ? and picid =?");
 			PreparedStatement psComments = session.prepare("delete from comments where picid=?");
 			BoundStatement bsPicList = new BoundStatement(psPicList);
 			BoundStatement bsUserPicList = new BoundStatement(psUserPicList);
 			BoundStatement bsComments = new BoundStatement(psComments);
+			//Executes the queries
 			session.execute(bsPicList.bind(picid));
 			session.execute(bsUserPicList.bind(username, picid));
 			session.execute(bsComments.bind(picid));
@@ -597,37 +617,42 @@ public class PicModel {
 		
 	}
 	
-	
+	//returns a random post
 	public LinkedList<PicStore> getRandomPost() {
     	LinkedList<PicStore> instaList = getPublicPosts();
 		LinkedList<PicStore> randomPost = new LinkedList<PicStore>();
-    	int size = instaList.size();
+		int size = 0;
+
+			if (instaList != null){
+			size = instaList.size();
+			}
+
     	Random random = new Random();
     	System.out.println("size is " + size);
     	int randomPick = random.nextInt(size+1);
+    	//If randomPic is 0 add one (this stopped no results appear)
     	if (randomPick == 0){
     		randomPick++;
     	}
-    	
-    	
-    	System.out.println("getting number " + randomPick);
+    	if (instaList != null)	{
     	ListIterator<PicStore> listIterator = instaList.listIterator();
     	int count = 0;
+    	//Goes through the list of posts and selects out the nth post
     	while (listIterator.hasNext()) {
     		count++;
             PicStore fs = listIterator.next();
             	if (count == randomPick){
             		randomPost.add(fs);
             	}
-            	
-            
-        }
-		
+        }	
+    	}
+    	if (!randomPost.isEmpty()){
+    		return randomPost;
+    	} else	{
+    		return null;
+    	}
     	
-    	
-    	return randomPost;
-    	
-    	
+
     }
 	
 	public void destroy()	{

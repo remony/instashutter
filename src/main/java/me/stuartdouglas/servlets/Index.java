@@ -54,7 +54,9 @@ public class Index extends HttpServlet {
 			PicModel pic = new PicModel();
 			pic.setCluster(cluster);
 			LinkedList<PicStore> lsPics = pic.getRandomPost();
+				if (lsPics != null){
 			request.setAttribute("background", lsPics);
+			}
 			RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
 	        rd.forward(request, response); 
 		}

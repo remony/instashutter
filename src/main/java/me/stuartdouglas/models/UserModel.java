@@ -43,9 +43,14 @@ public class UserModel {
         
     }
     
+    /*
+     *  Registers the user to the databast
+     * 
+     * 
+     */
+    
     public boolean RegisterUser(String first_name, String last_name, String username, String password, String email, String location, String bio, ServletContext servletContext){
-        //AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
-    	
+    	//Encodes the password
         String EncodedPassword;
         try {
             EncodedPassword= AeSimpleSHA1.SHA1(password);
@@ -54,18 +59,21 @@ public class UserModel {
             return false;
         }
         
+        //adds email to the hashset
         Set<String> Email = new HashSet<>();
 		Email.add(email);
 
         Session session = cluster.connect("instashutter");
+        //prepares the query
         PreparedStatement ps = session.prepare("insert into userprofiles (first_name, last_name, login,password, email, location, bio) Values(?,?,?,?,?,?,?)");
        
         BoundStatement boundStatement = new BoundStatement(ps);
         session.execute(boundStatement.bind(first_name, last_name, username,EncodedPassword, Email, location, bio));
-
+        //Uploads a default image
         try {
 
 			BufferedImage BI = null;
+			//Loads in the default image
 			String path = "/assets/images/defaultimage.png";
 			InputStream imageIn = servletContext.getResourceAsStream(path);
 			BI = ImageIO.read(imageIn);
@@ -75,23 +83,20 @@ public class UserModel {
             baos.flush();
             byte[] b = baos.toByteArray();
             baos.close();
+            //Using the same method for updating profile images, it uploads it to the database
             setProfilePic(b, username ,"png");
-
-			
-				
 			} catch (Exception e) {
 				System.out.println("Error uploading default profile image " + e);
 				e.printStackTrace();
 			}
-        
-        
+
         session.close();
         return true;
     }
 
     
     
-    
+    //Checks if the user is valid of not
     public boolean IsValidUser(String username, String Password){
         String EncodedPassword;
         try {
@@ -106,22 +111,23 @@ public class UserModel {
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute(boundStatement.bind(username));
         if (rs.isExhausted()) {
-            System.out.println("No Images returned");
+            System.out.println("No password returned");
             return false;
         } else {
             for (Row row : rs) {
+            	//if the password is the same as the encoded password return true
                 String StoredPass = row.getString("password");
                 if (StoredPass.compareTo(EncodedPassword) == 0)
                     return true;
             }
         }
         session.close();
-    
+    //password is wrong so return false, user is not valid or entered wrong details
     return false;  
     }
     
 
-   
+   //Gets all the use information
    public LinkedList<UserStore> getUserInfo(String user) {
    	LinkedList<UserStore> userList = new LinkedList<>();
    	Session session = cluster.connect("instashutter");
@@ -130,26 +136,27 @@ public class UserModel {
     BoundStatement boundStatement = new BoundStatement(ps);
     rs = session.execute(boundStatement.bind(user));
     if (rs.isExhausted()) {
-        System.out.println("No Images returned");
+        System.out.println("No info returned");
     } else {
-    	UserStore ps1 = new UserStore();
+    	UserStore userS = new UserStore();
         for (Row row : rs) {
-   			ps1.setAll(row.getString("login"), row.getString("first_name"), row.getString("last_name"));
-   			ps1.setBackground(row.getString("background"));
-   			ps1.setLocation(row.getString("location"));
-   			ps1.setBio(row.getString("bio"));
-   			ps1.setEmail(row.getSet("email", String.class));
-   			ps1.setFollowerCount(getFollowerCount(user));
-   			ps1.setFollowingCount(getFollowingCount(user));
-   			ps1.setPostCount(getPostCount(user));
-   			userList.add(ps1);
+        	userS.setAll(row.getString("login"), row.getString("first_name"), row.getString("last_name"));
+        	userS.setBackground(row.getString("background"));
+        	userS.setLocation(row.getString("location"));
+        	userS.setBio(row.getString("bio"));
+        	userS.setEmail(row.getSet("email", String.class));
+        	userS.setFollowerCount(getFollowerCount(user));
+        	userS.setFollowingCount(getFollowingCount(user));
+        	userS.setPostCount(getPostCount(user));
+   			userList.add(userS);
         }
     }
-   	
+   	//closes the session and returns the list
    	session.close();
-		return userList;
+	return userList;
    }
    
+   //returns the amount of followers a user has
    public int getFollowerCount(String username)	{
 	   int count = 0;
 		try {
@@ -159,7 +166,7 @@ public class UserModel {
 			ResultSet rs = session.execute(bs.bind(username));
 			session.close();
 			if (rs.isExhausted()) {
-              System.out.println("User has posted no posts");
+              System.out.println("User has posted no followers");
               
           } else {
        	   for (@SuppressWarnings("unused") Row row : rs)	{
@@ -168,11 +175,12 @@ public class UserModel {
           }
 			System.out.println(count);
 		}	catch(Exception e)	{
-			System.out.println("Error deleting post" + e);
+			System.out.println("Error counting users" + e);
 		}
 		return count;
    }
    
+   //returns the amount of people a user is following
    public int getFollowingCount(String username)	{
 	   int count = 0;
 		try {
@@ -182,7 +190,7 @@ public class UserModel {
 			ResultSet rs = session.execute(bs.bind(username));
 			session.close();
 			if (rs.isExhausted()) {
-              System.out.println("User has posted no posts");
+              System.out.println("User is not following anyone");
               
           } else {
        	   for (@SuppressWarnings("unused") Row row : rs)	{
@@ -191,11 +199,12 @@ public class UserModel {
           }
 			System.out.println(count);
 		}	catch(Exception e)	{
-			System.out.println("Error deleting post" + e);
+			System.out.println("Error counting users" + e);
 		}
 		return count;
    }
    
+   //returns the amount of posts a user has made
    public int getPostCount(String username)	{
 		int count = 0;
 		try {
@@ -205,7 +214,7 @@ public class UserModel {
 			ResultSet rs = session.execute(bs.bind(username));
 			session.close();
 			if (rs.isExhausted()) {
-               System.out.println("User has posted no posts");
+               System.out.println("User has no posts");
                
            } else {
         	   for (@SuppressWarnings("unused") Row row : rs)	{
@@ -234,10 +243,10 @@ public class UserModel {
 	   }
 	   
    }
-
+   
+   
+   //Updates the user details
 	public void updateUserDetails(String username, String fname, String lname, String location) {
-		// TODO Auto-generated method stub
-		System.out.println("yay");
 		Session session = cluster.connect("instashutter");
 		PreparedStatement ps = session.prepare("UPDATE userprofiles set first_name = ?, last_name = ?, location = ? where login = ?");
 		ResultSet rs;
@@ -246,15 +255,12 @@ public class UserModel {
 		session.close();
 		if (rs.isExhausted()){
 			System.out.println("something went wrong");
-			//return null;
 		} else {
 			System.out.println("success");
-			//return true;
 		}
-		
-		
 	}
 	
+	//Updates users email
 	public void updateUserEmail(String username, Set<String> a)	{
 		System.out.println("User " + username + " is updating there email.");
 		Session session = cluster.connect("instashutter");
@@ -271,8 +277,8 @@ public class UserModel {
 		}
 	}
 	
+	//updates users password
 	public void updateUserPassword(String username, String password) {
-		// TODO Auto-generated method stub
 		System.out.println("Editing user password");
 		String EncodedPassword=null;
         try {
@@ -288,15 +294,12 @@ public class UserModel {
 		session.close();
 		if (rs.isExhausted()){
 			System.out.println("something went wrong");
-			//return null;
 		} else {
 			System.out.println("success");
-			//return true;
 		}
-		
-		
 	}
 	
+	//gets a users profile picture
 	public UserStore getProfilePic(String user)
     {
 		ByteBuffer bImage = null;
@@ -330,7 +333,7 @@ public class UserModel {
     }
 	
 	
-	
+	//sets a profile picture for the user
 	public void setProfilePic(byte[] b, String username, String type) {
 		try {
 			
@@ -369,13 +372,7 @@ public class UserModel {
 		}
 	}
 	
-	
-	private static BufferedImage createImage(BufferedImage img)
-    {
-    	img = resize(img, Method.SPEED, 300, OP_ANTIALIAS);
-        return pad(img, 1);
-    }
-
+	//sets the background url for the users profile
 	public void updateBackground(String username, String url) {
 		try {
 			Session session = cluster.connect("instashutter");
@@ -387,10 +384,12 @@ public class UserModel {
 
             session.close();
 		}	catch (Exception e)	{
-			System.out.println("Error change user background: " + e);
+			System.out.println("Error changing user background: " + e);
 		}
 	}
-
+	
+	
+	//Updates the users bio
 	public void updateBio(String username, String bio) {
 		try {
 			Session session = cluster.connect("instashutter");
@@ -407,6 +406,7 @@ public class UserModel {
 		
 	}
 	
+	//Returns true if the user is registered or false if not
 	public boolean isUserRegistered(String username)	{
 		try {
 			Session session = cluster.connect("instashutter");
@@ -415,7 +415,7 @@ public class UserModel {
 			ResultSet rs = session.execute(bs.bind(username));
 			session.close();
 			if (rs.isExhausted()) {
-                System.out.println("No profile image returned");
+                System.out.println("No user returned");
                 return false;
             } else {
                 return true;
@@ -440,8 +440,8 @@ public class UserModel {
 		}
 	}
 
+	//followers a user
 	public void followUser(String username, String followingUser) {
-		// TODO Auto-generated method stub
 		try {
 			if (!isFollowing(username, followingUser))	{
 				Session session = cluster.connect("instashutter");
@@ -464,8 +464,8 @@ public class UserModel {
 		}
 	}
 	
+	//Removes a user from the users friend list
 	public void unFollowUser(String username, String followingUser) {
-		// TODO Auto-generated method stub
 		try {
 			if (!isFollowing(username, followingUser))	{
 				System.out.println("Not executing unfollow");
@@ -484,6 +484,7 @@ public class UserModel {
 		}
 	}
 	
+	//checks if a user if following another user
 	public boolean isFollowing(String username, String followingUser)	{
 		try {
 			Session session = cluster.connect("instashutter");
@@ -510,12 +511,11 @@ public class UserModel {
             }	catch(Exception e)	{
     			System.out.println("Error following user" + e);
     		}
-	
-		
-		
 		return false;
 	}
 	
+	
+	//returns a list of followers a user is following
 	public static LinkedList<FollowingStore> getFollowing(String username) {
     	LinkedList<FollowingStore> followingList = new LinkedList<>();
     	LinkedList<FollowingStore> sortedFollowingList = new LinkedList<>();
@@ -541,14 +541,15 @@ public class UserModel {
     	}
     	//Sorting posts by most recent followed first
     	followingList.stream()
-        .sorted((e1, e2) -> e2.getFollowedSince()
-                .compareTo(e1.getFollowedSince()))
+        .sorted((friend1, friend2) -> friend2.getFollowedSince()
+                .compareTo(friend1.getFollowedSince()))
         .forEach(sortedFollowingList::add);
     	
 		return sortedFollowingList;
 		
     }
 	
+	//returns the list of followers
 	public static LinkedList<FollowingStore> getFollowers(String username) {
     	LinkedList<FollowingStore> followingList = new LinkedList<>();
     	LinkedList<FollowingStore> sortedFollowingList = new LinkedList<>();
@@ -573,8 +574,8 @@ public class UserModel {
     	}
     	//Sorting posts by most recent followed first
     	followingList.stream()
-        .sorted((e1, e2) -> e2.getFollowedSince()
-                .compareTo(e1.getFollowedSince()))
+        .sorted((friend1, friend2) -> friend2.getFollowedSince()
+                .compareTo(friend1.getFollowedSince()))
         .forEach(sortedFollowingList::add);
     	
 		return sortedFollowingList;
