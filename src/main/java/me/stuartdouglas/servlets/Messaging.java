@@ -1,6 +1,7 @@
 package me.stuartdouglas.servlets;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.simple.JSONObject;
 
 import com.datastax.driver.core.Cluster;
 
@@ -66,7 +69,12 @@ public class Messaging extends HttpServlet {
 		            	if(args.length != 2){
 		        			DisplayChat(args[2], request, response);
 		            	}	else	{
-		            		DisplayMessagingList(request, response); 
+		            		
+		            		try {
+								DisplayMessagingList(request, response);
+							} catch (Exception e) {
+								System.out.println("Error invalid user " + e);
+							} 
 		            	}
 	            	}	catch(Exception e)	{
 	            		System.out.println("Error: " + e);
@@ -84,14 +92,21 @@ public class Messaging extends HttpServlet {
         mm.setCluster(cluster);
         try {
 	        LinkedList<MessageStore> lsMessage = MessageModel.getMessages(username, otherUsername);
-	        
-	        
+	        if (lsMessage != null){
+	        UserModel user = new UserModel();
+	        if (user.isUserRegistered(otherUsername))	{
 	        request.setAttribute("otherUsername", otherUsername);
 	        request.setAttribute("MessageList", lsMessage);
 	        RequestDispatcher rd = request.getRequestDispatcher("/messagepage.jsp");
 	        rd.forward(request, response);
+	        }	else	{
+	        	noSuchUser(otherUsername, request, response);
+	        }
+	        }
+
         }	catch (Exception e)	{
         	System.out.println("Error display message list " + e);
+        	noSuchUser(otherUsername, request, response);
         	e.printStackTrace();
         }
 		
@@ -153,6 +168,27 @@ public class Messaging extends HttpServlet {
 		}
 		
 	}
+	
+	//Sends an error message containing the keyword used to search using JSON
+		@SuppressWarnings("unchecked")
+		private void noSuchUser(String keyword, HttpServletRequest request, HttpServletResponse response) {
+
+			RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
+			JSONObject json = new JSONObject();
+	    	Date date = new Date();
+	    	String dates = date.toString();
+	    	json.put("title", "No results");
+	    	json.put("time_issued", dates);
+	    	json.put("message", "No results for " + keyword + ".");
+
+	    	response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+	        request.setAttribute("message", json);
+	        try {
+				rd.forward(request, response);
+			} catch (ServletException | IOException e) {
+				System.out.println("Error forwarding");
+			}
+	    }
 
 	public void destroy()	{
 		try {

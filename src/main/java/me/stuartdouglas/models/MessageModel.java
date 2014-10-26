@@ -1,16 +1,7 @@
 package me.stuartdouglas.models;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.ByteBuffer;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.ListIterator;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.stores.MessageStore;
 
 import com.datastax.driver.core.BoundStatement;
@@ -33,8 +24,15 @@ public class MessageModel {
     	
     	LinkedList<MessageStore> commentList1 = getMessagesFromUserToUser(username, otherUsername);
     	LinkedList<MessageStore> commentList2 = getMessagesFromUserToUser(otherUsername, username);
-    	commentList.addAll(commentList1);
-    	commentList.addAll(commentList2);
+    	if (commentList1 != null ){
+    		commentList.addAll(commentList1);
+    	}
+    	
+    	if (commentList2 != null)	{
+    		commentList.addAll(commentList2);
+    	}
+    	
+    	
     	
    
     	//Sorting posts by pic_added

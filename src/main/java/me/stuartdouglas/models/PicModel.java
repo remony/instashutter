@@ -35,6 +35,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -43,8 +45,11 @@ import javax.imageio.ImageIO;
 
 
 
+
+
 import static org.imgscalr.Scalr.*;
 import me.stuartdouglas.lib.*;
+import me.stuartdouglas.stores.FollowingStore;
 import me.stuartdouglas.stores.PicStore;
 
 public class PicModel {
@@ -282,11 +287,13 @@ public class PicModel {
     		}
     		session.close();
     	}
+    	
     	//Sorting posts by pic_added
     	instaList.stream()
         .sorted((e1, e2) -> e2.getPicAdded()
                 .compareTo(e1.getPicAdded()))
         .forEach(instaSortedList::add);
+    	
     	
 		return instaSortedList;
     }
@@ -589,6 +596,39 @@ public class PicModel {
 		}
 		
 	}
+	
+	
+	public LinkedList<PicStore> getRandomPost() {
+    	LinkedList<PicStore> instaList = getPublicPosts();
+		LinkedList<PicStore> randomPost = new LinkedList<PicStore>();
+    	int size = instaList.size();
+    	Random random = new Random();
+    	System.out.println("size is " + size);
+    	int randomPick = random.nextInt(size+1);
+    	if (randomPick == 0){
+    		randomPick++;
+    	}
+    	
+    	
+    	System.out.println("getting number " + randomPick);
+    	ListIterator<PicStore> listIterator = instaList.listIterator();
+    	int count = 0;
+    	while (listIterator.hasNext()) {
+    		count++;
+            PicStore fs = listIterator.next();
+            	if (count == randomPick){
+            		randomPost.add(fs);
+            	}
+            	
+            
+        }
+		
+    	
+    	
+    	return randomPost;
+    	
+    	
+    }
 	
 	public void destroy()	{
 		try {

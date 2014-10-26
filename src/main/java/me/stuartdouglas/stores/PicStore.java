@@ -35,6 +35,10 @@ public class PicStore {
         this.UUID =UUID;
     }
     
+    public UUID getUUID ()	{
+    	return UUID;
+    }
+    
     public String getPostedUsername(){
     	return user;
     }

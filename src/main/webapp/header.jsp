@@ -43,7 +43,8 @@
       <ul class="nav navbar-nav">
       <li class=""><a href="<c:url value="/"/>"><span class="glyphicon glyphicon-home"></span> Dashboard</a></li>
       <li class=""><a href="<c:url value="/explore"/>"><span class="glyphicon glyphicon-globe"></span> Explore</a></li>
-      <li class=""><a href="<c:url value="/message"/>"><span class="glyphicon glyphicon-globe"></span> Messages</a></li>
+      <li class=""><a href="<c:url value="/message"/>"><span class="glyphicon glyphicon-envelope"></span> Messages</a></li>
+      <li class=""><a href="<c:url value="/random"/>"><span class="glyphicon glyphicon-refresh"></span> Random</a></li>
         <li class=""><a href="<c:url value="/upload"/>"><span class="glyphicon glyphicon-upload"></span> New Post</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -63,7 +64,7 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th-list"></span><%= userName%> <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
           	<li><a href="/instashutter/profile/<%= userName%>">View profile</a></li>
-            <li><a href="<c:url value="/account"/>"><span class="glyphicon glyphicon-th-list"></span>Account settings</a></li>
+            <li><a href="<c:url value="/account"/>">Account settings</a></li>
             <li class="divider"></li>
             <li><a href="<c:url value="/logout"/>">Log out</a></li>
           </ul>

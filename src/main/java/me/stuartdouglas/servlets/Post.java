@@ -35,7 +35,6 @@ public class Post extends HttpServlet {
     }
     
     public void init(ServletConfig config) throws ServletException {
-        // TODO Auto-generated method stub
         cluster = CassandraHosts.getCluster();
     }
 
@@ -43,7 +42,6 @@ public class Post extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		String args[] = Convertors.SplitRequestPath(request);
         if(args.length != 3){
         	HttpSession session = request.getSession();
@@ -144,10 +142,10 @@ public class Post extends HttpServlet {
 				PicStore.deletePost(username, UUID.fromString(args[2]));
 				response.sendRedirect("/instashutter/");
 			}	else	{
-				response.sendRedirect("/instashutter/");
+				response.sendRedirect("/instashutter/post/"+ args[2]);
 			}
 		}	else	{
-			response.sendRedirect("/instashutter/post/"+args[2]);
+			response.sendRedirect("/instashutter/post/"+ args[2]);
 		}
 	}
 	

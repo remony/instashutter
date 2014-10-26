@@ -240,4 +240,14 @@
     <url-pattern>/message</url-pattern>
     <url-pattern>/message/*</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description>displays a random post</description>
+    <display-name>RandomPost</display-name>
+    <servlet-name>RandomPost</servlet-name>
+    <servlet-class>me.stuartdouglas.servlets.RandomPost</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RandomPost</servlet-name>
+    <url-pattern>/random</url-pattern>
+  </servlet-mapping>
 </web-app>

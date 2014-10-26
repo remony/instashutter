@@ -51,6 +51,10 @@ public class Index extends HttpServlet {
         if (isLoggedIn) {
 	        DisplayImageList(request, response);    
 		}	else	{
+			PicModel pic = new PicModel();
+			pic.setCluster(cluster);
+			LinkedList<PicStore> lsPics = pic.getRandomPost();
+			request.setAttribute("background", lsPics);
 			RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
 	        rd.forward(request, response); 
 		}
@@ -65,42 +69,51 @@ public class Index extends HttpServlet {
 	        tm.setCluster(cluster);
 	        UserModel.setCluster(cluster);
 	        LinkedList<FollowingStore> lsFollowing = me.stuartdouglas.models.UserModel.getFollowing(username);
-	        LinkedList<PicStore> lsPics = PicModel.getPicsForUser(username);
-	        System.out.println("in first try");
+	        LinkedList<PicStore> lsPics = new LinkedList<PicStore>();
+	        LinkedList<PicStore> lsUserPics = new LinkedList<PicStore>();
+	        
 	        try {
-	        	System.out.println("in second try");
+	        	lsUserPics = PicModel.getPicsForUser(username);
+	        	if (!lsUserPics.isEmpty())	{
+		        	lsPics.addAll(lsUserPics);
+		        }
+	        	
+	        }	catch(Exception e)	{
+	        	System.out.println("Could not get user's posts " + e);
+	        }
+	        
+	        try {
 	        	ListIterator<FollowingStore> listIterator = lsFollowing.listIterator();
 	        	while (listIterator.hasNext()) {
-	        		System.out.println("hey mom i'm ina  while");
                     FollowingStore fs = listIterator.next();
-                    System.out.println("MESAGE: "+ fs.getFollowing());
                     LinkedList<PicStore> lsUserPosts = PicModel.getPicsForUser(fs.getFollowing());
-                    if (lsUserPosts != null)	{
-                    	lsPics.addAll(lsUserPosts);
-                        
+                    if (!lsUserPosts.isEmpty())	{
+                		lsPics.addAll(lsUserPosts);
                     }
-                	
                 }
+	        	
                 LinkedList<PicStore> lsPicsSorted = new LinkedList<>();
-                if (lsPics != null){
+
+                if (!lsPics.isEmpty())	{
                 lsPics.stream()
                 .sorted((e1, e2) -> e2.getPicAdded()
                         .compareTo(e1.getPicAdded()))
                 .forEach(lsPicsSorted::add);
                 
                 request.setAttribute("Pics", lsPicsSorted);
-                } else {
-                	request.setAttribute("Pics", lsPics);
                 }
+
             }	catch (Exception e)	{
 	        	System.out.println("Error processing following users posts: " + e);
 	        	e.printStackTrace();
 	        }
+	        
+	        
+	        
 	        RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
 	        rd.forward(request, response); 
         } catch (Exception e) {
         	System.out.println("Error getting UserModel dashboard: " + e);
-        	e.printStackTrace();
         } 
     }
 

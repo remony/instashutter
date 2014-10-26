@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+	<%@page import="java.util.*"%>
+	<%@ page import="me.stuartdouglas.stores.PicStore" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -9,7 +11,22 @@
 </head>
 
 
+<%
+	       		 
+	LinkedList<PicStore> lsPics = (LinkedList<PicStore>) request.getAttribute("background");
+	String suuid = null;
+	String username = null;
+	if (lsPics != null)	{
+		Iterator<PicStore> iterator;
+	    iterator = lsPics.iterator();
+	    while (iterator.hasNext()) {
+	        PicStore p = iterator.next();
+			username = p.getPostedUsername();
+			suuid = p.getSUUID().toString();
+	    }
+	}
 
+%>
 
 
 
@@ -33,15 +50,21 @@
 			        <input type="submit" value="Login"></li>  
 			    </ul>  
 			</form>  
+			<div class="background_owner">
+			<h3>Background posted by <%= username %></h3>
+		</div>
 		</div>
 		
+
 	</div>
+	
+	
 
 
 </body>
 <style>
 	html {
-		background: url('/instashutter/assets/images/new-york-14480.jpg') no-repeat center center fixed; 
+		background: url('/instashutter/Image/<%= suuid %>') no-repeat center center fixed; 
 		 -webkit-background-size: cover;
 		 -moz-background-size: cover;
 		 -o-background-size: cover;
@@ -70,13 +93,15 @@
 		margin:0 auto;
 		text-align:center;
 	}
-	.wrapper h1, p, label	{
+	.wrapper h1, p, label, h3	{
 		color:#fff;
 	}
 	label {
 		font-size:1.3em;
 		padding-right:10px;
 	}
+	
+
 </style>
 </html>
 
