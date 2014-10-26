@@ -92,8 +92,6 @@ public class Account extends HttpServlet {
 	            			editProfile(args[2], request, response);
 		            	}	else if (args[2] != null && args[2].toLowerCase().equals("email")){
 	            			editEmail(args[2], request, response);
-		            	}	else if (args[2] != null && args[2].toLowerCase().equals("deleteAccount")){
-	            			deleteAccount(args[2], request, response);
 		            	}	else	{
 		            		response.sendRedirect("/instashutter/account");
 		            	}
@@ -107,25 +105,6 @@ public class Account extends HttpServlet {
         }
 	}
 	
-	private void deleteAccount(String string, HttpServletRequest request, HttpServletResponse response) {
-		String username = request.getSession().getAttribute("user").toString();
-		String password = request.getParameter("password");
-		UserModel UserModel = new UserModel();
-		UserModel.setCluster(cluster);
-		
-		try {
-			boolean isValidUser = UserModel.IsValidUser(username, password);
-			if (isValidUser) {
-				UserModel.deleteUser(username);
-				response.sendRedirect("/instashutter/account");
-			} else {
-				System.out.println("Incorrect password or something broke.");
-			}
-
-		} catch (Exception e) {
-			System.out.println("Error deleting account: " + e);
-		}
-	}
 
 	private void editEmail(String string, HttpServletRequest request, HttpServletResponse response) {
 		String username = request.getSession().getAttribute("user").toString();

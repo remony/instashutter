@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -186,7 +185,7 @@ public class UserModel {
               System.out.println("User has posted no posts");
               
           } else {
-       	   for (@SuppressWarnings("Used as counting me") Row row : rs)	{
+       	   for (@SuppressWarnings("unused") Row row : rs)	{
        		   count++;
        	   }
           }
@@ -209,7 +208,7 @@ public class UserModel {
                System.out.println("User has posted no posts");
                
            } else {
-        	   for (Row row : rs)	{
+        	   for (@SuppressWarnings("unused") Row row : rs)	{
         		   count++;
         	   }
            }
@@ -223,7 +222,7 @@ public class UserModel {
     
     
    public void setCluster(Cluster cluster) {
-        this.cluster = cluster;
+        UserModel.cluster = cluster;
     }
 
    public String CurrentSessionUser(HttpServletRequest request) {
@@ -332,57 +331,44 @@ public class UserModel {
 	
 	
 	
-	public void setProfilePic(byte[] b, String filename, String type) {
+	public void setProfilePic(byte[] b, String username, String type) {
 		try {
 			
 			System.out.println("Starting upload of profile image");
-			new Convertors();
             ByteBuffer.wrap(b);
-        
-            String types[]=Convertors.SplitFiletype(type);
-			FileOutputStream output = new FileOutputStream(new File("/var/tmp/instashutter/" + filename));
+
+			FileOutputStream output = new FileOutputStream(new File("/var/tmp/instashutter/" + username));
             output.write(b);
             
-            byte [] profilepic =profileImage(filename,type);
-            ByteBuffer picbuf=ByteBuffer.wrap(profilepic);
+            byte [] profilepic =b;
+            ByteBuffer picBuffer = ByteBuffer.wrap(profilepic);
 
             Session session = cluster.connect("instashutter");
             
             PreparedStatement psInsertPic = session.prepare("update userprofiles set profileimage=? where login=?");
             BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
 
-            session.execute(bsInsertPic.bind(picbuf,filename));
+            session.execute(bsInsertPic.bind(picBuffer,username));
             output.close();
+            
+            //Deleting uploaded image from filesystem
+            try {
+            	File location = new File("/var/tmp/instashutter/" + username);
+                if (location.exists()) {
+                	location.delete(); 
+                }
+            	
+            }	catch(Exception e)	{
+            	System.out.println("Error deleting file: " + e);
+            }
             session.close();
 			
 			
 		}	catch (Exception e) {
 			System.out.println("Error Setting profile picture: " + e);
-			e.printStackTrace();
 		}
 	}
 	
-
-	private byte[] profileImage(String filename, String type) {
-		// TODO Auto-generated method stub
-		try {
-			BufferedImage BI = ImageIO.read(new File("/var/tmp/instashutter/" + filename));
-			BufferedImage profileImage = createImage(BI);
-			
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write(profileImage, type, baos);
-			baos.flush();
-			
-			byte[] imageOutput = baos.toByteArray();
-			baos.close();
-			return imageOutput;
-			
-			
-		}	catch (Exception e)	{
-			System.out.println("Error: " + e);
-		}
-		return null;
-	}
 	
 	private static BufferedImage createImage(BufferedImage img)
     {
@@ -485,9 +471,10 @@ public class UserModel {
 				System.out.println("Not executing unfollow");
 			}	else	{
 				Session session = cluster.connect("instashutter");
-				Date dateFollowed = new Date();
+
 				PreparedStatement ps = session.prepare("delete from friends where username = ? and friend = ?");
 				BoundStatement bs = new BoundStatement(ps);
+				@SuppressWarnings("unused")
 				ResultSet rs = session.execute(bs.bind(username, followingUser));
 				session.close();
 			}
@@ -594,20 +581,6 @@ public class UserModel {
 		
     }
 
-	public void deleteUser(String username) {
-		try {
-			Session session = cluster.connect("instashutter");
-            
-            PreparedStatement ps = session.prepare("update userprofiles set bio=? where login=?");
-            BoundStatement bs = new BoundStatement(ps);
-
-            session.execute(bs.bind(username));
-
-            session.close();
-		}	catch (Exception e)	{
-			System.out.println("Error change user background: " + e);
-		}
-		
-	}
+	
 
 }

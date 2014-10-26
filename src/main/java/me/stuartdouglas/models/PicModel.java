@@ -35,10 +35,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
+
 
 
 
@@ -309,7 +309,8 @@ public class PicModel {
             java.util.UUID picid = Convertors.getTimeUUID();
             
             //The following is a quick and dirty way of doing this, will fill the disk quickly !
-            Boolean success = (new File("/var/tmp/instashutter/")).mkdirs();
+            @SuppressWarnings("unused")
+			Boolean success = (new File("/var/tmp/instashutter/")).mkdirs();
             FileOutputStream output = new FileOutputStream(new File("/var/tmp/instashutter/" + picid));
 
             
@@ -345,16 +346,24 @@ public class PicModel {
             Date DateAdded = new Date();
             session.execute(bsInsertPic.bind(picid, buffer, thumbbuf,processedbuf, user, DateAdded, length,thumblength,processedlength, type, name, caption, publicPhoto));
             session.execute(bsInsertPicToUser.bind(picid, user, DateAdded, caption, publicPhoto));
+            
+            output.close();
             try {
-            	session.close();
-            } catch (Exception e) {
-            	System.out.println("Session.close error " + e);
+            	File location = new File("/var/tmp/instashutter/" + picid);
+                if (location.exists()) {
+                	location.delete(); 
+                }
+            	
+            }	catch(Exception e)	{
+            	System.out.println("Error deleting file: " + e);
             }
-            try {
-            	output.close();
-            } catch (Exception e) {
-            	System.out.println("output.close error " + e);
-            }
+            
+        	
+        	session.close();
+       
+            
+            	
+            
             
 
         } catch (IOException ex) {
