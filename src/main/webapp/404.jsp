@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Error</title>
+<title>Error 404</title>
 </head>
 <body>
 <jsp:include page="header.jsp" />

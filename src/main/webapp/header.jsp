@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="me.stuartdouglas.stores.*"%>
-
-
+<% //Applies navigation and imports to all jsps %>
+<link rel="icon" href="/assets/images/favicon.ico" type="image/icon"> 
 
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
