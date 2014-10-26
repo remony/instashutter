@@ -24,10 +24,10 @@ import org.json.simple.JSONObject;
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
-import me.stuartdouglas.models.User;
+import me.stuartdouglas.models.UserModel;
 import me.stuartdouglas.stores.FollowingStore;
-import me.stuartdouglas.stores.Pic;
-import me.stuartdouglas.stores.UserSession;
+import me.stuartdouglas.stores.PicStore;
+import me.stuartdouglas.stores.UserStore;
 
 import com.datastax.driver.core.Cluster;
 
@@ -107,10 +107,10 @@ public class Profile extends HttpServlet {
 			HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		try {
-			User user = new User();
+			UserModel user = new UserModel();
 			user.setCluster(cluster);
 			
-			LinkedList<FollowingStore> lsFollowing = User.getFollowing(username);
+			LinkedList<FollowingStore> lsFollowing = UserModel.getFollowing(username);
 			request.setAttribute("following", lsFollowing);
 			RequestDispatcher rd = request.getRequestDispatcher("/following.jsp");
 			rd.forward(request, response);
@@ -125,10 +125,10 @@ public class Profile extends HttpServlet {
 			HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		try {
-			User user = new User();
+			UserModel user = new UserModel();
 			user.setCluster(cluster);
 			
-			LinkedList<FollowingStore> lsFollowing = User.getFollowers(username);
+			LinkedList<FollowingStore> lsFollowing = UserModel.getFollowers(username);
 			request.setAttribute("followers", lsFollowing);
 			RequestDispatcher rd = request.getRequestDispatcher("/followers.jsp");
 			rd.forward(request, response);
@@ -141,14 +141,14 @@ public class Profile extends HttpServlet {
 
 	private void DisplayProfile(String Username, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
-        User user = new User();
+        UserModel user = new UserModel();
         tm.setCluster(cluster);
         user.setCluster(cluster);
         try {
-        LinkedList<UserSession> lsUser = user.getUserInfo(Username);
+        LinkedList<UserStore> lsUser = user.getUserInfo(Username);
         if (user.isUserRegistered(Username)) {
         	request.setAttribute("UserInfo", lsUser);
-            java.util.LinkedList<Pic> lsPics = PicModel.getPicsForUser(Username);
+            java.util.LinkedList<PicStore> lsPics = PicModel.getPicsForUser(Username);
             request.setAttribute("viewingUser", Username);
             request.setAttribute("Pics", lsPics);
             RequestDispatcher rd = request.getRequestDispatcher("/profile.jsp");
@@ -186,20 +186,25 @@ public class Profile extends HttpServlet {
     }
 
 	private void DisplayImage(int type,String Image, HttpServletResponse response) throws ServletException, IOException {
-		User user = new User();
-		user.setCluster(cluster);
+		try {
+			UserModel user = new UserModel();
+			user.setCluster(cluster);
  
-        UserSession p = user.getProfilePic(Image);
-            
-        OutputStream out = response.getOutputStream();
+			UserStore p = user.getProfilePic(Image);
+			    
+			OutputStream out = response.getOutputStream();
 
-        InputStream is = new ByteArrayInputStream(p.getBytes());
-        BufferedInputStream input = new BufferedInputStream(is);
-        byte[] buffer = new byte[8192];
-        for (int length; (length = input.read(buffer)) > 0;) {
-            out.write(buffer, 0, length);
-        }
-        out.close();
+			InputStream is = new ByteArrayInputStream(p.getBytes());
+			BufferedInputStream input = new BufferedInputStream(is);
+			byte[] buffer = new byte[8192];
+			for (int length; (length = input.read(buffer)) > 0;) {
+			    out.write(buffer, 0, length);
+			}
+			out.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("Error loading profile image " + e);
+		}
     }
 	
 	private void error(HttpServletResponse response) throws ServletException, IOException {
@@ -269,7 +274,7 @@ public class Profile extends HttpServlet {
 			}
         if (isLoggedIn) {
 			String username = request.getSession().getAttribute("user").toString();
-			User user = new User();
+			UserModel user = new UserModel();
 			user.setCluster(cluster);
 			if (!username.equals(followingUser))	{
 					user.unFollowUser(username, followingUser);
@@ -304,7 +309,7 @@ public class Profile extends HttpServlet {
 			//String followingUser = request.getParameter("followingUser");
 			//String method = request.getParameter("method");
 			String username = request.getSession().getAttribute("user").toString();
-			User user = new User();
+			UserModel user = new UserModel();
 			user.setCluster(cluster);
 			if (!username.equals(followingUser))	{
 					user.followUser(username, followingUser);

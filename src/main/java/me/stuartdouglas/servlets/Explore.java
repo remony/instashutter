@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.models.PicModel;
-import me.stuartdouglas.stores.Pic;
+import me.stuartdouglas.stores.PicStore;
 
 import com.datastax.driver.core.Cluster;
 
@@ -42,10 +42,10 @@ public class Explore extends HttpServlet {
 	}
 
 	private void DisplayTimeline(HttpServletRequest request, HttpServletResponse response) {
-		PicModel pic = new PicModel();
+		PicModel PicStore = new PicModel();
 		try {
-			pic.setCluster(cluster);
-			LinkedList<Pic> lsPics = PicModel.getPublicPosts();
+			PicStore.setCluster(cluster);
+			LinkedList<PicStore> lsPics = PicModel.getPublicPosts();
             request.setAttribute("Pics",  lsPics);
 
 			RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");

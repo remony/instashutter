@@ -11,8 +11,8 @@ import javax.servlet.http.HttpSession;
 import com.datastax.driver.core.Cluster;
 
 import me.stuartdouglas.lib.CassandraHosts;
-import me.stuartdouglas.models.User;
-import me.stuartdouglas.stores.UserSession;
+import me.stuartdouglas.models.UserModel;
+import me.stuartdouglas.stores.UserStore;
 
 /**
  * Servlet implementation class Login
@@ -32,12 +32,12 @@ public class Login extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		//If the user is already logged in redirect to dashboard
+		//If the UserModel is already logged in redirect to dashboard
 		if (session.getAttribute("LoggedIn") != null) {
 			response.sendRedirect("/instashutter/");
 		}	else	{
-			//If the user is not logged in display the login view
-			UserSession usrSession = new UserSession();
+			//If the UserModel is not logged in display the login view
+			UserStore usrSession = new UserStore();
 			session.setAttribute("username", usrSession.getUsername());
 			RequestDispatcher rd=request.getRequestDispatcher("login.jsp");
 		    rd.forward(request,response);
@@ -49,27 +49,27 @@ public class Login extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		UserSession userSession = new UserSession();
+		UserStore us = new UserStore();
 		try {	
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
 			if (username != null || password != null)	{
-				User user = new User();
-				user.setCluster(cluster);
+				UserModel UserModel = new UserModel();
+				UserModel.setCluster(cluster);
 				boolean isValidUser = false;
 				try {
-					isValidUser = user.IsValidUser(username, password);
+					isValidUser = UserModel.IsValidUser(username, password);
 				} catch (Exception e)	{
-					System.out.println("Error processing check if valid user: "+ e);
+					System.out.println("Error processing check if valid UserModel: "+ e);
 				}
 				if (isValidUser){
 					System.out.println("Session established: " + session);	
 					 session = request.getSession(true);
 					 request.getSession().setAttribute("user", username);
-					 userSession.setUserSession(true);
-					 userSession.setUsername(username);
+					 us.setUserSession(true);
+					 us.setUsername(username);
 					 
-					 session.setAttribute("LoggedIn", userSession);
+					 session.setAttribute("LoggedIn", us);
 					 response.sendRedirect("/instashutter/");
 				} else {
 					request.setAttribute("message", "Incorrect username/password");

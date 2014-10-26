@@ -3,6 +3,7 @@ package me.stuartdouglas.servlets;
 import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,8 +14,9 @@ import com.datastax.driver.core.Cluster;
 
 
 
+
 import me.stuartdouglas.lib.CassandraHosts;
-import me.stuartdouglas.models.User;
+import me.stuartdouglas.models.UserModel;
 
 
 /**
@@ -66,14 +68,15 @@ public class Register extends HttpServlet {
 			String location = request.getParameter("location");
 			String bio = request.getParameter("bio");
 	
-			User user = new User();
+			UserModel user = new UserModel();
 			user.setCluster(cluster);
 			//If the username is already taken redirect back to register form. 
+			ServletContext servletContext = request.getSession().getServletContext();
 			if (user.isUserRegistered(username))	{
 				response.sendRedirect("register");
 			}	else 	{
 				if (password.equals(password2)){
-					user.RegisterUser(fname, lname, username, password, email, location, bio);
+					user.RegisterUser(fname, lname, username, password, email, location, bio, servletContext);
 					response.sendRedirect("Login");
 				}	else	{
 					System.out.println("Passwords are not the same");

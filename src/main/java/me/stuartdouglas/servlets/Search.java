@@ -16,8 +16,8 @@ import org.json.simple.JSONObject;
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
-import me.stuartdouglas.models.User;
-import me.stuartdouglas.stores.Pic;
+import me.stuartdouglas.models.UserModel;
+import me.stuartdouglas.stores.PicStore;
 import com.datastax.driver.core.Cluster;
 
 /**
@@ -54,13 +54,13 @@ public class Search extends HttpServlet {
 	
 	private void DisplaySearchResults(String keyword, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
-        User user = new User();
+        UserModel user = new UserModel();
         tm.setCluster(cluster);
         user.setCluster(cluster);
         keyword = keyword.toLowerCase();
         try {
         
-            LinkedList<Pic> lsPics = PicModel.getPostsContaining(keyword);
+            LinkedList<PicStore> lsPics = PicModel.getPostsContaining(keyword);
             request.setAttribute("Pics", lsPics);
             RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
             rd.forward(request, response);

@@ -17,7 +17,7 @@ import com.datastax.driver.core.Cluster;
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.MessageModel;
-import me.stuartdouglas.models.User;
+import me.stuartdouglas.models.UserModel;
 import me.stuartdouglas.stores.FollowingStore;
 import me.stuartdouglas.stores.MessageStore;
 
@@ -47,7 +47,7 @@ public class Messaging extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		//If the user is already logged in redirect to dashboard
+		//If the UserModel is already logged in redirect to dashboard
 		if (session.getAttribute("LoggedIn") != null) {
 			String args[] = Convertors.SplitRequestPath(request);
 	        int command;
@@ -98,11 +98,11 @@ public class Messaging extends HttpServlet {
 	}
 
 	public void DisplayMessagingList(HttpServletRequest request, HttpServletResponse response){
-		User mm = new User();
+		UserModel mm = new UserModel();
         String username = request.getSession().getAttribute("user").toString();
         mm.setCluster(cluster);
         try {
-	        LinkedList<FollowingStore> lsMessage = User.getFollowing(username);
+	        LinkedList<FollowingStore> lsMessage = UserModel.getFollowing(username);
 	        request.setAttribute("userList", lsMessage);
 	        RequestDispatcher rd = request.getRequestDispatcher("/messaging.jsp");
 	        rd.forward(request, response);
@@ -149,7 +149,7 @@ public class Messaging extends HttpServlet {
 			mm.sendMessage(username, otherUsername, message);
 			response.sendRedirect("/instashutter/message/" + otherUsername);
 		} catch (Exception e) {
-			System.out.println("Error editing user background: " + e);
+			System.out.println("Error editing UserModel background: " + e);
 		}
 		
 	}

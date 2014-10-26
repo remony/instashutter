@@ -22,8 +22,8 @@ import javax.servlet.http.Part;
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
-import me.stuartdouglas.stores.Pic;
-import me.stuartdouglas.stores.UserSession;
+import me.stuartdouglas.stores.PicStore;
+import me.stuartdouglas.stores.UserStore;
 
 import com.datastax.driver.core.Cluster;
 
@@ -125,19 +125,19 @@ public class Image extends HttpServlet {
 
 	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
-		PicModel pic = new PicModel();
+		PicModel PicStore = new PicModel();
 		String username = request.getSession().getAttribute("user").toString();
-		pic.setCluster(cluster);
+		PicStore.setCluster(cluster);
 		
 		System.out.println("user wants to delete image " + picid);
 		
 		if (session.getAttribute("LoggedIn")!= null)	{
 			System.out.println("User is logged in");
 			
-			String postedusername = pic.getUserPosted(UUID.fromString(picid));
+			String postedusername = PicStore.getUserPosted(UUID.fromString(picid));
 			
 			if (username.equals(postedusername))	{
-				pic.deletePost(username, UUID.fromString(picid));
+				PicStore.deletePost(username, UUID.fromString(picid));
 				System.out.println("User " + username + "has successfully delete own post " + picid);
 			}	else	{
 				System.out.println("User " + username + " has attempted to ilegally delete post " + picid);
@@ -151,7 +151,7 @@ public class Image extends HttpServlet {
 		PicModel tm = new PicModel();
         tm.setCluster(cluster);
         
-        java.util.LinkedList<Pic> lsPics = PicModel.getPicsForUser(User);
+        java.util.LinkedList<PicStore> lsPics = PicModel.getPicsForUser(User);
         RequestDispatcher rd = request.getRequestDispatcher("/UserPics.jsp");
         request.setAttribute("Pics", lsPics);
         rd.forward(request, response);
@@ -160,21 +160,29 @@ public class Image extends HttpServlet {
 	private void DisplayImage(int type,String Image, HttpServletResponse response) throws IOException {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
-        Pic p = tm.getPic(type, java.util.UUID.fromString(Image));
-        OutputStream out = response.getOutputStream();
+        try {
+        PicStore p = tm.getPic(type, java.util.UUID.fromString(Image));
+        if (p != null){
+            OutputStream out = response.getOutputStream();
 
-        response.setContentType(p.getType());
-        response.setContentLength(p.getLength());
-        //out.write(Image);
-        InputStream is = new ByteArrayInputStream(p.getBytes());
-        BufferedInputStream input = new BufferedInputStream(is);
-        
-        byte[] buffer = new byte[8192];
-        for (int length; (length = input.read(buffer)) > 0;) {
-            out.write(buffer, 0, length);
+            response.setContentType(p.getType());
+            response.setContentLength(p.getLength());
+            //out.write(Image);
+            InputStream is = new ByteArrayInputStream(p.getBytes());
+            BufferedInputStream input = new BufferedInputStream(is);
+            
+            byte[] buffer = new byte[8192];
+            for (int length; (length = input.read(buffer)) > 0;) {
+                out.write(buffer, 0, length);
+            }
+            
+            out.close();
+            }	else {
+            	
+            }
+        }	catch (Exception e){
+        	System.out.println("Error loading image " + e);
         }
-        
-        out.close();
         
     }
 
@@ -199,7 +207,7 @@ public class Image extends HttpServlet {
 				InputStream is = request.getPart(file.getName()).getInputStream();
 		        int i = is.available();
 		        HttpSession session=request.getSession();
-		        UserSession lg= (UserSession)session.getAttribute("LoggedIn");
+		        UserStore lg= (UserStore)session.getAttribute("LoggedIn");
 		        String username="null";
 		        if (lg.getUserSession()){
 		            username=lg.getUsername();

@@ -17,7 +17,7 @@ import com.datastax.driver.core.Cluster;
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
 import me.stuartdouglas.models.PicModel;
-import me.stuartdouglas.stores.Pic;
+import me.stuartdouglas.stores.PicStore;
 
 /**
  * Servlet implementation class Post
@@ -77,7 +77,7 @@ public class Post extends HttpServlet {
 		HttpSession session = request.getSession();
 		PicModel tm = new PicModel();
         tm.setCluster(cluster);
-        LinkedList<Pic> lsPics = tm.getPost(User);
+        LinkedList<PicStore> lsPics = tm.getPost(User);
         
         if (session.getAttribute("LoggedIn") == null) {
 			request.setAttribute("message", "You must be logged in to post and comment.");
@@ -90,18 +90,18 @@ public class Post extends HttpServlet {
 	
 	private void deletePost(String picid, HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
-		PicModel pic = new PicModel();
+		PicModel PicStore = new PicModel();
 		String username = request.getSession().getAttribute("user").toString();
-		pic.setCluster(cluster);
+		PicStore.setCluster(cluster);
 		
 		//Ensures that the user is already logged in before attempting to delete the post
 		if (session.getAttribute("LoggedIn")!= null)	{
 			System.out.println("User is logged in");
 			
-			String username2 = pic.getUserPosted(UUID.fromString(picid));
+			String username2 = PicStore.getUserPosted(UUID.fromString(picid));
 			//Will only delete if the user is logged in. 
 			if (username.equals(username2))	{
-				pic.deletePost(username, UUID.fromString(picid));
+				PicStore.deletePost(username, UUID.fromString(picid));
 				System.out.println("User " + username + "has successfully delete own post " + picid);
 				try {
 					response.sendRedirect("/instashutter/");
@@ -131,17 +131,17 @@ public class Post extends HttpServlet {
 		String args[] = Convertors.SplitRequestPath(request);
 
 		HttpSession session = request.getSession();
-		PicModel pic = new PicModel();
+		PicModel PicStore = new PicModel();
 		String username = request.getSession().getAttribute("user").toString();
-		pic.setCluster(cluster);
+		PicStore.setCluster(cluster);
 		
 		//Ensures that the user is already logged in before attempting to delete the post
 		if (session.getAttribute("LoggedIn")!= null)	{
 			System.out.println("User is logged in");
-			String username2 = pic.getUserPosted(UUID.fromString(args[2]));
+			String username2 = PicStore.getUserPosted(UUID.fromString(args[2]));
 			//Will only delete if the user is logged in. 
 			if (username.equals(username2))	{
-				pic.deletePost(username, UUID.fromString(args[2]));
+				PicStore.deletePost(username, UUID.fromString(args[2]));
 				response.sendRedirect("/instashutter/");
 			}	else	{
 				response.sendRedirect("/instashutter/");

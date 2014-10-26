@@ -22,13 +22,13 @@
 				</a>
 			</div>
 			<%
-				LinkedList<UserSession> userInfo = (LinkedList<UserSession>) request.getAttribute("UserInfo");
+				LinkedList<UserStore> userInfo = (LinkedList<UserStore>) request.getAttribute("UserInfo");
 				if (userInfo == null)	{%>
 					<p>User has no profile information</p>
 				<%}	else	{
-					Iterator<UserSession> iterator;
+					Iterator<UserStore> iterator;
 					iterator = userInfo.iterator();
-						UserSession profile = iterator.next();
+						UserStore profile = iterator.next();
 						background = profile.getBackground();
 						String fname = profile.getfname();
 						String lname = profile.getlname();
@@ -92,15 +92,15 @@
 	
 
 
-    <%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
+    <%LinkedList<PicStore> lsPics = (LinkedList<PicStore>) request.getAttribute("Pics");
 
 	        	if (lsPics == null) {%>
 	        		<p>No Pictures found</p>
 	       		<%} else {
-	            Iterator<Pic> iterator;
+	            Iterator<PicStore> iterator;
 	            iterator = lsPics.iterator();
 	            while (iterator.hasNext()) {
-	            	Pic p = iterator.next();
+	            	PicStore p = iterator.next();
 					String username = p.getPostedUsername();
 					String uuid = p.getSUUID();
 					String caption = p.getCaption();

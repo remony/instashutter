@@ -13,9 +13,9 @@ import javax.servlet.http.HttpSession;
 
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.models.PicModel;
-import me.stuartdouglas.models.User;
+import me.stuartdouglas.models.UserModel;
 import me.stuartdouglas.stores.FollowingStore;
-import me.stuartdouglas.stores.Pic;
+import me.stuartdouglas.stores.PicStore;
 
 import com.datastax.driver.core.Cluster;
 
@@ -43,7 +43,7 @@ public class Index extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		//If the user is not logged in display index
+		//If the UserModel is not logged in display index
 		boolean isLoggedIn = false;
 		if(session.getAttribute("LoggedIn") != null){
 			isLoggedIn = true;
@@ -58,33 +58,49 @@ public class Index extends HttpServlet {
 
 	private void DisplayImageList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
-        me.stuartdouglas.models.User user = new User();
+        UserModel UserModel = new UserModel();
         String username = request.getSession().getAttribute("user").toString();
+        System.out.println("THE USRNAME IS" + username);
         try {
 	        tm.setCluster(cluster);
-	        user.setCluster(cluster);
-	        LinkedList<FollowingStore> lsFollowing = me.stuartdouglas.models.User.getFollowing(username);
-	        LinkedList<Pic> lsPics = PicModel.getPicsForUser(username);
+	        UserModel.setCluster(cluster);
+	        LinkedList<FollowingStore> lsFollowing = me.stuartdouglas.models.UserModel.getFollowing(username);
+	        LinkedList<PicStore> lsPics = PicModel.getPicsForUser(username);
+	        System.out.println("in first try");
 	        try {
+	        	System.out.println("in second try");
 	        	ListIterator<FollowingStore> listIterator = lsFollowing.listIterator();
-                while (listIterator.hasNext()) {
+	        	while (listIterator.hasNext()) {
+	        		System.out.println("hey mom i'm ina  while");
                     FollowingStore fs = listIterator.next();
-                    LinkedList<Pic> lsUserPosts = PicModel.getPicsForUser(fs.getFollowing());
-                    lsPics.addAll(lsUserPosts);
+                    System.out.println("MESAGE: "+ fs.getFollowing());
+                    LinkedList<PicStore> lsUserPosts = PicModel.getPicsForUser(fs.getFollowing());
+                    if (lsUserPosts != null)	{
+                    	lsPics.addAll(lsUserPosts);
+                        
+                    }
+                	
                 }
-                LinkedList<Pic> lsPicsSorted = new LinkedList<>();
+                LinkedList<PicStore> lsPicsSorted = new LinkedList<>();
+                if (lsPics != null){
                 lsPics.stream()
                 .sorted((e1, e2) -> e2.getPicAdded()
                         .compareTo(e1.getPicAdded()))
                 .forEach(lsPicsSorted::add);
+                
                 request.setAttribute("Pics", lsPicsSorted);
+                } else {
+                	request.setAttribute("Pics", lsPics);
+                }
             }	catch (Exception e)	{
 	        	System.out.println("Error processing following users posts: " + e);
+	        	e.printStackTrace();
 	        }
 	        RequestDispatcher rd = request.getRequestDispatcher("/dashboard.jsp");
 	        rd.forward(request, response); 
         } catch (Exception e) {
-        	System.out.println("Error getting user dashboard: " + e);
+        	System.out.println("Error getting UserModel dashboard: " + e);
+        	e.printStackTrace();
         } 
     }
 
@@ -96,7 +112,7 @@ public class Index extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		//If the user is already logged in redirect to dashboard
+		//If the UserModel is already logged in redirect to dashboard
 		if (session.getAttribute("LoggedIn") != null) {
 		String username = request.getSession().getAttribute("user").toString();
 		String comment = request.getParameter("comment");

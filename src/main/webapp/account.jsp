@@ -34,16 +34,16 @@
        			
        			<div class="account_view">
        			<%
-       				LinkedList<UserSession> userInfo = (LinkedList<UserSession>) request.getAttribute("UserInfo");
+       				LinkedList<UserStore> userInfo = (LinkedList<UserStore>) request.getAttribute("UserInfo");
        				if (userInfo == null) {
        			%>
        				<h4>No access: you are not logged in.</h4>
    				<%
        				}	else	{
-       					Iterator<UserSession> iterator;
+       					Iterator<UserStore> iterator;
        					iterator = userInfo.iterator();
        					while (iterator.hasNext()) {
-       						UserSession p = iterator.next();
+       						UserStore p = iterator.next();
        						//background = p.getBackground();
        						//bio = p.getBio();
        			%>

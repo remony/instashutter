@@ -12,7 +12,7 @@
   </head>
   <body>
     <jsp:include page="header.jsp" />
-    <%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
+    <%LinkedList<PicStore> lsPics = (LinkedList<PicStore>) request.getAttribute("Pics");
 
 	        	if (lsPics == null) {%>
 	        		<div class="post">
@@ -40,10 +40,10 @@
 	       		
 	       		
 	       		<%
-	            Iterator<Pic> iterator;
+	            Iterator<PicStore> iterator;
 	            iterator = lsPics.iterator();
 	            while (iterator.hasNext()) {
-	            	Pic p = iterator.next();
+	            	PicStore p = iterator.next();
 					String username = p.getPostedUsername();
 					String uuid = p.getSUUID();
 					String caption = p.getCaption();

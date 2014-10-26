@@ -31,7 +31,7 @@
       <a class="navbar-brand" href="<c:url value="/"/>">Instashutter</a>
     </div>
 	<%
-		UserSession currentSession = (UserSession) session.getAttribute("LoggedIn");
+		UserStore currentSession = (UserStore) session.getAttribute("LoggedIn");
 		if (currentSession != null) {
 		  String userName = currentSession.getUsername();
 		  //String background = currentSession.getBackground();

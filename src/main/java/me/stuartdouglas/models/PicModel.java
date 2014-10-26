@@ -45,7 +45,7 @@ import javax.imageio.ImageIO;
 
 import static org.imgscalr.Scalr.*;
 import me.stuartdouglas.lib.*;
-import me.stuartdouglas.stores.Pic;
+import me.stuartdouglas.stores.PicStore;
 
 public class PicModel {
 	private static Cluster cluster;
@@ -61,9 +61,9 @@ public class PicModel {
      * Gets all public posts from all users
      */
     
-    public static LinkedList<Pic> getPublicPosts() {
-    	LinkedList<Pic> instaList = new LinkedList<>();
-    	LinkedList<Pic> instaSortedList = new LinkedList<>();
+    public static LinkedList<PicStore> getPublicPosts() {
+    	LinkedList<PicStore> instaList = new LinkedList<>();
+    	LinkedList<PicStore> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	
     	PreparedStatement statement = session.prepare("SELECT * from pics where public = true allow filtering");
@@ -76,13 +76,13 @@ public class PicModel {
     		return null;
     	} else {
     		for (Row row : rs) {
-    			Pic pic = new Pic();
+    			PicStore PicStore = new PicStore();
     			UUID picid = row.getUUID("picid");
-    			pic.setUUID(row.getUUID("picid"));
-    			pic.setCaption(row.getString("caption"));
-    			pic.setPostedUsername(row.getString("user"));
-    			pic.setPicAdded(row.getDate("interaction_time"));
-    			instaList.add(pic);
+    			PicStore.setUUID(row.getUUID("picid"));
+    			PicStore.setCaption(row.getString("caption"));
+    			PicStore.setPostedUsername(row.getString("user"));
+    			PicStore.setPicAdded(row.getDate("interaction_time"));
+    			instaList.add(PicStore);
     			//Get comments from post and limit to 5 (stops endless list on dashboard)
     			PreparedStatement pss = session.prepare("SELECT * from comments where picid =? limit 5");
     	    	ResultSet rss;
@@ -92,7 +92,7 @@ public class PicModel {
                     System.out.println("No posts");
     	    	}	else	{
     	    		for (Row rows : rss)	{
-    	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    			PicStore.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
     	    		}
     	    	}
     		}
@@ -112,9 +112,9 @@ public class PicModel {
      * Gets all posts public and private from all users
      * 
      */
-    public static LinkedList<Pic> getPosts() {
-    	LinkedList<Pic> instaList = new LinkedList<>();
-    	LinkedList<Pic> instaSortedList = new LinkedList<>();
+    public static LinkedList<PicStore> getPosts() {
+    	LinkedList<PicStore> instaList = new LinkedList<>();
+    	LinkedList<PicStore> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	
     	PreparedStatement statement = session.prepare("SELECT * from pics");
@@ -127,13 +127,13 @@ public class PicModel {
     		return null;
     	} else {
     		for (Row row : rs) {
-    			Pic pic = new Pic();
+    			PicStore PicStore = new PicStore();
     			UUID picid = row.getUUID("picid");
-    			pic.setUUID(row.getUUID("picid"));
-    			pic.setCaption(row.getString("caption"));
-    			pic.setPostedUsername(row.getString("user"));
-    			pic.setPicAdded(row.getDate("interaction_time"));
-    			instaList.add(pic);
+    			PicStore.setUUID(row.getUUID("picid"));
+    			PicStore.setCaption(row.getString("caption"));
+    			PicStore.setPostedUsername(row.getString("user"));
+    			PicStore.setPicAdded(row.getDate("interaction_time"));
+    			instaList.add(PicStore);
     			//Get comments from post and limit to 5 (stops endless list on dashboard)
     			PreparedStatement pss = session.prepare("SELECT * from comments where picid = ? limit 10");
     	    	ResultSet rss;
@@ -143,7 +143,7 @@ public class PicModel {
                     System.out.println("no posts");
     	    	}	else	{
     	    		for (Row rows : rss)	{
-    	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    			PicStore.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
     	    		}
     	    	}
     		}
@@ -164,17 +164,17 @@ public class PicModel {
 		
     }
     
-    public LinkedList<Pic> getDashboard(String username)	{
-    	LinkedList<Pic> dashboard = new LinkedList<>();
+    public LinkedList<PicStore> getDashboard(String username)	{
+    	LinkedList<PicStore> dashboard = new LinkedList<>();
 		System.out.println(username);
     	return dashboard;
     	
     }
     
     
-    public LinkedList<Pic> getPost(String user) {
-    	LinkedList<Pic> instaList = new LinkedList<>();
-    	LinkedList<Pic> instaSortedList = new LinkedList<>();
+    public LinkedList<PicStore> getPost(String user) {
+    	LinkedList<PicStore> instaList = new LinkedList<>();
+    	LinkedList<PicStore> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	UUID picid = UUID.fromString(user);
     	PreparedStatement statement = session.prepare("SELECT * from pics where picid =?");
@@ -186,7 +186,7 @@ public class PicModel {
     		System.out.println("No posts returned");
     	} else {
     		for (Row row : rs) {
-    			Pic ps = new Pic();
+    			PicStore ps = new PicStore();
     			ps.setUUID(row.getUUID("picid"));
     			ps.setCaption(row.getString("caption"));
     			ps.setPostedUsername(row.getString("user"));
@@ -214,10 +214,10 @@ public class PicModel {
 		return instaSortedList;
     }
     
-    public static LinkedList<Pic> getPostsContaining(String keyword)	{
+    public static LinkedList<PicStore> getPostsContaining(String keyword)	{
     	try {
-			LinkedList<Pic> instaList = getPublicPosts();
-			LinkedList<Pic> instaSortedList = new LinkedList<>();
+			LinkedList<PicStore> instaList = getPublicPosts();
+			LinkedList<PicStore> instaSortedList = new LinkedList<>();
 			instaList.stream()
 			.sorted((e1, e2) -> e2.getPicAdded()
 			        .compareTo(e1.getPicAdded()))
@@ -245,9 +245,9 @@ public class PicModel {
     }
     
     
-    public static java.util.LinkedList<Pic> getPicsForUser(String User) {
-    	LinkedList<Pic> instaList = new LinkedList<>();
-    	LinkedList<Pic> instaSortedList = new LinkedList<>();
+    public static LinkedList<PicStore> getPicsForUser(String User) {
+    	LinkedList<PicStore> instaList = new LinkedList<>();
+    	LinkedList<PicStore> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	
     	PreparedStatement statement = session.prepare("SELECT * from userpiclist where user =?");
@@ -256,11 +256,11 @@ public class PicModel {
     	
     	ResultSet rs = session.execute(boundStatement.bind(User));
     	if (rs.isExhausted()){
-    		System.out.println("No posts returned");
+    		System.out.println("No posts for user " + User + " returned");
     		return null;
     	} else {
     		for (Row row : rs) {
-    			Pic pic = new Pic();
+    			PicStore pic = new PicStore();
     			UUID picid = row.getUUID("picid");
     			pic.setUUID(row.getUUID("picid"));
     			pic.setCaption(row.getString("caption"));
@@ -273,7 +273,7 @@ public class PicModel {
     	    	BoundStatement boundStatement2 = new BoundStatement(pss);
     	    	rss = session.execute(boundStatement2.bind(picid));
     	    	if (rss.isExhausted())	{
-                    System.out.println("no posts");
+                    System.out.println("no comments");
     	    	}	else	{
     	    		for (Row rows : rss)	{
     	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
@@ -461,7 +461,7 @@ public class PicModel {
         return img;
     }
    
-   public Pic getPic(int image_type, java.util.UUID picid) {
+   public PicStore getPic(int image_type, java.util.UUID picid) {
        Session session = cluster.connect("instashutter");
        ByteBuffer bImage = null;
        String type = null;
@@ -508,11 +508,11 @@ public class PicModel {
                }
            }
        } catch (Exception et) {
-           System.out.println("Can't get Pic" + et);
+           System.out.println("Can't get PicStore" + et);
            return null;
        }
        session.close();
-       Pic p = new Pic();
+       PicStore p = new PicStore();
        p.setPic(bImage, length, type);
          
        

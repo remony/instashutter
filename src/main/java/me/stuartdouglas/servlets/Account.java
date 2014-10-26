@@ -19,8 +19,8 @@ import javax.servlet.http.Part;
 
 import me.stuartdouglas.lib.CassandraHosts;
 import me.stuartdouglas.lib.Convertors;
-import me.stuartdouglas.models.User;
-import me.stuartdouglas.stores.UserSession;
+import me.stuartdouglas.models.UserModel;
+import me.stuartdouglas.stores.UserStore;
 
 import com.datastax.driver.core.Cluster;
 
@@ -52,11 +52,11 @@ public class Account extends HttpServlet {
 		HttpSession session = request.getSession();
 		
 		if (session.getAttribute("LoggedIn") != null) {
-		User tm = new User();
+		UserModel tm = new UserModel();
         tm.setCluster(cluster); 
         String Username = request.getSession().getAttribute("user").toString();
         
-        LinkedList<UserSession> lsUser = tm.getUserInfo(Username);
+        LinkedList<UserStore> lsUser = tm.getUserInfo(Username);
 		request.setAttribute("UserInfo", lsUser);
 		RequestDispatcher rd = request.getRequestDispatcher("/account.jsp");
         
@@ -92,6 +92,8 @@ public class Account extends HttpServlet {
 	            			editProfile(args[2], request, response);
 		            	}	else if (args[2] != null && args[2].toLowerCase().equals("email")){
 	            			editEmail(args[2], request, response);
+		            	}	else if (args[2] != null && args[2].toLowerCase().equals("deleteAccount")){
+	            			deleteAccount(args[2], request, response);
 		            	}	else	{
 		            		response.sendRedirect("/instashutter/account");
 		            	}
@@ -105,22 +107,42 @@ public class Account extends HttpServlet {
         }
 	}
 	
+	private void deleteAccount(String string, HttpServletRequest request, HttpServletResponse response) {
+		String username = request.getSession().getAttribute("user").toString();
+		String password = request.getParameter("password");
+		UserModel UserModel = new UserModel();
+		UserModel.setCluster(cluster);
+		
+		try {
+			boolean isValidUser = UserModel.IsValidUser(username, password);
+			if (isValidUser) {
+				UserModel.deleteUser(username);
+				response.sendRedirect("/instashutter/account");
+			} else {
+				System.out.println("Incorrect password or something broke.");
+			}
+
+		} catch (Exception e) {
+			System.out.println("Error deleting account: " + e);
+		}
+	}
+
 	private void editEmail(String string, HttpServletRequest request, HttpServletResponse response) {
 		String username = request.getSession().getAttribute("user").toString();
 		String email = request.getParameter("email");
 		String password = request.getParameter("password");
 		
-		User user = new User();
-		user.setCluster(cluster);
-		boolean isValidUser = user.IsValidUser(username, password);
+		UserModel UserModel = new UserModel();
+		UserModel.setCluster(cluster);
+		boolean isValidUser = UserModel.IsValidUser(username, password);
 		if(isValidUser)	{
-			System.out.println("User with correct credentials is editing email.");
+			System.out.println("UserModel with correct credentials is editing email.");
 			try {
 				Set<String> set = new HashSet<>();
 				set.add(email);
-				user.updateUserEmail(username, set);
+				UserModel.updateUserEmail(username, set);
 			}	catch (Exception e)	{
-				System.out.println("Error changing user email: " + e);
+				System.out.println("Error changing UserModel email: " + e);
 			}
 			try {
 				response.sendRedirect("/instashutter/account");
@@ -128,21 +150,21 @@ public class Account extends HttpServlet {
 				System.out.println("error sending redirect" + e);
 			}
 		} else {
-			System.out.println("User with incorrect credentials attempted to edit email, nothing was changed.");
+			System.out.println("UserModel with incorrect credentials attempted to edit email, nothing was changed.");
 		}
 	}
 
 	private void editProfile(String string, HttpServletRequest request, HttpServletResponse response) {
-		System.out.println("Changing user background");
+		System.out.println("Changing UserModel background");
 		String username = request.getSession().getAttribute("user").toString();
 		String url = request.getParameter("url");
-		User user = new User();
-		user.setCluster(cluster);
+		UserModel UserModel = new UserModel();
+		UserModel.setCluster(cluster);
 		try {
-			user.updateBackground(username, url);
+			UserModel.updateBackground(username, url);
 			response.sendRedirect("/instashutter/account");
 		} catch (Exception e) {
-			System.out.println("Error editing user background: " + e);
+			System.out.println("Error editing UserModel background: " + e);
 		}
 	}
 
@@ -150,13 +172,13 @@ public class Account extends HttpServlet {
 		// TODO Auto-generated method stub
 		String username = request.getSession().getAttribute("user").toString();
 		String bio = request.getParameter("bio");
-		User user = new User();
-		user.setCluster(cluster);
+		UserModel UserModel = new UserModel();
+		UserModel.setCluster(cluster);
 		try {
-			user.updateBio(username, bio);
+			UserModel.updateBio(username, bio);
 			response.sendRedirect("/instashutter/account");
 		} catch (Exception e) {
-			System.out.println("Error editing user background: " + e);
+			System.out.println("Error editing UserModel background: " + e);
 		}		
 	}
 
@@ -171,18 +193,18 @@ public class Account extends HttpServlet {
 					byte[] b = new byte[i+1];
 					is.read(b);
 					System.out.println("Length: " + b.length);
-					User tm = new User();
+					UserModel tm = new UserModel();
 					tm.setCluster(cluster);
 					HttpSession session = request.getSession();
-					String user = session.getAttribute("user").toString();
-					System.out.println("User: " + user);
-					tm.setProfilePic(b, user, type);
+					String username = session.getAttribute("user").toString();
+					tm.setProfilePic(b, username, type);
 					is.close();
 				}
 				response.sendRedirect("/instashutter/account");
 			}
 		} catch (Exception e)	{
 			System.out.println("Error uploading new profile image: " + e);
+			e.printStackTrace();
 		}
 	}
 
@@ -191,16 +213,16 @@ public class Account extends HttpServlet {
 		String previousPassword = request.getParameter("currentPassword");
 		String newPassword = request.getParameter("newPassword");
 		String newPasswordVerify = request.getParameter("newPasswordVerify");
-		User user = new User();
-		user.setCluster(cluster);
+		UserModel UserModel = new UserModel();
+		UserModel.setCluster(cluster);
 		
-		boolean isValid = user.IsValidUser(username, previousPassword);
+		boolean isValid = UserModel.IsValidUser(username, previousPassword);
 		
 		if (isValid){
 			if (newPassword.equals(previousPassword)) {
 			} else {
 				if (newPassword.equals(newPasswordVerify)){
-					user.updateUserPassword(username, newPassword);
+					UserModel.updateUserPassword(username, newPassword);
 					try {
 						response.sendRedirect("/instashutter/account");
 					} catch (IOException e) {
@@ -224,22 +246,22 @@ public class Account extends HttpServlet {
 		String newLname = request.getParameter("lname");
 		String password = request.getParameter("password");
 		String location = request.getParameter("location");
-		User user = new User();
-		user.setCluster(cluster);
+		UserModel UserModel = new UserModel();
+		UserModel.setCluster(cluster);
 		
 		try {
-			boolean isValidUser = user.IsValidUser(username, password);
+			boolean isValidUser = UserModel.IsValidUser(username, password);
 			if (isValidUser) {
 				System.out.println("Correct");
 			} else {
 				System.out.println("Incorrect password or something broke.");
 			}
 			if (isValidUser) {
-				user.updateUserDetails(username, newFname, newLname,location);
+				UserModel.updateUserDetails(username, newFname, newLname,location);
 				response.sendRedirect("/instashutter/account");
 			}
 		} catch (Exception e) {
-			System.out.println("Error changing user information: " + e);
+			System.out.println("Error changing UserModel information: " + e);
 		}
 	}
 

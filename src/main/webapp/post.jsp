@@ -19,7 +19,7 @@
 <jsp:include page="header.jsp" />
 <div class="container">
 			<div class="row">
-				<%LinkedList<Pic> lsPics = (LinkedList<Pic>) request.getAttribute("Pics");
+				<%LinkedList<PicStore> lsPics = (LinkedList<PicStore>) request.getAttribute("Pics");
 	        	if (lsPics == null) {%>
 	        		<p>No Pictures found</p>
 	       		<%} else {
@@ -34,10 +34,10 @@
               }
             	  
 	       		
-	            Iterator<Pic> iterator;
+	            Iterator<PicStore> iterator;
 	            iterator = lsPics.iterator();
 	            while (iterator.hasNext()) {
-	                Pic p = iterator.next();
+	                PicStore p = iterator.next();
 					String username = p.getPostedUsername();
 
 					%>
