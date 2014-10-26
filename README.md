@@ -2,8 +2,9 @@
 A simple webapp Instagram clone using Cassandra and written in Java.
 ---------------------
 
-This webapp written in Java is a simple take on cloning Instashutter as part of an assignment [details to follow after assignment deadline]. 
+This webapp written in Java is a simple take on cloning Instashutter as part of an assignment for AC32007.
 The task of the assignment was by using provided barebone structure find and fix errors and extend the application.
+This is a unlinked fork to [instagrim](https://github.com/acobley/instagrim)
 
 ##Features
 
@@ -58,7 +59,7 @@ The task of the assignment was by using provided barebone structure find and fix
   - Displays account settings and info
 - /search/{Keyword}
   - Searchs public posts with defined keyword
-- /post/{UUID} 
+- /post/{UUID}
   - Displays enchanced image with full comments
 - /image/{UUID}
   - Displays original image only
