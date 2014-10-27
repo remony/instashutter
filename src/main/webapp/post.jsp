@@ -125,7 +125,7 @@
 					<div class="post_comment_form">
 						<form name="comment_input" action="/instashutter/" method="POST">
 							<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
-							Comment: <input type="text" name="comment">
+							<input type="text" name="comment">
 							<input type="submit" value="comment">
 						</form>
 					</div>

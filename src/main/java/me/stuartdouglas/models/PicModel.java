@@ -29,8 +29,10 @@ import java.util.UUID;
 import javax.imageio.ImageIO;
 
 
+
 import static org.imgscalr.Scalr.*;
 import me.stuartdouglas.lib.*;
+import me.stuartdouglas.stores.CommentStore;
 import me.stuartdouglas.stores.PicStore;
 
 /*
@@ -61,10 +63,11 @@ public class PicModel {
     public static LinkedList<PicStore> getPublicPosts() {
     	LinkedList<PicStore> instaList = new LinkedList<>();
     	LinkedList<PicStore> instaSortedList = new LinkedList<>();
+    	LinkedList<PicStore> comments = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	
     	PreparedStatement statement = session.prepare("SELECT * from pics where public = true allow filtering");
-    	
+    	PreparedStatement pss = session.prepare("SELECT * from comments where picid =? limit 5");
     	BoundStatement boundStatement = new BoundStatement(statement);
     	
     	ResultSet rs = session.execute(boundStatement);
@@ -82,15 +85,23 @@ public class PicModel {
     			pic.setPicAdded(row.getDate("interaction_time"));
     			instaList.add(pic);
     			//Get comments from post and limit to 5 (stops endless list on dashboard)
-    			PreparedStatement pss = session.prepare("SELECT * from comments where picid =? limit 5");
-    	    	ResultSet rss;
-    	    	BoundStatement boundStatement2 = new BoundStatement(pss);
-    	    	rss = session.execute(boundStatement2.bind(picid));
+    			
+    	    	BoundStatement boundStatementComment = new BoundStatement(pss);
+    	    	ResultSet rss = session.execute(boundStatementComment.bind(picid));
     	    	if (rss.isExhausted())	{
-                    System.out.println("No posts");
+                    System.out.println("No comments");
     	    	}	else	{
     	    		for (Row rows : rss)	{
-    	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    			CommentStore commentS = new CommentStore();
+    	    			UUID picid2 = rows.getUUID("picid");
+    	    			String username2 = rows.getString("username");
+    	    			Date date2 = rows.getDate("comment_added");
+    	    			String comment2 = rows.getString("comment_text");
+    	    			commentS.setUuid(picid2);
+    					commentS.setUsername(username2);
+						commentS.setPosted_time(date2);
+						commentS.setCommentMessage(comment2);
+    	    			pic.setCommentlist(picid2, username2, date2, comment2);
     	    		}
     	    	}
     		}
@@ -113,10 +124,12 @@ public class PicModel {
      */
     public static LinkedList<PicStore> getPosts() {
     	LinkedList<PicStore> instaList = new LinkedList<>();
+    	LinkedList<PicStore> comments = new LinkedList<>();
     	LinkedList<PicStore> instaSortedList = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	
     	PreparedStatement statement = session.prepare("SELECT * from pics");
+    	PreparedStatement pss = session.prepare("SELECT * from comments where picid = ? limit 5");
     	
     	BoundStatement boundStatement = new BoundStatement(statement);
     	
@@ -134,17 +147,24 @@ public class PicModel {
     			pic.setPicAdded(row.getDate("interaction_time"));
     			instaList.add(pic);
     			//Get comments from post and limit to 5 (stops endless list on dashboard)
-    			PreparedStatement pss = session.prepare("SELECT * from comments where picid = ? limit 10");
-    	    	ResultSet rss;
-    	    	BoundStatement boundStatement2 = new BoundStatement(pss);
-    	    	rss = session.execute(boundStatement2.bind(picid));
+    	    	BoundStatement boundStatementComment = new BoundStatement(pss);
+    	    	ResultSet rss = session.execute(boundStatementComment.bind(picid));
     	    	
     	    	//gets the comments
     	    	if (rss.isExhausted())	{
                     System.out.println("no comments");
     	    	}	else	{
     	    		for (Row rows : rss)	{
-    	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    			CommentStore commentS = new CommentStore();
+    	    			UUID picid2 = rows.getUUID("picid");
+    	    			String username2 = rows.getString("username");
+    	    			Date date2 = rows.getDate("comment_added");
+    	    			String comment2 = rows.getString("comment_text");
+    	    			commentS.setUuid(picid2);
+    					commentS.setUsername(username2);
+						commentS.setPosted_time(date2);
+						commentS.setCommentMessage(comment2);
+    	    			pic.setCommentlist(picid2, username2, date2, comment2);
     	    		}
     	    	}
     		}
@@ -171,10 +191,11 @@ public class PicModel {
      */
     public LinkedList<PicStore> getPost(String user) {
     	LinkedList<PicStore> instaList = new LinkedList<>();
+    	LinkedList<PicStore> comments = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	UUID picid = UUID.fromString(user);
     	PreparedStatement statement = session.prepare("SELECT * from pics where picid =?");
-    	
+    	PreparedStatement pss = session.prepare("SELECT * from comments where picid =?");
     	BoundStatement boundStatement = new BoundStatement(statement);
     	
     	ResultSet rs = session.execute(boundStatement.bind(picid));
@@ -190,15 +211,22 @@ public class PicModel {
     			ps.setPicAdded(row.getDate("interaction_time"));
     			instaList.add(ps);
     			//Get comments for the posts
-    			PreparedStatement pss = session.prepare("SELECT * from comments where picid =?");
-    	    	ResultSet rss;
-    	    	BoundStatement boundStatement2 = new BoundStatement(pss);
-    	    	rss = session.execute(boundStatement2.bind(picid));
+    	    	BoundStatement boundStatementComment = new BoundStatement(pss);
+    	    	ResultSet rss = session.execute(boundStatementComment.bind(picid));
     	    	if (rss.isExhausted())	{
                     System.out.println("no comments");
     	    	}	else	{
     	    		for (Row rows : rss)	{
-    	    			ps.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    			CommentStore commentS = new CommentStore();
+    	    			UUID picid2 = rows.getUUID("picid");
+    	    			String username2 = rows.getString("username");
+    	    			Date date2 = rows.getDate("comment_added");
+    	    			String comment2 = rows.getString("comment_text");
+    	    			commentS.setUuid(picid2);
+    					commentS.setUsername(username2);
+						commentS.setPosted_time(date2);
+						commentS.setCommentMessage(comment2);
+    	    			ps.setCommentlist(picid2, username2, date2, comment2);
     	    		}
     	    	}
     		}
@@ -217,6 +245,7 @@ public class PicModel {
     	try {
     		//gets the public posts
 			LinkedList<PicStore> instaList = getPublicPosts();
+			LinkedList<PicStore> comments = new LinkedList<>();
 			LinkedList<PicStore> instaSortedList = new LinkedList<>();
 			
 			//Sorts the posts in order and filtering out posts which do not contain the defined keyword
@@ -249,9 +278,11 @@ public class PicModel {
     public static LinkedList<PicStore> getPicsForUser(String User) {
     	LinkedList<PicStore> instaList = new LinkedList<>();
     	LinkedList<PicStore> instaSortedList = new LinkedList<>();
+    	LinkedList<PicStore> comments = new LinkedList<>();
     	Session session = cluster.connect("instashutter");
     	
     	PreparedStatement statement = session.prepare("SELECT * from userpiclist where user =?");
+    	PreparedStatement pss = session.prepare("SELECT * from comments where picid = ? limit 10");
     	
     	BoundStatement boundStatement = new BoundStatement(statement);
     	
@@ -269,15 +300,23 @@ public class PicModel {
     			pic.setPicAdded(row.getDate("pic_added"));
     			instaList.add(pic);
     			//Get comments from post and limit to 5 (stops endless list on dashboard)
-    			PreparedStatement pss = session.prepare("SELECT * from comments where picid = ? limit 10");
-    	    	ResultSet rss;
-    	    	BoundStatement boundStatement2 = new BoundStatement(pss);
-    	    	rss = session.execute(boundStatement2.bind(picid));
+    			
+    	    	BoundStatement boundStatementComment = new BoundStatement(pss);
+    	    	ResultSet rss = session.execute(boundStatementComment.bind(picid));
     	    	if (rss.isExhausted())	{
                     System.out.println("no comments");
     	    	}	else	{
     	    		for (Row rows : rss)	{
-    	    			pic.setCommentlist(rows.getString("username"), rows.getUUID("picid"), rows.getString("comment_text"), rows.getDate("comment_added"));
+    	    			CommentStore commentS = new CommentStore();
+    	    			UUID picid2 = rows.getUUID("picid");
+    	    			String username2 = rows.getString("username");
+    	    			Date date2 = rows.getDate("comment_added");
+    	    			String comment2 = rows.getString("comment_text");
+    	    			commentS.setUuid(picid2);
+    					commentS.setUsername(username2);
+						commentS.setPosted_time(date2);
+						commentS.setCommentMessage(comment2);
+    	    			pic.setCommentlist(picid2, username2, date2, comment2);
     	    		}
     	    	}
     		}
@@ -430,8 +469,7 @@ public class PicModel {
             	ExposureFilter exposure = new ExposureFilter();
             	exposure.filter(imageIn, imageOut);
             	System.out.println("applied filter explosure");
-           }	else if (filter.equals("flare"))	
-           {
+           }	else if (filter.equals("flare"))	{
             	FlareFilter flare = new FlareFilter();
             	flare.filter(imageIn, imageOut);
             	System.out.println("applied filter flare");

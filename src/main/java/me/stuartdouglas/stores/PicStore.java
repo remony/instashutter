@@ -104,19 +104,19 @@ public class PicStore {
 	public void setPostComment(String postComment) {
 		this.postComment = postComment;
 	}
-	public void setCommentlist(String username, UUID picid, String comment_text, Date date) {
-		CommentStore comment = new CommentStore();
-		comment.setUsername(username);
-		comment.setUuid(picid);
-		comment.setCommentMessage(comment_text);
-		comment.setPosted_time(date);
-		commentlist.add(comment);
-	}
 	public boolean getIsPublic() {
 		return isPublic;
 	}
 	public void setIsPublic(boolean isPublic) {
 		this.isPublic = isPublic;
+	}
+	public void setCommentlist(UUID uuid, String username, Date comment_added, String comment_text) {
+		CommentStore commentS = new CommentStore();
+		commentS.setUuid(uuid);
+		commentS.setUsername(username);
+		commentS.setPosted_time(comment_added);
+		commentS.setCommentMessage(comment_text);
+		commentlist.add(commentS);
 	}
 
 }

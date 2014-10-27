@@ -36,15 +36,14 @@
 	
 	<h2>Filters</h2>
 	<p>Filters shown in preview are limited to the capabilities of css.</p>
+	<input type="radio" name="filterChoice" value="colour" onclick = 'filter("colour")'checked>Colour [default]
 	<input type="radio" name="filterChoice" value="bw" onclick = 'filter("bw")'>Black and White<br>
 	<input type="radio" name="filterChoice" value="invert" onclick = 'filter("invert")'>Invert<br>
 	<input type="radio" name="filterChoice" value="exposure" onclick = 'filter("exposure")'>Exposure<br>
-	<input type="radio" name="filterChoice" value="sepia" onclick = 'filter("sepia")'>Sepia (doesn't work)<br>
-	<input type="radio" name="filterChoice" value="saturate" onclick = 'filter("saturate")'>Saturate (doesn't work)<br>
 	<input type="radio" name="filterChoice" value="pointillize" onclick = 'filter("pointillize")'>Pointillize<br>
 	<input type="radio" name="filterChoice" value="crystallize" onclick = 'filter("crystalliz")'>Crystallize<br>
 	<input type="radio" name="filterChoice" value="pointillize" onclick = 'filter("pointillize")'>PointillizeFilter<br>
-	<input type="radio" name="filterChoice" value="colour" onclick = 'filter("colour")'checked>Colour [default]
+	
 	
 
 	
