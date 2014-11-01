@@ -84,53 +84,58 @@
 				        <input type="submit" value="delete"></li>  
 					</form> 	
 				</div>
-				<div class = "post_comments">
-					<% LinkedList<CommentStore> lsComments = p.getCommentlist();
-					int count = 0;
-					if (lsComments == null) {
-					} else { %>
-					<div class="comment_container">
-						<table>
-							<%Iterator<CommentStore> commentIterator;
+				<div class="post_comments">
+							<%
+								LinkedList<CommentStore> lsComments = p.getCommentlist();
+								int count = 0;
+								if (lsComments == null) {
+									%>
+									
+									<p> No comments </p>
+									
+									
+									<%
+								} else { %>
+								
+								<div class="comment_container">
+								<table>
+								
+								<%
+							Iterator<CommentStore> commentIterator;
 							commentIterator = lsComments.iterator();
 							while(commentIterator.hasNext()){
 								CommentStore c = commentIterator.next();
-								//String timeSinceComment = df.format(c.getPosted_time());
-								count++;%>
-								<!-- Print out comments -->
-							
-								<tr>
+								String cUsername = c.getUsername();
+								String comment = c.getCommentMessage();
+								count++;
+								%>
+									<tr>
 									<td>
 										<div class="comment_user">
-											<a href="/instashutter/profile/<%=c.getUsername()%>"><%= c.getUsername() %></a>
+											<a href="/instashutter/profile/<%= cUsername%>"><%= cUsername %></a>
 										</div>
-									</td> 									
+									</td>
 									<td>
 										<div class="comment_message">
-											<%= c.getCommentMessage() %>
+											<%= comment %>
 										</div>
-										
+
 									</td>
 								</tr>
-							<%}}%>
-						</table>
-						<% if (count == 5) { %>
-							<div class="comment_readmore">
-								<p>
-									<a href="/instashutter/profile/<%= username %>">More comments</a>
-								</
+								<%}} %>
+								</table>
 							</div>
-						<%} %>
+							<div class="post_comment_form">
+								<form name="comment_input" action="/instashutter/" method="POST">
+									<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
+									Comment: <input type="text" name="comment">
+									<input type="submit" value="comment">
+								</form>
+							</div>
+						</div>
 					</div>
-					<div class="post_comment_form">
-						<form name="comment_input" action="/instashutter/" method="POST">
-							<input type="hidden" name="uuid" value="<%=p.getSUUID() %>">
-							<input type="text" name="comment">
-							<input type="submit" value="comment">
-						</form>
-					</div>
-				</div>
-			</div>
+					
+
 	        <%}} %>   
 		</div>
 		</div>

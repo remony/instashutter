@@ -110,9 +110,9 @@ public class PicStore {
 	public void setIsPublic(boolean isPublic) {
 		this.isPublic = isPublic;
 	}
-	public void setCommentlist(UUID uuid, String username, Date comment_added, String comment_text) {
+	//Binds the comment to the post, this allows comments to be returned along with posts.
+	public void bindCommentToPost(String username, Date comment_added, String comment_text) {
 		CommentStore commentS = new CommentStore();
-		commentS.setUuid(uuid);
 		commentS.setUsername(username);
 		commentS.setPosted_time(comment_added);
 		commentS.setCommentMessage(comment_text);
